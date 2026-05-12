@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ProductGrid } from "@/components/product/product-grid";
 import { ShopFilterSelect } from "@/components/shop/shop-filter-select";
 import { ShopSearchInput } from "@/components/shop/shop-search-input";
@@ -13,9 +14,10 @@ type ShopProductsClientProps = {
 const categoryOptions = [
   { label: "All Categories", value: "all" },
   { label: "Co-ords", value: "Co-ords" },
-  { label: "Dresses", value: "Dresses" },
-  { label: "Tops", value: "Tops" },
   { label: "Ethnic", value: "Ethnic" },
+  { label: "Tops", value: "Tops" },
+  { label: "Accessories", value: "Accessories" },
+  { label: "Beauty", value: "Beauty" },
 ];
 
 const availabilityOptions = [
@@ -32,9 +34,21 @@ const sortOptions = [
   { label: "Price: High to Low", value: "price-high-low" },
 ];
 
+function getInitialCategory(categoryParam: string | null) {
+  const validCategory = categoryOptions.some(
+    (option) => option.value === categoryParam
+  );
+
+  return validCategory && categoryParam ? categoryParam : "all";
+}
+
 export function ShopProductsClient({ products }: ShopProductsClientProps) {
+  const searchParams = useSearchParams();
+
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState(() =>
+    getInitialCategory(searchParams.get("category"))
+  );
   const [availability, setAvailability] = useState("all");
   const [sort, setSort] = useState("featured");
 
@@ -65,7 +79,9 @@ export function ShopProductsClient({ products }: ShopProductsClientProps) {
     }
 
     if (sort === "newest") {
-      return [...result].sort((a, b) => Number(b.isNewArrival) - Number(a.isNewArrival));
+      return [...result].sort(
+        (a, b) => Number(b.isNewArrival) - Number(a.isNewArrival)
+      );
     }
 
     return [...result].sort((a, b) => Number(b.featured) - Number(a.featured));

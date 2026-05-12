@@ -13,6 +13,8 @@ import {
 } from "@/components/checkout/checkout-form-options";
 import { FormField } from "@/components/checkout/form-field";
 import { OrderConfirmation } from "@/components/checkout/order-confirmation";
+import { createOrderMessage } from "@/lib/order-message";
+import type { CartItem } from "@/types/cart";
 import type { DeliveryArea } from "@/types/order";
 
 type CheckoutFormErrors = {
@@ -23,12 +25,12 @@ type CheckoutFormErrors = {
 };
 
 type CheckoutFormProps = {
-  hasItems: boolean;
+  items: CartItem[];
   clearCartOnSubmit?: boolean;
 };
 
 export function CheckoutForm({
-  hasItems,
+  items,
   clearCartOnSubmit = false,
 }: CheckoutFormProps) {
   const { clearCart } = useCart();
@@ -36,10 +38,15 @@ export function CheckoutForm({
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [note, setNote] = useState("");
+  const [paymentType, setPaymentType] = useState("cash-on-delivery");
   const [deliveryArea, setDeliveryArea] =
     useState<DeliveryArea>("inside-dhaka");
+  const [orderMessage, setOrderMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState<CheckoutFormErrors>({});
+
+  const hasItems = items.length > 0;
 
   const paymentOptions = useMemo(() => {
     if (deliveryArea === "outside-dhaka") {
@@ -48,6 +55,19 @@ export function CheckoutForm({
 
     return insideDhakaPaymentOptions;
   }, [deliveryArea]);
+
+  function handleDeliveryAreaChange(value: string) {
+    const nextDeliveryArea = value as DeliveryArea;
+
+    setDeliveryArea(nextDeliveryArea);
+
+    if (nextDeliveryArea === "outside-dhaka") {
+      setPaymentType("bkash");
+      return;
+    }
+
+    setPaymentType("cash-on-delivery");
+  }
 
   function validateForm() {
     const nextErrors: CheckoutFormErrors = {};
@@ -81,6 +101,18 @@ export function CheckoutForm({
       return;
     }
 
+    const message = createOrderMessage({
+      items,
+      fullName,
+      phone,
+      address,
+      deliveryArea,
+      paymentType,
+      note,
+    });
+
+    setOrderMessage(message);
+
     if (clearCartOnSubmit) {
       clearCart();
     }
@@ -89,7 +121,7 @@ export function CheckoutForm({
   }
 
   if (isSubmitted) {
-    return <OrderConfirmation />;
+    return <OrderConfirmation orderMessage={orderMessage} />;
   }
 
   return (
@@ -147,12 +179,16 @@ export function CheckoutForm({
             <CheckoutSelect
               options={deliveryAreaOptions}
               value={deliveryArea}
-              onChange={(value) => setDeliveryArea(value as DeliveryArea)}
+              onChange={handleDeliveryAreaChange}
             />
           </FormField>
 
           <FormField label="Payment Type">
-            <CheckoutSelect options={paymentOptions} />
+            <CheckoutSelect
+              options={paymentOptions}
+              value={paymentType}
+              onChange={setPaymentType}
+            />
           </FormField>
         </div>
 
@@ -160,6 +196,8 @@ export function CheckoutForm({
 
         <FormField label="Order Note">
           <textarea
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
             placeholder="Any size, delivery, or product note?"
             rows={4}
             className="w-full rounded-2xl border border-warm-border bg-soft-white px-4 py-3 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
