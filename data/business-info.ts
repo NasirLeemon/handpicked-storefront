@@ -1,6 +1,6 @@
 export const businessInfo = {
   brandName: "Handpicked",
-  phone: "Add phone number",
+  phone: "+8801601463594",
   messengerUrl: "https://m.me/843144242224804",
   facebookUrl: "https://web.facebook.com/profile.php?id=61585418970148",
   deliveryNote:
