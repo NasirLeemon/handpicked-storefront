@@ -23,9 +23,43 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Handpicked",
+  metadataBase: new URL("https://handpicked-storefront.vercel.app"),
+  title: {
+    default: "Handpicked | Premium Boutique Clothing",
+    template: "%s | Handpicked",
+  },
   description:
-    "Premium boutique clothing, thoughtfully selected for graceful everyday style.",
+    "Shop premium boutique clothing, accessories, and beauty pieces thoughtfully selected for graceful everyday style.",
+  keywords: [
+    "Handpicked",
+    "boutique clothing",
+    "women fashion",
+    "ethnic wear",
+    "co-ords",
+    "beauty products",
+    "accessories",
+    "Bangladesh fashion",
+  ],
+  authors: [
+    {
+      name: "Handpicked",
+    },
+  ],
+  creator: "Handpicked",
+  openGraph: {
+    title: "Handpicked | Premium Boutique Clothing",
+    description:
+      "Premium boutique clothing, accessories, and beauty pieces thoughtfully selected for graceful everyday style.",
+    type: "website",
+    locale: "en_US",
+    siteName: "Handpicked",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Handpicked | Premium Boutique Clothing",
+    description:
+      "Shop premium boutique clothing, accessories, and beauty pieces thoughtfully selected for graceful everyday style.",
+  },
 };
 
 export default function RootLayout({
