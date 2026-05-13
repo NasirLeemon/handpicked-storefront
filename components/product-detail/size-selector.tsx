@@ -24,7 +24,7 @@ export function SizeSelector({
               onClick={() => onSelectSize(size)}
               className={`flex h-11 min-w-12 items-center justify-center rounded-full border px-4 text-sm font-medium transition ${
                 isSelected
-                  ? "border-deep-brown bg-deep-brown text-soft-white"
+                  ? "border-deep-brown bg-deep-brown !text-[#FFFDF9]"
                   : "border-warm-border bg-soft-white text-deep-brown hover:border-muted-gold hover:text-muted-gold"
               }`}
             >

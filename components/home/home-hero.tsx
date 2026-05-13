@@ -1,56 +1,118 @@
-import Image from "next/image";
+"use client";
+
+import { motion } from "framer-motion";
 import { BoutiqueButton } from "@/components/common/boutique-button";
+import { HeroCarousel } from "@/components/home/hero-carousel";
 
 export function HomeHero() {
   return (
-    <section className="mx-auto grid min-h-[calc(100vh-120px)] max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
-      <div>
-        <p className="mb-5 text-xs font-semibold tracking-[0.28em] text-muted-gold uppercase">
-          Premium Boutique Collection
-        </p>
+    <section className="relative min-h-[78vh] overflow-hidden bg-deep-brown sm:min-h-[86vh] lg:min-h-[calc(100vh-112px)]">
+      <HeroCarousel />
 
-        <h1 className="font-serif-brand text-5xl font-semibold leading-[0.95] tracking-tight text-deep-brown sm:text-6xl lg:text-7xl">
-          Curated Elegance, Handpicked for You
-        </h1>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#2F2118]/84 via-[#2F2118]/42 to-[#2F2118]/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#2F2118]/56 via-transparent to-[#2F2118]/12" />
 
-        <p className="mt-7 max-w-xl text-base leading-8 text-soft-brown sm:text-lg">
-          Discover thoughtfully selected clothing, accessories, and beauty
-          pieces designed for graceful everyday style, soft femininity, and
-          timeless boutique charm.
-        </p>
+      <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-7xl items-center px-4 py-14 sm:min-h-[86vh] sm:px-6 lg:min-h-[calc(100vh-112px)] lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 1,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="max-w-3xl"
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="mb-5 text-xs font-semibold tracking-[0.34em] text-soft-gold uppercase"
+          >
+            New Season Collection
+          </motion.p>
 
-        <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-          <BoutiqueButton href="/shop">Shop New Arrivals</BoutiqueButton>
+          <motion.h1
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 1,
+              delay: 0.25,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="font-serif-brand text-[3.6rem] font-medium leading-[0.88] tracking-[-0.055em] text-[#FFFDF9] sm:text-[6.5rem] lg:text-[8rem]"
+          >
+            Modern
+            <span className="block italic text-[#E8DCCB]">grace</span>
+            in every piece
+          </motion.h1>
 
-          <BoutiqueButton href="/shop" variant="secondary">
-            Explore Collection
-          </BoutiqueButton>
-        </div>
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.9,
+              delay: 0.38,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="mt-7 max-w-xl text-base leading-8 text-[#FFFDF9]/82 sm:text-lg"
+          >
+            A curated collection of clothing, beauty, and accessories selected
+            for soft elegance, refined details, and effortless everyday styling.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.9,
+              delay: 0.5,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="mt-9 flex flex-col gap-4 sm:flex-row"
+          >
+            <BoutiqueButton href="/shop">Shop New Arrivals</BoutiqueButton>
+
+            <BoutiqueButton href="/shop?category=Ethnic" variant="secondary">
+              Explore Collection
+            </BoutiqueButton>
+          </motion.div>
+        </motion.div>
       </div>
 
-      <div className="relative">
-        <div className="group aspect-[4/5] overflow-hidden rounded-[2rem] border border-warm-border bg-light-sand shadow-sm">
-          <div className="relative h-full w-full">
-            <Image
-              src="/images/products/strep cherry kurti.png"
-              alt="Strep Cherry Kurti"
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover transition duration-700 group-hover:scale-105"
-            />
-          </div>
-        </div>
-
-        <div className="absolute -bottom-6 -left-4 hidden rounded-2xl border border-warm-border bg-soft-white px-6 py-5 shadow-sm sm:block">
-          <p className="text-xs font-semibold tracking-[0.22em] text-muted-gold uppercase">
-            New Season
-          </p>
-          <p className="mt-1 font-serif-brand text-2xl font-semibold text-deep-brown">
-            Cherry Edit
-          </p>
-        </div>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.9,
+          delay: 0.7,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="absolute bottom-6 left-4 right-4 z-10 mx-auto hidden max-w-7xl items-end justify-between border-t border-white/20 pt-5 text-[#FFFDF9] md:flex"
+      >
+        <HeroMeta label="Collection" value="Handpicked edit" />
+        <HeroMeta label="Products" value="15 curated pieces" />
+        <HeroMeta label="Delivery" value="Dhaka + outside Dhaka" />
+      </motion.div>
     </section>
+  );
+}
+
+type HeroMetaProps = {
+  label: string;
+  value: string;
+};
+
+function HeroMeta({ label, value }: HeroMetaProps) {
+  return (
+    <div>
+      <p className="text-[11px] font-semibold tracking-[0.24em] text-soft-gold uppercase">
+        {label}
+      </p>
+      <p className="mt-2 text-sm text-[#FFFDF9]/82">{value}</p>
+    </div>
   );
 }

@@ -53,7 +53,7 @@ export function ProductActionButtons({
         <button
           type="button"
           disabled
-          className="h-12 cursor-not-allowed rounded-full bg-taupe px-6 text-sm font-semibold tracking-[0.18em] text-[#FFFDF9] uppercase"
+          className="h-12 cursor-not-allowed rounded-full bg-taupe px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase"
         >
           Sold Out
         </button>
@@ -76,7 +76,7 @@ export function ProductActionButtons({
           <button
             type="button"
             disabled
-            className="h-12 cursor-not-allowed rounded-full bg-taupe px-6 text-sm font-semibold tracking-[0.18em] text-[#FFFDF9] uppercase"
+            className="h-12 cursor-not-allowed rounded-full bg-taupe px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase"
           >
             Add to Cart
           </button>
@@ -103,7 +103,7 @@ export function ProductActionButtons({
         <button
           type="button"
           onClick={handleAddToCart}
-          className="inline-flex h-12 items-center justify-center rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
+          className="inline-flex h-12 items-center justify-center rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
         >
           {wasAdded ? "Added" : "Add to Cart"}
         </button>

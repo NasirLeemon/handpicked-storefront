@@ -49,7 +49,7 @@ export function CartSummary({ items }: CartSummaryProps) {
 
       <Link
         href="/checkout"
-        className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
+        className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
       >
         Continue to Checkout
       </Link>

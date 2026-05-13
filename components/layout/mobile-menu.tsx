@@ -78,7 +78,7 @@ export function MobileMenu() {
                 href="https://m.me/843144242224804"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-5 text-xs font-semibold tracking-[0.16em] text-[#FFFDF9] uppercase transition hover:bg-[#6F5A49]"
+                className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-5 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase transition hover:bg-[#6F5A49]"
               >
                 Message on Facebook
               </a>

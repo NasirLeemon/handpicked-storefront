@@ -16,7 +16,7 @@ export function CartLink() {
         <ShoppingBag className="h-5 w-5" />
 
         {cartCount > 0 ? (
-          <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#4A3327] px-1.5 text-[10px] font-semibold leading-none text-[#FFFDF9]">
+          <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#4A3327] px-1.5 text-[10px] font-semibold leading-none !text-[#FFFDF9]">
             {cartCount}
           </span>
         ) : null}

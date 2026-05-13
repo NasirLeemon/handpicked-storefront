@@ -9,7 +9,8 @@ type BoutiqueButtonProps = {
 };
 
 const buttonStyles: Record<BoutiqueButtonVariant, string> = {
-  primary: "bg-[#4A3327] text-[#FFFDF9] shadow-sm hover:bg-[#6F5A49]",
+  primary:
+    "bg-[#4A3327] !text-[#FFFDF9] shadow-sm hover:bg-[#6F5A49]",
   secondary:
     "border border-warm-border bg-soft-white text-deep-brown hover:border-muted-gold hover:text-muted-gold",
 };

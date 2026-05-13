@@ -210,7 +210,7 @@ export function CheckoutForm({
           type="button"
           onClick={handleSubmit}
           disabled={!hasItems}
-          className="mt-2 h-12 rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe"
+          className="mt-2 h-12 rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe"
         >
           Submit Order Request
         </button>

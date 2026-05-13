@@ -91,7 +91,7 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-serif-brand: Georgia, "Times New Roman", serif;
+  --font-serif-brand: var(--font-cormorant), Georgia, "Times New Roman", serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -135,5 +135,5 @@ select {
 }
 
 .font-serif-brand {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
 }
