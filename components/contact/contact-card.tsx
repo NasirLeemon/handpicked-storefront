@@ -1,8 +1,6 @@
 import { MessageCircle, Phone, Globe } from "lucide-react";
 import { BoutiqueButton } from "@/components/common/boutique-button";
-
-const messengerUrl = "https://m.me/843144242224804";
-const facebookUrl = "https://web.facebook.com/profile.php?id=61585418970148";
+import { businessInfo } from "@/data/business-info";
 
 export function ContactCard() {
   return (
@@ -22,9 +20,11 @@ export function ContactCard() {
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <BoutiqueButton href={messengerUrl}>Message on Facebook</BoutiqueButton>
+          <BoutiqueButton href={businessInfo.messengerUrl}>
+            Message on Facebook
+          </BoutiqueButton>
 
-          <BoutiqueButton href={facebookUrl} variant="secondary">
+          <BoutiqueButton href={businessInfo.facebookUrl} variant="secondary">
             Visit Facebook Page
           </BoutiqueButton>
         </div>
@@ -46,7 +46,7 @@ export function ContactCard() {
         <ContactInfoCard
           icon={Phone}
           title="Phone"
-          description="Add your support phone number here."
+          description={businessInfo.phone}
         />
       </div>
     </section>

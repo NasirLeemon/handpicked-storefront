@@ -1,7 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { BoutiqueButton } from "@/components/common/boutique-button";
-
-const messengerUrl = "https://m.me/843144242224804";
+import { businessInfo } from "@/data/business-info";
 
 export function MessengerCtaSection() {
   return (
@@ -21,13 +20,15 @@ export function MessengerCtaSection() {
           Need help choosing?
         </h2>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-soft-brown sm:mx-auto sm:mt-5 sm:leading-7 sm:text-base">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-soft-brown sm:mx-auto sm:mt-5 sm:text-base sm:leading-7">
           Message us for size guidance, product availability, delivery
           questions, or styling help.
         </p>
 
-        <div className="mt-6 flex sm:justify-center sm:mt-8">
-          <BoutiqueButton href={messengerUrl}>Message on Facebook</BoutiqueButton>
+        <div className="mt-6 flex sm:mt-8 sm:justify-center">
+          <BoutiqueButton href={businessInfo.messengerUrl}>
+            Message on Facebook
+          </BoutiqueButton>
         </div>
       </div>
     </section>
