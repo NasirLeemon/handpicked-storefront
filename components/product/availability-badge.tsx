@@ -11,15 +11,18 @@ const availabilityLabels: Record<ProductAvailability, string> = {
 };
 
 const availabilityStyles: Record<ProductAvailability, string> = {
-  available: "bg-[#EEF1E8] text-[#5B654A]",
-  "low-stock": "bg-[#F6EEDC] text-[#9A6B2F]",
-  "sold-out": "bg-[#EFEAE4] text-taupe",
+  available:
+    "border-[#D9E0CE] bg-[#FFFDF9]/85 text-[#5B654A]",
+  "low-stock":
+    "border-[#E8D3A6] bg-[#FFFDF9]/85 text-[#9A6B2F]",
+  "sold-out":
+    "border-warm-border bg-[#FFFDF9]/85 text-taupe",
 };
 
 export function AvailabilityBadge({ availability }: AvailabilityBadgeProps) {
   return (
     <span
-      className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.16em] uppercase ${availabilityStyles[availability]}`}
+      className={`inline-flex rounded-full border px-3 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase shadow-sm backdrop-blur-md ${availabilityStyles[availability]}`}
     >
       {availabilityLabels[availability]}
     </span>
