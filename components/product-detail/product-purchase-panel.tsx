@@ -1,6 +1,5 @@
 "use client";
 
-import { ShieldCheck, Truck } from "lucide-react";
 import { useState } from "react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
@@ -26,28 +25,28 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
   }
 
   return (
-    <aside className="rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm lg:sticky lg:top-32 lg:p-8">
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
+    <aside className="rounded-[1.25rem] border border-warm-border bg-soft-white p-4 shadow-sm sm:rounded-[2rem] sm:p-6 lg:sticky lg:top-32 lg:p-8">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase sm:text-xs">
           {product.category}
         </p>
 
         <AvailabilityBadge availability={product.availability} />
       </div>
 
-      <h1 className="mt-5 font-serif-brand text-5xl font-medium leading-[0.95] tracking-[-0.035em] text-deep-brown sm:text-6xl">
+      <h1 className="mt-3 font-serif-brand text-3xl font-medium leading-none tracking-[-0.035em] text-deep-brown sm:mt-5 sm:text-6xl">
         {product.name}
       </h1>
 
-      <p className="mt-5 text-2xl font-medium text-deep-brown">
+      <p className="mt-3 text-2xl font-semibold text-deep-brown sm:mt-5">
         ৳ {product.price.toLocaleString()}
       </p>
 
-      <p className="mt-6 text-base leading-8 text-soft-brown">
+      <p className="mt-3 text-sm leading-6 text-soft-brown sm:mt-6 sm:text-base sm:leading-8">
         {product.description}
       </p>
 
-      <div className="mt-8 rounded-[1.5rem] border border-warm-border bg-ivory p-5">
+      <div className="mt-4 rounded-[1rem] border border-warm-border bg-ivory p-3 sm:mt-8 sm:rounded-[1.5rem] sm:p-5">
         <p className="text-sm font-medium text-deep-brown">
           Color: <span className="text-soft-brown">{product.color}</span>
         </p>
@@ -72,40 +71,10 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
         productSlug={product.slug}
       />
 
-      <div className="mt-6 grid gap-3">
-        <ProductNote
-          icon={<Truck className="h-5 w-5" strokeWidth={1.7} />}
-          title="Delivery support"
-          description="Inside Dhaka delivery is available. Outside Dhaka orders require advance payment before dispatch."
-        />
-
-        <ProductNote
-          icon={<ShieldCheck className="h-5 w-5" strokeWidth={1.7} />}
-          title="Order confirmation"
-          description="Our team will confirm availability, delivery charge, and payment details after your order request."
-        />
-      </div>
+      <p className="mt-3 text-xs leading-5 text-soft-brown sm:mt-5 sm:text-sm sm:leading-6">
+        Delivery charge, availability, and payment details will be confirmed
+        after your order request.
+      </p>
     </aside>
-  );
-}
-
-type ProductNoteProps = {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-};
-
-function ProductNote({ icon, title, description }: ProductNoteProps) {
-  return (
-    <div className="flex gap-4 rounded-[1.25rem] border border-muted-gold/30 bg-light-sand p-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-muted-gold/30 bg-soft-white text-muted-gold">
-        {icon}
-      </div>
-
-      <div>
-        <p className="text-sm font-medium text-deep-brown">{title}</p>
-        <p className="mt-1 text-sm leading-6 text-soft-brown">{description}</p>
-      </div>
-    </div>
   );
 }

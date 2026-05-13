@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
-import { createCartItemFromProduct } from "@/lib/create-cart-item";
+import { getProductBySlug } from "@/lib/products";
 
 type ProductActionButtonsProps = {
   isSoldOut: boolean;
@@ -19,106 +18,51 @@ export function ProductActionButtons({
   productSlug,
 }: ProductActionButtonsProps) {
   const { addItem } = useCart();
-  const [wasAdded, setWasAdded] = useState(false);
-
-  const isSizeMissing = !selectedSize;
-  const checkoutHref = `/checkout?product=${productSlug}&size=${selectedSize}&qty=${quantity}`;
+  const product = getProductBySlug(productSlug);
+  const canOrder = !isSoldOut && selectedSize && product;
 
   function handleAddToCart() {
-    if (isSoldOut || isSizeMissing) {
+    if (!canOrder || !product) {
       return;
     }
 
-    const cartItem = createCartItemFromProduct({
-      productSlug,
+    addItem({
+      product,
       size: selectedSize,
       quantity,
     });
-
-    if (!cartItem) {
-      return;
-    }
-
-    addItem(cartItem);
-    setWasAdded(true);
-
-    window.setTimeout(() => {
-      setWasAdded(false);
-    }, 1800);
   }
 
-  if (isSoldOut) {
-    return (
-      <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
-          disabled
-          className="h-12 cursor-not-allowed rounded-full bg-taupe px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase"
-        >
-          Sold Out
-        </button>
-
-        <button
-          type="button"
-          disabled
-          className="h-12 cursor-not-allowed rounded-full border border-warm-border bg-soft-white px-6 text-sm font-semibold tracking-[0.18em] text-taupe uppercase"
-        >
-          Order Now
-        </button>
-      </div>
-    );
-  }
-
-  if (isSizeMissing) {
-    return (
-      <div className="mt-8">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <button
-            type="button"
-            disabled
-            className="h-12 cursor-not-allowed rounded-full bg-taupe px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase"
-          >
-            Add to Cart
-          </button>
-
-          <button
-            type="button"
-            disabled
-            className="h-12 cursor-not-allowed rounded-full border border-warm-border bg-soft-white px-6 text-sm font-semibold tracking-[0.18em] text-taupe uppercase"
-          >
-            Order Now
-          </button>
-        </div>
-
-        <p className="mt-3 text-sm text-soft-brown">
-          Please select a size before ordering this piece.
-        </p>
-      </div>
-    );
-  }
+  const checkoutHref = `/checkout?product=${productSlug}&size=${encodeURIComponent(
+    selectedSize
+  )}&qty=${quantity}`;
 
   return (
-    <div className="mt-8">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className="inline-flex h-12 items-center justify-center rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
-        >
-          {wasAdded ? "Added" : "Add to Cart"}
-        </button>
+    <div className="mt-4 grid gap-3 sm:mt-7">
+      <button
+        type="button"
+        disabled={!canOrder}
+        onClick={handleAddToCart}
+        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe sm:h-12 sm:text-sm"
+      >
+        Add to Cart
+      </button>
 
-        <Link
-          href={checkoutHref}
-          className="inline-flex h-12 items-center justify-center rounded-full border border-warm-border bg-soft-white px-6 text-sm font-semibold tracking-[0.18em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold"
-        >
-          Order Now
-        </Link>
-      </div>
+      <Link
+        href={canOrder ? checkoutHref : "#"}
+        aria-disabled={!canOrder}
+        className={`inline-flex h-11 w-full items-center justify-center rounded-full border border-warm-border bg-soft-white px-6 text-xs font-semibold tracking-[0.18em] uppercase transition sm:h-12 sm:text-sm ${
+          canOrder
+            ? "text-deep-brown hover:border-muted-gold hover:text-muted-gold"
+            : "pointer-events-none text-taupe"
+        }`}
+      >
+        Order Now
+      </Link>
 
-      {wasAdded ? (
-        <p className="mt-3 text-sm text-soft-brown">
-          Added to your cart. You can continue shopping or review your cart.
+      {!selectedSize && !isSoldOut ? (
+        <p className="text-xs leading-5 text-soft-brown">
+          Select a size before ordering.
         </p>
       ) : null}
     </div>

@@ -1,4 +1,4 @@
-type ShopFilterOption = {
+type ShopFilterSelectOption = {
   label: string;
   value: string;
 };
@@ -6,7 +6,7 @@ type ShopFilterOption = {
 type ShopFilterSelectProps = {
   label: string;
   value: string;
-  options: ShopFilterOption[];
+  options: ShopFilterSelectOption[];
   onChange: (value: string) => void;
 };
 
@@ -17,15 +17,15 @@ export function ShopFilterSelect({
   onChange,
 }: ShopFilterSelectProps) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-xs font-semibold tracking-[0.18em] text-soft-brown uppercase">
+    <div className="relative min-w-[135px] sm:min-w-0">
+      <span className="mb-1 block text-[9px] font-semibold tracking-[0.2em] text-muted-gold uppercase sm:text-xs">
         {label}
       </span>
 
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-full border border-warm-border bg-soft-white px-4 text-sm text-deep-brown outline-none transition focus:border-muted-gold"
+        className="h-10 w-full rounded-full border border-warm-border bg-soft-white px-3 text-xs font-medium text-deep-brown outline-none transition focus:border-muted-gold sm:h-12 sm:px-5 sm:text-sm"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -33,6 +33,6 @@ export function ShopFilterSelect({
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }

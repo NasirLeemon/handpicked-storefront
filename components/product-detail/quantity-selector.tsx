@@ -10,27 +10,27 @@ export function QuantitySelector({
   onIncrease,
 }: QuantitySelectorProps) {
   return (
-    <div className="mt-7">
+    <div className="mt-5 sm:mt-7">
       <p className="mb-3 text-sm font-medium text-deep-brown">Quantity</p>
 
-      <div className="inline-flex h-12 items-center overflow-hidden rounded-full border border-warm-border bg-soft-white shadow-sm">
+      <div className="inline-flex h-11 items-center overflow-hidden rounded-full border border-warm-border bg-soft-white shadow-sm sm:h-12">
         <button
           type="button"
           onClick={onDecrease}
-          className="flex h-full w-12 items-center justify-center text-lg text-deep-brown transition hover:bg-light-sand"
+          className="flex h-full w-11 items-center justify-center text-lg text-deep-brown transition hover:bg-light-sand sm:w-12"
           aria-label="Decrease quantity"
         >
           -
         </button>
 
-        <span className="flex h-full min-w-14 items-center justify-center border-x border-warm-border px-5 text-sm font-medium text-deep-brown">
+        <span className="flex h-full min-w-12 items-center justify-center border-x border-warm-border px-4 text-sm font-medium text-deep-brown sm:min-w-14 sm:px-5">
           {quantity}
         </span>
 
         <button
           type="button"
           onClick={onIncrease}
-          className="flex h-full w-12 items-center justify-center text-lg text-deep-brown transition hover:bg-light-sand"
+          className="flex h-full w-11 items-center justify-center text-lg text-deep-brown transition hover:bg-light-sand sm:w-12"
           aria-label="Increase quantity"
         >
           +

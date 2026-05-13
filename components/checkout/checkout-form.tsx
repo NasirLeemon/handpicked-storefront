@@ -1,28 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
-import { CheckoutInput } from "@/components/checkout/checkout-input";
-import { CheckoutSelect } from "@/components/checkout/checkout-select";
-import { DeliveryAreaNotice } from "@/components/checkout/delivery-area-notice";
-import { FieldError } from "@/components/checkout/field-error";
-import {
-  deliveryAreaOptions,
-  insideDhakaPaymentOptions,
-  outsideDhakaPaymentOptions,
-} from "@/components/checkout/checkout-form-options";
-import { FormField } from "@/components/checkout/form-field";
-import { OrderConfirmation } from "@/components/checkout/order-confirmation";
-import { createOrderMessage } from "@/lib/order-message";
 import type { CartItem } from "@/types/cart";
-import type { DeliveryArea } from "@/types/order";
-
-type CheckoutFormErrors = {
-  fullName?: string;
-  phone?: string;
-  address?: string;
-  order?: string;
-};
 
 type CheckoutFormProps = {
   items: CartItem[];
@@ -34,187 +14,152 @@ export function CheckoutForm({
   clearCartOnSubmit = false,
 }: CheckoutFormProps) {
   const { clearCart } = useCart();
-
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [note, setNote] = useState("");
-  const [paymentType, setPaymentType] = useState("cash-on-delivery");
-  const [deliveryArea, setDeliveryArea] =
-    useState<DeliveryArea>("inside-dhaka");
-  const [orderMessage, setOrderMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [errors, setErrors] = useState<CheckoutFormErrors>({});
 
-  const hasItems = items.length > 0;
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-  const paymentOptions = useMemo(() => {
-    if (deliveryArea === "outside-dhaka") {
-      return outsideDhakaPaymentOptions;
-    }
-
-    return insideDhakaPaymentOptions;
-  }, [deliveryArea]);
-
-  function handleDeliveryAreaChange(value: string) {
-    const nextDeliveryArea = value as DeliveryArea;
-
-    setDeliveryArea(nextDeliveryArea);
-
-    if (nextDeliveryArea === "outside-dhaka") {
-      setPaymentType("bkash");
+    if (items.length === 0) {
       return;
     }
 
-    setPaymentType("cash-on-delivery");
-  }
-
-  function validateForm() {
-    const nextErrors: CheckoutFormErrors = {};
-
-    if (!hasItems) {
-      nextErrors.order =
-        "Please add a product before submitting an order request.";
-    }
-
-    if (!fullName.trim()) {
-      nextErrors.fullName = "Please enter your full name.";
-    }
-
-    if (!phone.trim()) {
-      nextErrors.phone = "Please enter your phone number.";
-    }
-
-    if (!address.trim()) {
-      nextErrors.address = "Please enter your full delivery address.";
-    }
-
-    setErrors(nextErrors);
-
-    return Object.keys(nextErrors).length === 0;
-  }
-
-  function handleSubmit() {
-    const isValid = validateForm();
-
-    if (!isValid) {
-      return;
-    }
-
-    const message = createOrderMessage({
-      items,
-      fullName,
-      phone,
-      address,
-      deliveryArea,
-      paymentType,
-      note,
-    });
-
-    setOrderMessage(message);
+    setIsSubmitted(true);
 
     if (clearCartOnSubmit) {
       clearCart();
     }
-
-    setIsSubmitted(true);
   }
 
   if (isSubmitted) {
-    return <OrderConfirmation orderMessage={orderMessage} />;
+    return (
+      <div className="rounded-[1.5rem] border border-warm-border bg-soft-white p-5 shadow-sm">
+        <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+          Request Submitted
+        </p>
+
+        <h2 className="mt-3 font-serif-brand text-4xl font-medium text-deep-brown">
+          Thank you
+        </h2>
+
+        <p className="mt-3 text-sm leading-6 text-soft-brown">
+          Your order request has been received. Our team will contact you to
+          confirm availability, delivery charge, and payment details.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <form className="rounded-[1.75rem] border border-warm-border bg-soft-white p-6">
-      <p className="mb-6 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-        Customer Details
-      </p>
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-[1.5rem] border border-warm-border bg-soft-white p-5 shadow-sm"
+    >
+      <div className="mb-5">
+        <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+          Customer Details
+        </p>
 
-      {!hasItems ? (
-        <div className="mb-6 rounded-2xl border border-muted-gold/40 bg-light-sand p-5">
-          <p className="text-xs font-semibold tracking-[0.22em] text-muted-gold uppercase">
-            Empty Order
-          </p>
-
-          <p className="mt-3 text-sm leading-7 text-soft-brown">
-            Please add a product before submitting an order request. You can
-            browse the collection and choose your preferred size and quantity.
-          </p>
-        </div>
-      ) : null}
-
-      <div className="grid gap-5">
-        <FormField label="Full Name">
-          <CheckoutInput
-            placeholder="Enter your full name"
-            value={fullName}
-            onChange={setFullName}
-          />
-          <FieldError message={errors.fullName} />
-        </FormField>
-
-        <FormField label="Phone Number">
-          <CheckoutInput
-            placeholder="01XXXXXXXXX"
-            type="tel"
-            value={phone}
-            onChange={setPhone}
-          />
-          <FieldError message={errors.phone} />
-        </FormField>
-
-        <FormField label="Full Address">
-          <textarea
-            value={address}
-            onChange={(event) => setAddress(event.target.value)}
-            placeholder="House, road, area, city"
-            rows={4}
-            className="w-full rounded-2xl border border-warm-border bg-soft-white px-4 py-3 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
-          />
-          <FieldError message={errors.address} />
-        </FormField>
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          <FormField label="Delivery Area">
-            <CheckoutSelect
-              options={deliveryAreaOptions}
-              value={deliveryArea}
-              onChange={handleDeliveryAreaChange}
-            />
-          </FormField>
-
-          <FormField label="Payment Type">
-            <CheckoutSelect
-              options={paymentOptions}
-              value={paymentType}
-              onChange={setPaymentType}
-            />
-          </FormField>
-        </div>
-
-        {deliveryArea === "outside-dhaka" ? <DeliveryAreaNotice /> : null}
-
-        <FormField label="Order Note">
-          <textarea
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
-            placeholder="Any size, delivery, or product note?"
-            rows={4}
-            className="w-full rounded-2xl border border-warm-border bg-soft-white px-4 py-3 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
-          />
-        </FormField>
-
-        <FieldError message={errors.order} />
-
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!hasItems}
-          className="mt-2 h-12 rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe"
-        >
-          Submit Order Request
-        </button>
+        <p className="mt-2 text-sm leading-6 text-soft-brown">
+          Fill in your contact and delivery information.
+        </p>
       </div>
+
+      <div className="grid gap-4">
+        <CheckoutInput label="Full Name" name="name" required />
+        <CheckoutInput label="Phone Number" name="phone" type="tel" required />
+
+        <CheckoutTextarea
+          label="Delivery Address"
+          name="address"
+          required
+          rows={3}
+        />
+
+        <CheckoutTextarea
+          label="Order Note"
+          name="note"
+          rows={3}
+          placeholder="Optional: preferred delivery time, size note, etc."
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={items.length === 0}
+        className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe sm:h-12 sm:text-sm"
+      >
+        Submit Order Request
+      </button>
+
+      {items.length === 0 ? (
+        <p className="mt-3 text-xs leading-5 text-soft-brown">
+          Add at least one product before submitting your order.
+        </p>
+      ) : null}
     </form>
+  );
+}
+
+type CheckoutInputProps = {
+  label: string;
+  name: string;
+  type?: string;
+  required?: boolean;
+  placeholder?: string;
+};
+
+function CheckoutInput({
+  label,
+  name,
+  type = "text",
+  required = false,
+  placeholder,
+}: CheckoutInputProps) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[10px] font-semibold tracking-[0.2em] text-soft-brown uppercase">
+        {label}
+      </span>
+
+      <input
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        className="h-11 w-full rounded-[1rem] border border-warm-border bg-ivory px-4 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
+      />
+    </label>
+  );
+}
+
+type CheckoutTextareaProps = {
+  label: string;
+  name: string;
+  required?: boolean;
+  placeholder?: string;
+  rows?: number;
+};
+
+function CheckoutTextarea({
+  label,
+  name,
+  required = false,
+  placeholder,
+  rows = 4,
+}: CheckoutTextareaProps) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[10px] font-semibold tracking-[0.2em] text-soft-brown uppercase">
+        {label}
+      </span>
+
+      <textarea
+        name={name}
+        required={required}
+        placeholder={placeholder}
+        rows={rows}
+        className="w-full resize-none rounded-[1rem] border border-warm-border bg-ivory px-4 py-3 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
+      />
+    </label>
   );
 }

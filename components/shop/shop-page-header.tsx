@@ -1,18 +1,18 @@
 export function ShopPageHeader() {
   return (
-    <section className="bg-ivory px-4 py-16 text-center sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl">
-        <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-muted-gold uppercase">
+    <section className="bg-ivory px-4 py-8 text-center sm:px-6 sm:py-20 lg:px-8">
+      <div className="mx-auto max-w-4xl">
+        <p className="mb-2 text-[10px] font-semibold tracking-[0.26em] text-muted-gold uppercase sm:text-xs">
           The Collection
         </p>
 
-        <h1 className="font-serif-brand text-5xl font-semibold tracking-tight text-deep-brown sm:text-6xl">
+        <h1 className="font-serif-brand text-4xl font-medium leading-[0.95] tracking-[-0.04em] text-deep-brown sm:text-6xl lg:text-7xl">
           Shop the Collection
         </h1>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-soft-brown">
-          Explore thoughtfully selected pieces for effortless elegance, soft
-          femininity, and everyday boutique style.
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-soft-brown sm:mt-5 sm:text-lg sm:leading-8">
+          Explore thoughtfully selected pieces for effortless elegance and
+          everyday boutique style.
         </p>
       </div>
     </section>

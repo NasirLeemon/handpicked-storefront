@@ -1,10 +1,10 @@
 export type CartItem = {
   id: string;
-  productId: string;
+  productId?: string;
   slug: string;
   name: string;
-  price: number;
   image: string;
+  price: number;
   color: string;
   size: string;
   quantity: number;

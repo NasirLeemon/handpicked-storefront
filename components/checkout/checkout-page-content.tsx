@@ -1,6 +1,5 @@
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { CheckoutOrderSummary } from "@/components/checkout/checkout-order-summary";
-import { CheckoutPageHeader } from "@/components/checkout/checkout-page-header";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutPageContentProps = {
@@ -13,11 +12,24 @@ export function CheckoutPageContent({
   clearCartOnSubmit = false,
 }: CheckoutPageContentProps) {
   return (
-    <div className="min-h-screen bg-ivory px-4 py-12 text-deep-brown sm:px-6 lg:px-8 lg:py-16">
+    <div className="min-h-screen bg-ivory px-4 py-6 text-deep-brown sm:px-6 sm:py-12 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <CheckoutPageHeader />
+        <div className="mb-5">
+          <p className="text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase sm:text-xs">
+            Order Request
+          </p>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_390px]">
+          <h1 className="mt-2 font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown sm:text-6xl">
+            Checkout
+          </h1>
+
+          <p className="mt-2 max-w-xl text-sm leading-6 text-soft-brown sm:text-base sm:leading-7">
+            Submit your details. We’ll confirm availability, delivery, and
+            payment before dispatch.
+          </p>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-[1fr_390px] lg:gap-8">
           <CheckoutForm items={items} clearCartOnSubmit={clearCartOnSubmit} />
           <CheckoutOrderSummary items={items} />
         </div>

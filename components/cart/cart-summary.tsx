@@ -15,16 +15,18 @@ export function CartSummary({ items }: CartSummaryProps) {
   const subtotal = getCartSubtotal(items);
 
   return (
-    <aside className="rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm lg:sticky lg:top-32">
-      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-muted-gold/30 bg-light-sand text-muted-gold">
-        <PackageCheck className="h-5 w-5" strokeWidth={1.7} />
+    <aside className="rounded-[1.5rem] border border-warm-border bg-soft-white p-5 shadow-sm lg:sticky lg:top-32 lg:p-6">
+      <div className="mb-5 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-muted-gold/30 bg-light-sand text-muted-gold">
+          <PackageCheck className="h-4 w-4" strokeWidth={1.7} />
+        </div>
+
+        <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+          Order Summary
+        </p>
       </div>
 
-      <p className="mt-5 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-        Order Summary
-      </p>
-
-      <div className="mt-6 space-y-4 border-b border-warm-border pb-5">
+      <div className="space-y-3 border-b border-warm-border pb-4">
         <div className="flex items-center justify-between text-sm">
           <span className="text-soft-brown">Subtotal</span>
           <span className="font-medium text-deep-brown">
@@ -33,37 +35,33 @@ export function CartSummary({ items }: CartSummaryProps) {
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="text-soft-brown">Delivery charge</span>
+          <span className="text-soft-brown">Delivery</span>
           <span className="text-deep-brown">To be confirmed</span>
         </div>
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
-        <span className="text-2xl font-semibold text-deep-brown">
-          Total
-        </span>
+      <div className="mt-4 flex items-center justify-between">
+        <span className="text-2xl font-semibold text-deep-brown">Total</span>
         <span className="text-2xl font-semibold text-deep-brown">
           ৳ {subtotal.toLocaleString()}+
         </span>
       </div>
 
-      <div className="mt-5 rounded-[1.25rem] border border-muted-gold/30 bg-light-sand p-4">
-        <p className="text-sm leading-7 text-soft-brown">
-          Final delivery charge and product availability will be confirmed after
-          your order request.
-        </p>
-      </div>
+      <p className="mt-3 rounded-[1rem] border border-muted-gold/30 bg-light-sand p-3 text-xs leading-5 text-soft-brown">
+        Delivery charge and availability will be confirmed after your order
+        request.
+      </p>
 
       <Link
         href="/checkout"
-        className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-sm font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
+        className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] sm:h-12 sm:text-sm"
       >
         Continue to Checkout
       </Link>
 
       <Link
         href="/shop"
-        className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-full border border-warm-border bg-soft-white px-6 text-sm font-semibold tracking-[0.18em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold"
+        className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full border border-warm-border bg-soft-white px-6 text-xs font-semibold tracking-[0.16em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold sm:h-12 sm:text-sm"
       >
         Continue Shopping
       </Link>
@@ -71,7 +69,7 @@ export function CartSummary({ items }: CartSummaryProps) {
       <button
         type="button"
         onClick={clearCart}
-        className="mt-5 inline-flex w-full items-center justify-center gap-2 text-center text-xs font-semibold tracking-[0.18em] text-taupe uppercase transition hover:text-deep-brown"
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 text-center text-xs font-semibold tracking-[0.16em] text-taupe uppercase transition hover:text-deep-brown"
       >
         <Trash2 className="h-4 w-4" strokeWidth={1.7} />
         Clear Cart

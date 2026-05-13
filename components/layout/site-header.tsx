@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { CartLink } from "@/components/cart/cart-link";
+import { ShoppingBag } from "lucide-react";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { useCart } from "@/components/cart/cart-provider";
 
 const navItems = [
   {
@@ -18,23 +21,26 @@ const navItems = [
 ];
 
 export function SiteHeader() {
+  const { totalItems } = useCart();
+
   return (
-    <header className="sticky top-0 z-50 border-b border-warm-border bg-ivory/90 backdrop-blur-md">
+    <header className="sticky top-0 z-[9999] border-b border-warm-border bg-ivory/95 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex w-24 justify-start md:hidden">
+        <div className="flex flex-1 items-center md:hidden">
           <MobileMenu />
         </div>
 
         <Link
           href="/"
-          className="flex items-center justify-center md:justify-start"
+          className="flex flex-1 justify-center md:justify-start"
+          aria-label="Go to homepage"
         >
-          <span className="font-serif-brand text-3xl font-semibold tracking-wide text-deep-brown sm:text-4xl">
+          <span className="font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown sm:text-5xl md:text-4xl">
             Handpicked
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-10 md:flex">
+        <nav className="hidden flex-1 items-center justify-center gap-10 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -46,7 +52,23 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <CartLink />
+        <div className="flex flex-1 justify-end">
+          <Link
+            href="/cart"
+            className="relative flex h-10 w-10 items-center justify-center text-deep-brown transition hover:text-muted-gold md:w-auto md:gap-2 md:text-sm md:font-medium md:tracking-[0.16em] md:uppercase"
+            aria-label={`Cart with ${totalItems} item${totalItems === 1 ? "" : "s"}`}
+          >
+            <ShoppingBag className="h-6 w-6 md:h-5 md:w-5" strokeWidth={1.8} />
+
+            <span className="hidden md:inline">Cart</span>
+
+            {totalItems > 0 ? (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#4A3327] px-1.5 text-[11px] font-semibold leading-none text-[#FFFDF9] md:-right-3 md:-top-2">
+                {totalItems}
+              </span>
+            ) : null}
+          </Link>
+        </div>
       </div>
     </header>
   );

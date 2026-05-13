@@ -6,7 +6,7 @@ export function ShopProductSection() {
   const products = getAllProducts();
 
   return (
-    <section className="bg-ivory px-4 pb-20 sm:px-6 lg:px-8">
+    <section className="bg-ivory px-4 pb-12 sm:px-6 sm:pb-20 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <Suspense fallback={<ShopProductsLoading />}>
           <ShopProductsClient products={products} />
