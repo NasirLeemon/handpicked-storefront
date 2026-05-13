@@ -137,3 +137,11 @@ select {
 .font-serif-brand {
   font-family: var(--font-cormorant), Georgia, "Times New Roman", serif;
 }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #B9955D;
+  outline-offset: 4px;
+}

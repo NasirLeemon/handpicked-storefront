@@ -1,6 +1,6 @@
 "use client";
 
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MobileFilterDrawer } from "@/components/shop/mobile-filter-drawer";
@@ -45,7 +45,9 @@ function getInitialCategory(categoryParam: string | null) {
 }
 
 function getSortLabel(value: string) {
-  return sortOptions.find((option) => option.value === value)?.label ?? "Featured";
+  return (
+    sortOptions.find((option) => option.value === value)?.label ?? "Featured"
+  );
 }
 
 export function ShopProductsClient({ products }: ShopProductsClientProps) {
@@ -132,7 +134,9 @@ export function ShopProductsClient({ products }: ShopProductsClientProps) {
             className="inline-flex items-center gap-2 text-sm text-deep-brown"
           >
             <span className="font-semibold">Sort:</span>
-            <span className="border-b border-muted-gold pb-0.5 text-soft-brown">{getSortLabel(sort)}⌄</span>
+            <span className="border-b border-muted-gold pb-0.5 text-soft-brown">
+              {getSortLabel(sort)}⌄
+            </span>
           </button>
 
           {sortOpen ? (
@@ -152,7 +156,9 @@ export function ShopProductsClient({ products }: ShopProductsClientProps) {
                     }`}
                   >
                     {option.label}
-                    {isSelected ? <span className="text-muted-gold">✓</span> : null}
+                    {isSelected ? (
+                      <span className="text-muted-gold">✓</span>
+                    ) : null}
                   </button>
                 );
               })}
@@ -165,8 +171,8 @@ export function ShopProductsClient({ products }: ShopProductsClientProps) {
         </p>
       </div>
 
-      <div className="mb-8 hidden rounded-[1.75rem] border border-warm-border bg-soft-white p-5 md:block">
-        <div className="grid gap-4 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="mb-8 hidden rounded-[1.75rem] border border-warm-border bg-soft-white px-5 py-4 md:block">
+        <div className="grid items-end gap-4 md:grid-cols-[1.45fr_1fr_1fr_1fr]">
           <ShopSearchInput value={search} onChange={setSearch} />
 
           <ShopFilterSelect
