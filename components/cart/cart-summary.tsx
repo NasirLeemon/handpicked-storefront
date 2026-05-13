@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PackageCheck, Trash2 } from "lucide-react";
 import { useCart } from "@/components/cart/cart-provider";
 import { getCartSubtotal } from "@/lib/cart";
 import type { CartItem } from "@/types/cart";
@@ -14,8 +15,12 @@ export function CartSummary({ items }: CartSummaryProps) {
   const subtotal = getCartSubtotal(items);
 
   return (
-    <aside className="rounded-[1.75rem] border border-warm-border bg-soft-white p-6 lg:sticky lg:top-32">
-      <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+    <aside className="rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm lg:sticky lg:top-32">
+      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-muted-gold/30 bg-light-sand text-muted-gold">
+        <PackageCheck className="h-5 w-5" strokeWidth={1.7} />
+      </div>
+
+      <p className="mt-5 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
         Order Summary
       </p>
 
@@ -34,18 +39,20 @@ export function CartSummary({ items }: CartSummaryProps) {
       </div>
 
       <div className="mt-5 flex items-center justify-between">
-        <span className="font-serif-brand text-2xl font-semibold text-deep-brown">
+        <span className="text-2xl font-semibold text-deep-brown">
           Total
         </span>
-        <span className="font-serif-brand text-2xl font-semibold text-deep-brown">
+        <span className="text-2xl font-semibold text-deep-brown">
           ৳ {subtotal.toLocaleString()}+
         </span>
       </div>
 
-      <p className="mt-4 text-sm leading-7 text-soft-brown">
-        Final delivery charge and availability will be confirmed after your
-        order request.
-      </p>
+      <div className="mt-5 rounded-[1.25rem] border border-muted-gold/30 bg-light-sand p-4">
+        <p className="text-sm leading-7 text-soft-brown">
+          Final delivery charge and product availability will be confirmed after
+          your order request.
+        </p>
+      </div>
 
       <Link
         href="/checkout"
@@ -64,8 +71,9 @@ export function CartSummary({ items }: CartSummaryProps) {
       <button
         type="button"
         onClick={clearCart}
-        className="mt-5 w-full text-center text-xs font-semibold tracking-[0.18em] text-taupe uppercase transition hover:text-deep-brown"
+        className="mt-5 inline-flex w-full items-center justify-center gap-2 text-center text-xs font-semibold tracking-[0.18em] text-taupe uppercase transition hover:text-deep-brown"
       >
+        <Trash2 className="h-4 w-4" strokeWidth={1.7} />
         Clear Cart
       </button>
     </aside>

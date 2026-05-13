@@ -1,3 +1,4 @@
+import { PackageCheck } from "lucide-react";
 import { getCartSubtotal } from "@/lib/cart";
 import type { CartItem } from "@/types/cart";
 
@@ -9,8 +10,12 @@ export function CheckoutOrderSummary({ items }: CheckoutOrderSummaryProps) {
   const subtotal = getCartSubtotal(items);
 
   return (
-    <aside className="rounded-[1.75rem] border border-warm-border bg-soft-white p-6 lg:sticky lg:top-32">
-      <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+    <aside className="rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm lg:sticky lg:top-32">
+      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-muted-gold/30 bg-light-sand text-muted-gold">
+        <PackageCheck className="h-5 w-5" strokeWidth={1.7} />
+      </div>
+
+      <p className="mt-5 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
         Order Summary
       </p>
 
@@ -61,18 +66,20 @@ export function CheckoutOrderSummary({ items }: CheckoutOrderSummaryProps) {
           </div>
 
           <div className="mt-5 flex items-center justify-between">
-            <span className="font-serif-brand text-2xl font-semibold text-deep-brown">
+            <span className="text-2xl font-semibold text-deep-brown">
               Total
             </span>
-            <span className="font-serif-brand text-2xl font-semibold text-deep-brown">
+            <span className="text-2xl font-semibold text-deep-brown">
               ৳ {subtotal.toLocaleString()}+
             </span>
           </div>
 
-          <p className="mt-4 text-sm leading-7 text-soft-brown">
-            Final delivery charge and product availability will be confirmed by
-            our team before dispatch.
-          </p>
+          <div className="mt-5 rounded-[1.25rem] border border-muted-gold/30 bg-light-sand p-4">
+            <p className="text-sm leading-7 text-soft-brown">
+              Final delivery charge and product availability will be confirmed
+              by our team before dispatch.
+            </p>
+          </div>
         </>
       )}
     </aside>
