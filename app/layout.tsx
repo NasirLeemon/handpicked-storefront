@@ -46,6 +46,11 @@ export const metadata: Metadata = {
     },
   ],
   creator: "Handpicked",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     title: "Handpicked | Premium Boutique Clothing",
     description:
