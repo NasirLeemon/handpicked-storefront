@@ -24,8 +24,8 @@ export function ProductImage({
       alt={alt}
       fill
       priority={priority}
-      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-      className={`object-cover transition duration-500 group-hover:scale-105 ${className}`}
+      sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+      className={`object-cover object-top transition duration-700 group-hover:scale-105 ${className}`}
     />
   );
 }

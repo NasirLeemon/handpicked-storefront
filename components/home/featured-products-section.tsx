@@ -1,18 +1,18 @@
 import { BoutiqueButton } from "@/components/common/boutique-button";
 import { SectionHeading } from "@/components/home/section-heading";
 import { ProductGrid } from "@/components/product/product-grid";
-import { getNewArrivals } from "@/lib/products";
+import { getFeaturedProducts } from "@/lib/products";
 
-export function NewArrivalsSection() {
-  const products = getNewArrivals().slice(0, 8);
+export function FeaturedProductsSection() {
+  const products = getFeaturedProducts().slice(0, 4);
 
   return (
-    <section className="bg-ivory px-4 py-20 sm:px-6 lg:px-8">
+    <section className="bg-soft-white px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          eyebrow="Freshly Selected"
-          title="New Arrivals"
-          description="Freshly selected pieces for your wardrobe, chosen with soft details, graceful shapes, and everyday elegance."
+          eyebrow="Handpicked Edit"
+          title="Featured Picks"
+          description="A refined selection of boutique pieces chosen for their color, detail, and graceful everyday styling."
         />
 
         <div className="mt-12">
@@ -21,7 +21,7 @@ export function NewArrivalsSection() {
 
         <div className="mt-12 flex justify-center">
           <BoutiqueButton href="/shop" variant="secondary">
-            View All Products
+            Shop the Collection
           </BoutiqueButton>
         </div>
       </div>
