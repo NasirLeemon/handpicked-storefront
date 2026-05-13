@@ -7,7 +7,7 @@ export function NewArrivalsSection() {
   const products = getNewArrivals().slice(0, 8);
 
   return (
-    <section className="bg-ivory px-4 py-20 sm:px-6 lg:px-8">
+    <section className="bg-ivory px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Freshly Selected"

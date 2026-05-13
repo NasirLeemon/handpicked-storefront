@@ -14,7 +14,7 @@ export function ShopByCollectionSection() {
   );
 
   return (
-    <section className="bg-soft-white px-4 py-20 sm:px-6 lg:px-8">
+    <section className="bg-soft-white px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Curated Categories"
@@ -22,8 +22,8 @@ export function ShopByCollectionSection() {
           description="Explore handpicked styles, accessories, and beauty pieces selected for soft elegance and refined everyday dressing."
         />
 
-        <div className="mt-12 grid items-stretch gap-5 lg:grid-cols-[1.05fr_1fr]">
-          <div className="h-full">
+        <div className="-mx-4 mt-10 flex snap-x gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:mt-12 lg:grid lg:items-stretch lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 lg:grid-cols-[1.05fr_1fr]">
+          <div className="min-w-[82vw] snap-start sm:min-w-[58vw] lg:min-w-0">
             <CategoryCard
               title={featuredCategory.title}
               description={featuredCategory.description}
@@ -34,21 +34,29 @@ export function ShopByCollectionSection() {
             />
           </div>
 
-          <div className="grid h-full gap-5 sm:grid-cols-2 lg:grid-rows-2">
+          <div className="contents lg:grid lg:h-full lg:grid-cols-2 lg:grid-rows-2 lg:gap-5">
             {secondaryCategories.map((category) => (
-              <CategoryCard
+              <div
                 key={category.id}
-                title={category.title}
-                description={category.description}
-                href={category.href}
-                image={category.image}
-                label={category.label}
-              />
+                className="min-w-[82vw] snap-start sm:min-w-[58vw] lg:min-w-0"
+              >
+                <CategoryCard
+                  title={category.title}
+                  description={category.description}
+                  href={category.href}
+                  image={category.image}
+                  label={category.label}
+                />
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="mt-12 flex justify-center">
+        <p className="mt-2 text-center text-xs font-medium tracking-[0.18em] text-taupe uppercase lg:hidden">
+          Swipe to explore collections
+        </p>
+
+        <div className="mt-10 flex justify-center lg:mt-12">
           <BoutiqueButton href="/shop" variant="secondary">
             View All Collections
           </BoutiqueButton>

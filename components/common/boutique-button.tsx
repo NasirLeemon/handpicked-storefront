@@ -20,7 +20,7 @@ export function BoutiqueButton({
   children,
   variant = "primary",
 }: BoutiqueButtonProps) {
-  const className = `inline-flex h-12 items-center justify-center rounded-full px-8 text-sm font-semibold tracking-[0.18em] uppercase transition ${buttonStyles[variant]}`;
+  const className = `inline-flex h-11 items-center justify-center rounded-full px-5 text-xs font-semibold tracking-[0.16em] uppercase transition sm:h-12 sm:px-8 sm:text-sm sm:tracking-[0.18em] ${buttonStyles[variant]}`;
   const isExternal = href.startsWith("http");
 
   if (isExternal) {

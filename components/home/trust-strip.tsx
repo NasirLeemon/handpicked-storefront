@@ -27,15 +27,15 @@ const trustItems = [
 
 export function TrustStrip() {
   return (
-    <section className="border-y border-warm-border bg-soft-white">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <section className="hidden border-y border-warm-border bg-soft-white md:block">
+      <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
         <div className="grid gap-5 md:grid-cols-3">
           {trustItems.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <Reveal key={item.title} delay={index * 0.08}>
-                <div className="group flex min-h-[230px] flex-col justify-between rounded-[1.75rem] border border-warm-border bg-ivory p-6 transition duration-500 hover:-translate-y-1 hover:border-muted-gold hover:shadow-[0_18px_60px_rgba(47,33,24,0.08)] sm:p-7">
+                <div className="group flex min-h-[230px] flex-col justify-between rounded-[1.75rem] border border-warm-border bg-ivory p-7 transition duration-500 hover:-translate-y-1 hover:border-muted-gold hover:shadow-[0_18px_60px_rgba(47,33,24,0.08)]">
                   <div>
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
@@ -52,7 +52,7 @@ export function TrustStrip() {
                     </h2>
                   </div>
 
-                  <p className="mt-5 max-w-sm text-sm leading-7 text-soft-brown">
+                  <p className="mt-6 text-sm leading-7 text-soft-brown">
                     {item.description}
                   </p>
                 </div>

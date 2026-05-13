@@ -72,7 +72,7 @@ export function HomeHero() {
               delay: 0.5,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mt-9 flex flex-col gap-4 sm:flex-row"
+            className="mt-9 flex flex-row flex-wrap gap-3 sm:gap-4"
           >
             <BoutiqueButton href="/shop">Shop New Arrivals</BoutiqueButton>
 

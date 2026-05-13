@@ -2,47 +2,25 @@ import { BoutiqueButton } from "@/components/common/boutique-button";
 
 export function BrandStorySection() {
   return (
-    <section className="bg-soft-white px-4 py-20 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
-        <div className="overflow-hidden rounded-[2rem] border border-warm-border bg-light-sand">
-          <div className="flex aspect-[4/5] items-center justify-center px-8 text-center">
-            <div>
-              <p className="font-serif-brand text-4xl font-semibold text-deep-brown">
-                Brand Image
-              </p>
-              <p className="mt-3 text-sm leading-7 text-soft-brown">
-                Use a soft boutique lifestyle or product styling photo here.
-              </p>
-            </div>
-          </div>
-        </div>
+    <section className="bg-ivory px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl rounded-[2rem] border border-warm-border bg-soft-white px-6 py-10 text-center shadow-sm sm:px-10">
+        <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-muted-gold uppercase">
+          About Handpicked
+        </p>
 
-        <div>
-          <p className="mb-4 text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
+        <h2 className="font-serif-brand text-4xl font-medium leading-[0.98] tracking-[-0.035em] text-deep-brown sm:text-5xl">
+          Curated pieces for graceful everyday style
+        </h2>
+
+        <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-soft-brown sm:text-base">
+          Handpicked brings together clothing, accessories, and beauty pieces
+          selected with care, comfort, and soft elegance in mind.
+        </p>
+
+        <div className="mt-7 flex justify-center">
+          <BoutiqueButton href="/about" variant="secondary">
             Our Story
-          </p>
-
-          <h2 className="font-serif-brand text-4xl font-semibold leading-tight tracking-tight text-deep-brown sm:text-5xl">
-            Thoughtfully Chosen, Beautifully Worn
-          </h2>
-
-          <p className="mt-6 max-w-xl text-base leading-8 text-soft-brown">
-            Handpicked is built around the joy of finding clothing that
-            feels personal, elegant, and easy to love. Each piece is selected
-            with attention to style, comfort, and everyday beauty.
-          </p>
-
-          <p className="mt-5 max-w-xl text-base leading-8 text-soft-brown">
-            Our collection is designed for women who love graceful silhouettes,
-            soft colors, refined details, and clothing that feels special
-            without being excessive.
-          </p>
-
-          <div className="mt-8">
-            <BoutiqueButton href="/about" variant="secondary">
-              Our Story
-            </BoutiqueButton>
-          </div>
+          </BoutiqueButton>
         </div>
       </div>
     </section>

@@ -1,6 +1,5 @@
 import { BrandStorySection } from "@/components/home/brand-story-section";
 import { DeliveryNoteSection } from "@/components/home/delivery-note-section";
-import { FeaturedProductsSection } from "@/components/home/featured-products-section";
 import { HomeHero } from "@/components/home/home-hero";
 import { HowToOrderSection } from "@/components/home/how-to-order-section";
 import { MessengerCtaSection } from "@/components/home/messenger-cta-section";
@@ -16,7 +15,6 @@ export function HomePageContent() {
       <TrustStrip />
       <NewArrivalsSection />
       <BrandStorySection />
-      <FeaturedProductsSection />
       <HowToOrderSection />
       <DeliveryNoteSection />
       <MessengerCtaSection />

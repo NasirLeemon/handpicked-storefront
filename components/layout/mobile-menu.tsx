@@ -27,18 +27,17 @@ export function MobileMenu() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 text-sm font-medium tracking-[0.16em] text-deep-brown uppercase"
+        className="flex h-10 w-10 items-center justify-center rounded-full text-deep-brown transition hover:bg-light-sand"
         aria-label="Open menu"
       >
-        <Menu className="h-5 w-5" />
-        Menu
+        <Menu className="h-6 w-6" />
       </button>
 
       {isOpen ? (
         <div className="fixed inset-0 z-[100] bg-deep-brown/30 backdrop-blur-sm">
           <div className="ml-auto flex h-full w-[84%] max-w-sm flex-col bg-ivory px-6 py-6 shadow-xl">
             <div className="flex items-center justify-between">
-              <p className="font-serif-brand text-2xl font-semibold text-deep-brown">
+              <p className="font-serif-brand text-3xl font-medium text-deep-brown">
                 Handpicked
               </p>
 

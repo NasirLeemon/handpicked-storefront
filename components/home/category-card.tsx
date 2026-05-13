@@ -25,8 +25,8 @@ export function CategoryCard({
         <div
           className={
             featured
-              ? "relative h-full min-h-[620px] overflow-hidden"
-              : "relative h-full min-h-[300px] overflow-hidden"
+              ? "relative h-full min-h-[390px] overflow-hidden lg:min-h-[620px]"
+              : "relative h-full min-h-[390px] overflow-hidden lg:min-h-[300px]"
           }
         >
           <Image
@@ -35,8 +35,8 @@ export function CategoryCard({
             fill
             sizes={
               featured
-                ? "(min-width: 1024px) 50vw, 100vw"
-                : "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                ? "(min-width: 1024px) 50vw, 82vw"
+                : "(min-width: 1024px) 25vw, 82vw"
             }
             className="object-cover object-top transition duration-700 group-hover:scale-105"
           />
@@ -53,12 +53,12 @@ export function CategoryCard({
             <ArrowUpRight className="h-4 w-4" strokeWidth={1.7} />
           </div>
 
-          <div className={featured ? "absolute inset-x-0 bottom-0 p-7" : "absolute inset-x-0 bottom-0 p-5"}>
+          <div className={featured ? "absolute inset-x-0 bottom-0 p-5 lg:p-7" : "absolute inset-x-0 bottom-0 p-5"}>
             <div className="max-w-sm">
               <h3
                 className={
                   featured
-                    ? "font-serif-brand text-5xl font-medium leading-none tracking-[-0.03em] text-[#FFFDF9]"
+                    ? "font-serif-brand text-4xl font-medium leading-none tracking-[-0.03em] text-[#FFFDF9] lg:text-5xl"
                     : "font-serif-brand text-3xl font-medium leading-none tracking-[-0.02em] text-[#FFFDF9]"
                 }
               >
@@ -68,14 +68,14 @@ export function CategoryCard({
               <p
                 className={
                   featured
-                    ? "mt-4 max-w-md text-sm leading-7 text-[#FFFDF9]/84"
+                    ? "mt-3 max-w-md text-sm leading-6 text-[#FFFDF9]/84 lg:mt-4 lg:leading-7"
                     : "mt-3 line-clamp-2 text-sm leading-6 text-[#FFFDF9]/84"
                 }
               >
                 {description}
               </p>
 
-              <div className="mt-5 flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] text-soft-gold uppercase">
+              <div className="mt-4 flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] text-soft-gold uppercase lg:mt-5">
                 <span>Explore</span>
                 <span className="h-px w-8 bg-soft-gold transition duration-500 group-hover:w-12" />
               </div>
