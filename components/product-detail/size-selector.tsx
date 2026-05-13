@@ -10,8 +10,13 @@ export function SizeSelector({
   onSelectSize,
 }: SizeSelectorProps) {
   return (
-    <div className="mt-6">
-      <p className="mb-3 text-sm font-medium text-deep-brown">Size</p>
+    <div className="mt-7">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-sm font-medium text-deep-brown">Select Size</p>
+        <p className="text-xs font-medium tracking-[0.16em] text-muted-gold uppercase">
+          Required
+        </p>
+      </div>
 
       <div className="flex flex-wrap gap-3">
         {sizes.map((size) => {
