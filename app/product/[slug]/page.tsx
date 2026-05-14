@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetailPageContent } from "@/components/product-detail/product-detail-page-content";
 import {
-  getAllProductsFromDatabase,
-  getProductBySlugFromDatabase,
-} from "@/lib/supabase/products";
+  getInventoryProductBySlug,
+  getInventoryProductsForStorefront,
+} from "@/lib/supabase/inventory-products";
 
 type ProductPageProps = {
   params: Promise<{
@@ -13,7 +13,7 @@ type ProductPageProps = {
 };
 
 export async function generateStaticParams() {
-  const products = await getAllProductsFromDatabase();
+  const products = await getInventoryProductsForStorefront();
 
   return products.map((product) => ({
     slug: product.slug,
@@ -24,7 +24,7 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlugFromDatabase(slug);
+  const product = await getInventoryProductBySlug(slug);
 
   if (!product) {
     return {
@@ -52,7 +52,7 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getProductBySlugFromDatabase(slug);
+  const product = await getInventoryProductBySlug(slug);
 
   if (!product) {
     notFound();
