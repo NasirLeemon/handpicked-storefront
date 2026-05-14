@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutFormProps = {
@@ -8,16 +9,71 @@ type CheckoutFormProps = {
 };
 
 export function CheckoutForm({ items }: CheckoutFormProps) {
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [status, setStatus] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (items.length === 0) {
+      setIsSuccess(false);
+      setStatus("Add at least one product before submitting your order.");
       return;
     }
 
-    alert(
-      "Order request submitted. Our team will contact you to confirm availability, delivery charge, and payment details."
-    );
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const customerName = String(formData.get("name") || "");
+    const phone = String(formData.get("phone") || "");
+    const address = String(formData.get("address") || "");
+    const note = String(formData.get("note") || "");
+
+    setIsSubmitting(true);
+    setIsSuccess(false);
+    setStatus("");
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerName,
+          phone,
+          address,
+          note,
+          items,
+        }),
+      });
+
+      const responseText = await response.text();
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setStatus(
+          "Order request submitted successfully. Our team will contact you to confirm availability, delivery charge, and payment details."
+        );
+        form.reset();
+        return;
+      }
+
+      try {
+        const result = responseText ? JSON.parse(responseText) : {};
+        setStatus(result.error || "Failed to submit order request.");
+      } catch {
+        setStatus("Failed to submit order request. Please try again.");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unknown network error.";
+
+      setStatus(`Failed to submit order request: ${message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -54,12 +110,24 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         />
       </div>
 
+      {status ? (
+        <p
+          className={`mt-5 rounded-[1rem] border p-3 text-sm leading-6 ${
+            isSuccess
+              ? "border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]"
+              : "border-muted-gold/30 bg-light-sand text-soft-brown"
+          }`}
+        >
+          {status}
+        </p>
+      ) : null}
+
       <button
         type="submit"
-        disabled={items.length === 0}
+        disabled={items.length === 0 || isSubmitting}
         className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe sm:h-12 sm:text-sm"
       >
-        Submit Order Request
+        {isSubmitting ? "Submitting..." : "Submit Order Request"}
       </button>
 
       {items.length === 0 ? (
@@ -68,7 +136,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         </p>
       ) : (
         <p className="mt-3 text-xs leading-5 text-soft-brown">
-          Your selected products will remain visible in the order summary.
+          Your order will be saved and reviewed by our team.
         </p>
       )}
     </form>
