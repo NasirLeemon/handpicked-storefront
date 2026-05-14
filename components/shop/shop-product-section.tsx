@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { ShopProductsClient } from "@/components/shop/shop-products-client";
-import { getAllProducts } from "@/lib/products";
+import { getAllProductsFromDatabase } from "@/lib/supabase/products";
 
-export function ShopProductSection() {
-  const products = getAllProducts();
+export async function ShopProductSection() {
+  const products = await getAllProductsFromDatabase();
 
   return (
     <section className="bg-ivory px-4 pb-12 sm:px-6 sm:pb-20 lg:px-8">

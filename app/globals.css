@@ -145,3 +145,32 @@ textarea:focus-visible {
   outline: 2px solid #B9955D;
   outline-offset: 4px;
 }
+
+.admin-input {
+  height: 44px;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--warm-border);
+  background: var(--ivory);
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: var(--deep-brown);
+  outline: none;
+}
+
+.admin-textarea {
+  width: 100%;
+  resize: none;
+  border-radius: 1rem;
+  border: 1px solid var(--warm-border);
+  background: var(--ivory);
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  color: var(--deep-brown);
+  outline: none;
+}
+
+.admin-input:focus,
+.admin-textarea:focus {
+  border-color: var(--muted-gold);
+}

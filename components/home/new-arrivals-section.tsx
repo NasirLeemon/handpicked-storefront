@@ -1,10 +1,10 @@
 import { BoutiqueButton } from "@/components/common/boutique-button";
 import { SectionHeading } from "@/components/home/section-heading";
 import { ProductGrid } from "@/components/product/product-grid";
-import { getNewArrivals } from "@/lib/products";
+import { getNewArrivalsFromDatabase } from "@/lib/supabase/products";
 
-export function NewArrivalsSection() {
-  const products = getNewArrivals().slice(0, 8);
+export async function NewArrivalsSection() {
+  const products = (await getNewArrivalsFromDatabase()).slice(0, 8);
 
   return (
     <section className="bg-ivory px-4 py-14 sm:px-6 lg:px-8">

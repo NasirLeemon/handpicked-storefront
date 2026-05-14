@@ -1,18 +1,17 @@
 import { SectionHeading } from "@/components/home/section-heading";
 import { ProductGrid } from "@/components/product/product-grid";
-import { getRelatedProducts } from "@/lib/products";
+import { getRelatedProductsFromDatabase } from "@/lib/supabase/products";
 import type { Product } from "@/types/product";
 
 type RelatedProductsSectionProps = {
   product: Product;
 };
 
-export function RelatedProductsSection({
+export async function RelatedProductsSection({
   product,
 }: RelatedProductsSectionProps) {
-  const relatedProducts = getRelatedProducts(
-    product.category,
-    product.slug
+  const relatedProducts = (
+    await getRelatedProductsFromDatabase(product.category, product.slug)
   ).slice(0, 4);
 
   if (relatedProducts.length === 0) {

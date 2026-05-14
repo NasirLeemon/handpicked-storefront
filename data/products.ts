@@ -11,7 +11,7 @@ export const products: Product[] = [
       "A graceful blue printed co-ord set designed for effortless everyday elegance and comfort.",
     details:
       "A polished boutique piece with a relaxed silhouette, soft print detailing, and easy styling for casual outings.",
-    images: ["/images/products/blue coords.png"],
+    images: ["https://res.cloudinary.com/dbmqkkesn/image/upload/v1778692734/red-top_si8fwy.jpg"],
     color: "Blue",
     sizes: ["S", "M", "L"],
     availability: "available",
