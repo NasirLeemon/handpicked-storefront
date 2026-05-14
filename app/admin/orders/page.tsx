@@ -99,7 +99,7 @@ export default async function AdminOrdersPage() {
                     </p>
 
                     <div className="mt-3">
-                      <OrderActions orderId={order.id} />
+                      <OrderActions orderId={order.id} currentStatus={order.status} />
                     </div>
                   </div>
                 </div>

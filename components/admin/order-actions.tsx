@@ -3,13 +3,54 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const statuses = ["new", "contacted", "confirmed", "delivered", "cancelled"];
+
 type OrderActionsProps = {
   orderId: string;
+  currentStatus: string;
 };
 
-export function OrderActions({ orderId }: OrderActionsProps) {
+export function OrderActions({ orderId, currentStatus }: OrderActionsProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  async function updateStatus(status: string) {
+    const adminPassword = window.prompt("Enter admin password to update order:");
+
+    if (!adminPassword) {
+      return;
+    }
+
+    setIsUpdating(true);
+
+    try {
+      const response = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          adminPassword,
+          orderId,
+          status,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.error || "Failed to update order.");
+        return;
+      }
+
+      router.refresh();
+    } catch {
+      alert("Failed to update order.");
+    } finally {
+      setIsUpdating(false);
+    }
+  }
 
   async function deleteOrder() {
     const adminPassword = window.prompt("Enter admin password to delete order:");
@@ -53,14 +94,29 @@ export function OrderActions({ orderId }: OrderActionsProps) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={deleteOrder}
-      disabled={isDeleting}
-      className="rounded-full border border-warm-border bg-soft-white px-4 py-2 text-xs font-semibold tracking-[0.14em] text-taupe uppercase transition hover:border-muted-gold hover:text-deep-brown disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {isDeleting ? "Deleting..." : "Delete"}
-    </button>
+    <div className="flex flex-col gap-2 sm:items-end">
+      <select
+        value={currentStatus}
+        onChange={(event) => updateStatus(event.target.value)}
+        disabled={isUpdating}
+        className="h-9 rounded-full border border-warm-border bg-soft-white px-3 text-xs font-medium text-deep-brown outline-none transition focus:border-muted-gold disabled:opacity-60"
+      >
+        {statuses.map((status) => (
+          <option key={status} value={status}>
+            {status}
+          </option>
+        ))}
+      </select>
+
+      <button
+        type="button"
+        onClick={deleteOrder}
+        disabled={isDeleting}
+        className="rounded-full border border-warm-border bg-soft-white px-4 py-2 text-xs font-semibold tracking-[0.14em] text-taupe uppercase transition hover:border-muted-gold hover:text-deep-brown disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {isDeleting ? "Deleting..." : "Delete"}
+      </button>
+    </div>
   );
 }
 
