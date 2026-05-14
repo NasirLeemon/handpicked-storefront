@@ -17,7 +17,7 @@ export function CheckoutPageClient({ urlItems }: CheckoutPageClientProps) {
   return (
     <CheckoutPageContent
       items={items}
-      clearCartOnSubmit={!isDirectOrder}
+      clearCartOnSubmit={false}
     />
   );
 }

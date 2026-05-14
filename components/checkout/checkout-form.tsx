@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useCart } from "@/components/cart/cart-provider";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutFormProps = {
@@ -9,13 +7,7 @@ type CheckoutFormProps = {
   clearCartOnSubmit?: boolean;
 };
 
-export function CheckoutForm({
-  items,
-  clearCartOnSubmit = false,
-}: CheckoutFormProps) {
-  const { clearCart } = useCart();
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
+export function CheckoutForm({ items }: CheckoutFormProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -23,29 +15,8 @@ export function CheckoutForm({
       return;
     }
 
-    setIsSubmitted(true);
-
-    if (clearCartOnSubmit) {
-      clearCart();
-    }
-  }
-
-  if (isSubmitted) {
-    return (
-      <div className="rounded-[1.5rem] border border-warm-border bg-soft-white p-5 shadow-sm">
-        <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-          Request Submitted
-        </p>
-
-        <h2 className="mt-3 font-serif-brand text-4xl font-medium text-deep-brown">
-          Thank you
-        </h2>
-
-        <p className="mt-3 text-sm leading-6 text-soft-brown">
-          Your order request has been received. Our team will contact you to
-          confirm availability, delivery charge, and payment details.
-        </p>
-      </div>
+    alert(
+      "Order request submitted. Our team will contact you to confirm availability, delivery charge, and payment details."
     );
   }
 
@@ -95,7 +66,11 @@ export function CheckoutForm({
         <p className="mt-3 text-xs leading-5 text-soft-brown">
           Add at least one product before submitting your order.
         </p>
-      ) : null}
+      ) : (
+        <p className="mt-3 text-xs leading-5 text-soft-brown">
+          Your selected products will remain visible in the order summary.
+        </p>
+      )}
     </form>
   );
 }
