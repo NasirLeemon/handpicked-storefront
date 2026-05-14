@@ -65,10 +65,10 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
       </div>
 
       <ProductActionButtons
+        product={product}
         isSoldOut={isSoldOut}
         selectedSize={selectedSize}
         quantity={quantity}
-        productSlug={product.slug}
       />
 
       <p className="mt-3 text-xs leading-5 text-soft-brown sm:mt-5 sm:text-sm sm:leading-6">

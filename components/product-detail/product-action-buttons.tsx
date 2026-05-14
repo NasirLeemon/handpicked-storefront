@@ -2,27 +2,26 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart/cart-provider";
-import { getProductBySlug } from "@/lib/products";
+import type { Product } from "@/types/product";
 
 type ProductActionButtonsProps = {
+  product: Product;
   isSoldOut: boolean;
   selectedSize: string;
   quantity: number;
-  productSlug: string;
 };
 
 export function ProductActionButtons({
+  product,
   isSoldOut,
   selectedSize,
   quantity,
-  productSlug,
 }: ProductActionButtonsProps) {
   const { addItem } = useCart();
-  const product = getProductBySlug(productSlug);
-  const canOrder = !isSoldOut && selectedSize && product;
+  const canOrder = !isSoldOut && Boolean(selectedSize);
 
   function handleAddToCart() {
-    if (!canOrder || !product) {
+    if (!canOrder) {
       return;
     }
 
@@ -33,7 +32,7 @@ export function ProductActionButtons({
     });
   }
 
-  const checkoutHref = `/checkout?product=${productSlug}&size=${encodeURIComponent(
+  const checkoutHref = `/checkout?product=${product.slug}&size=${encodeURIComponent(
     selectedSize
   )}&qty=${quantity}`;
 
