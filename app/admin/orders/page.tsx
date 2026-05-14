@@ -1,3 +1,4 @@
+import { ClearOrdersButton, OrderActions } from "@/components/admin/order-actions";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import type { CartItem } from "@/types/cart";
 
@@ -34,18 +35,22 @@ export default async function AdminOrdersPage() {
   return (
     <main className="min-h-screen bg-ivory px-4 py-8 text-deep-brown sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-6">
-          <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-            Admin
-          </p>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+              Admin
+            </p>
 
-          <h1 className="mt-2 font-serif-brand text-5xl font-medium tracking-[-0.04em] text-deep-brown">
-            Orders
-          </h1>
+            <h1 className="mt-2 font-serif-brand text-5xl font-medium tracking-[-0.04em] text-deep-brown">
+              Orders
+            </h1>
 
-          <p className="mt-3 text-sm leading-6 text-soft-brown">
-            Review customer order requests submitted from checkout.
-          </p>
+            <p className="mt-3 text-sm leading-6 text-soft-brown">
+              Review customer order requests submitted from checkout.
+            </p>
+          </div>
+
+          {orders.length > 0 ? <ClearOrdersButton /> : null}
         </div>
 
         {orders.length === 0 ? (
@@ -92,6 +97,10 @@ export default async function AdminOrdersPage() {
                     <p className="mt-2 text-xl font-semibold text-deep-brown">
                       ৳ {Number(order.subtotal || 0).toLocaleString()}+
                     </p>
+
+                    <div className="mt-3">
+                      <OrderActions orderId={order.id} />
+                    </div>
                   </div>
                 </div>
 
