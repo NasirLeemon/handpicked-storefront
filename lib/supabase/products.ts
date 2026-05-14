@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase/client";
 import { products as fallbackProducts } from "@/data/products";
 import type { Product, ProductAvailability } from "@/types/product";
 
@@ -18,17 +18,6 @@ type DatabaseProduct = {
   is_new_arrival: boolean;
   created_at: string;
 };
-
-function getSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !anonKey) {
-    return null;
-  }
-
-  return createClient(supabaseUrl, anonKey);
-}
 
 function mapProduct(product: DatabaseProduct): Product {
   return {
