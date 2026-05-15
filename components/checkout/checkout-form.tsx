@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useCart } from "@/components/cart/cart-provider";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutFormProps = {
@@ -9,6 +10,7 @@ type CheckoutFormProps = {
 };
 
 export function CheckoutForm({ items }: CheckoutFormProps) {
+  const { clearCart } = useCart();
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +20,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
     if (items.length === 0) {
       setIsSuccess(false);
-      setStatus("Add at least one product before submitting your order.");
+      setStatus("Add at least one product before submitting your order request.");
       return;
     }
 
@@ -54,9 +56,10 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
       if (response.ok) {
         setIsSuccess(true);
         setStatus(
-          "Order request submitted successfully. Our team will contact you to confirm availability, delivery charge, and payment details."
+          "Order request submitted successfully. Our team will review stock, delivery charge, and payment details before confirming your order."
         );
         form.reset();
+        clearCart();
         return;
       }
 
@@ -83,11 +86,12 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
     >
       <div className="mb-5">
         <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-          Customer Details
+          Order Request
         </p>
 
         <p className="mt-2 text-sm leading-6 text-soft-brown">
-          Fill in your contact and delivery information.
+          Fill in your contact and delivery information. We will review and
+          confirm availability before dispatch.
         </p>
       </div>
 
@@ -132,11 +136,12 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
       {items.length === 0 ? (
         <p className="mt-3 text-xs leading-5 text-soft-brown">
-          Add at least one product before submitting your order.
+          Add at least one product before submitting your order request.
         </p>
       ) : (
         <p className="mt-3 text-xs leading-5 text-soft-brown">
-          Your order will be saved and reviewed by our team.
+          This is not a final confirmation. We will confirm stock and delivery
+          details after review.
         </p>
       )}
     </form>

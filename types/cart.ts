@@ -1,6 +1,6 @@
 export type CartItem = {
   id: string;
-  productId?: string;
+  productId: string;
   slug: string;
   name: string;
   image: string;
@@ -8,4 +8,5 @@ export type CartItem = {
   color: string;
   size: string;
   quantity: number;
+  availableStock?: number;
 };

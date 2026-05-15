@@ -44,7 +44,17 @@ function normalizeCartItem(item: CartItem): CartItem | null {
     image: item.image || "",
     color: item.color || "",
     price: Number(item.price || 0),
-    quantity: Math.max(1, Number(item.quantity || 1)),
+    availableStock:
+      typeof item.availableStock === "number"
+        ? Math.max(0, Number(item.availableStock || 0))
+        : undefined,
+    quantity:
+      typeof item.availableStock === "number"
+        ? Math.min(
+            Math.max(1, Number(item.quantity || 1)),
+            Math.max(1, Number(item.availableStock || 1))
+          )
+        : Math.max(1, Number(item.quantity || 1)),
   };
 }
 
@@ -88,11 +98,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existingItem = currentItems.find((item) => item.id === id);
 
       if (existingItem) {
+        const maxQuantity = Number(product.availableStock ?? Infinity);
+
         return currentItems.map((item) =>
           item.id === id
             ? {
                 ...item,
-                quantity: item.quantity + quantity,
+                availableStock: product.availableStock,
+                quantity: Math.min(maxQuantity, item.quantity + quantity),
               }
             : item
         );
@@ -109,7 +122,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           price: product.price,
           color: product.color,
           size,
-          quantity,
+          quantity: Math.min(Number(product.availableStock ?? quantity), quantity),
+          availableStock: product.availableStock,
         },
       ];
     });
@@ -126,14 +140,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity,
-            }
-          : item
-      )
+      currentItems.map((item) => {
+        if (item.id !== id) {
+          return item;
+        }
+
+        const maxQuantity =
+          typeof item.availableStock === "number"
+            ? Math.max(1, item.availableStock)
+            : quantity;
+
+        return {
+          ...item,
+          quantity: Math.min(quantity, maxQuantity),
+        };
+      })
     );
   }
 

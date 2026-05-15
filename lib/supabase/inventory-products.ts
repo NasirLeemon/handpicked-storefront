@@ -96,6 +96,7 @@ function mapInventoryProduct(product: InventoryProduct): Product {
       product.availableStock <= 0 ? "sold-out" : mapAvailability(product.status),
     featured: Boolean(product.featured),
     isNewArrival: Boolean(product.isNewArrival),
+    availableStock: Number(product.availableStock || 0),
   };
 }
 

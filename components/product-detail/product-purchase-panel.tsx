@@ -14,14 +14,17 @@ type ProductPurchasePanelProps = {
 export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const isSoldOut = product.availability === "sold-out";
+  const availableStock = Number(product.availableStock ?? 0);
+  const isSoldOut = product.availability === "sold-out" || availableStock <= 0;
 
   function decreaseQuantity() {
     setQuantity((currentQuantity) => Math.max(1, currentQuantity - 1));
   }
 
   function increaseQuantity() {
-    setQuantity((currentQuantity) => currentQuantity + 1);
+    setQuantity((currentQuantity) =>
+      Math.min(availableStock, currentQuantity + 1)
+    );
   }
 
   return (
@@ -59,6 +62,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
 
         <QuantitySelector
           quantity={quantity}
+          maxQuantity={availableStock}
           onDecrease={decreaseQuantity}
           onIncrease={increaseQuantity}
         />
