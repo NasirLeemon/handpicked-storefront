@@ -18,6 +18,10 @@ const navItems = [
     href: "/contact",
   },
   {
+    label: "Account",
+    href: "/account",
+  },
+  {
     label: "Cart",
     href: "/cart",
   },

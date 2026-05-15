@@ -18,6 +18,10 @@ const navItems = [
     label: "Contact",
     href: "/contact",
   },
+  {
+    label: "Account",
+    href: "/account",
+  },
 ];
 
 export function SiteHeader() {
