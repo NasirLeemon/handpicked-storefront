@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
 
 type AccountNavLinkProps = {
   className?: string;
   onClick?: () => void;
+  showLabel?: boolean;
 };
 
-export function AccountNavLink({ className, onClick }: AccountNavLinkProps) {
+export function AccountNavLink({
+  className,
+  onClick,
+  showLabel = true,
+}: AccountNavLinkProps) {
   const [label, setLabel] = useState("Sign In");
 
   useEffect(() => {
@@ -24,8 +30,14 @@ export function AccountNavLink({ className, onClick }: AccountNavLinkProps) {
   }, []);
 
   return (
-    <Link href="/account" onClick={onClick} className={className}>
-      {label}
+    <Link
+      href="/account"
+      onClick={onClick}
+      className={className}
+      aria-label={label}
+    >
+      <UserRound className="h-6 w-6 md:h-5 md:w-5" strokeWidth={1.8} />
+      {showLabel ? <span className="hidden md:inline">{label}</span> : null}
     </Link>
   );
 }

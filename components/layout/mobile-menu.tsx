@@ -114,7 +114,7 @@ export function MobileMenu() {
 
                     <AccountNavLink
                       onClick={closeMenu}
-                      className="font-serif-brand text-5xl font-medium leading-none tracking-[-0.04em] text-deep-brown"
+                      className="flex items-center gap-3 font-serif-brand text-5xl font-medium leading-none tracking-[-0.04em] text-deep-brown"
                     />
                   </div>
 

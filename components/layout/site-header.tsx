@@ -51,11 +51,9 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-
-          <AccountNavLink className="text-sm font-medium tracking-[0.18em] text-soft-brown uppercase transition hover:text-deep-brown" />
         </nav>
 
-        <div className="flex flex-1 justify-end">
+        <div className="flex flex-1 items-center justify-end gap-3">
           <Link
             href="/cart"
             className="relative flex h-10 w-10 items-center justify-center text-deep-brown transition hover:text-muted-gold md:w-auto md:gap-2 md:text-sm md:font-medium md:tracking-[0.16em] md:uppercase"
@@ -71,6 +69,8 @@ export function SiteHeader() {
               </span>
             ) : null}
           </Link>
+
+          <AccountNavLink className="flex h-10 w-10 items-center justify-center text-deep-brown transition hover:text-muted-gold md:w-auto md:gap-2 md:text-sm md:font-medium md:tracking-[0.16em] md:uppercase" />
         </div>
       </div>
     </header>
