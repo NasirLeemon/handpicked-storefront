@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { createClient } from "@supabase/supabase-js";
 import type { CartItem } from "@/types/cart";
 
 type CreateOrderBody = {
@@ -9,6 +9,25 @@ type CreateOrderBody = {
   note?: string;
   items?: CartItem[];
 };
+
+function getInventorySupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_INVENTORY_SUPABASE_URL;
+  const serviceRoleKey = process.env.INVENTORY_SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl) {
+    throw new Error("Missing NEXT_PUBLIC_INVENTORY_SUPABASE_URL");
+  }
+
+  if (!serviceRoleKey) {
+    throw new Error("Missing INVENTORY_SUPABASE_SERVICE_ROLE_KEY");
+  }
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
 
 function getSubtotal(items: CartItem[]) {
   return items.reduce((total, item) => {
@@ -44,10 +63,10 @@ export async function POST(request: NextRequest) {
     }
 
     const subtotal = getSubtotal(items);
-    const supabaseAdmin = getSupabaseAdmin();
+    const supabaseAdmin = getInventorySupabaseAdmin();
 
     const { data, error } = await supabaseAdmin
-      .from("orders")
+      .from("website_orders")
       .insert({
         customer_name: customerName,
         phone,
