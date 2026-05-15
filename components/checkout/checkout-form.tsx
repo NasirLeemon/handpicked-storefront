@@ -79,6 +79,45 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
     }
   }
 
+  if (isSuccess) {
+    return (
+      <div className="rounded-[1.5rem] border border-warm-border bg-soft-white p-6 text-center shadow-sm sm:p-8">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#D9E0CE] bg-[#F5F7F0] text-2xl text-[#5B654A]">
+          ✓
+        </div>
+
+        <p className="mt-5 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+          Request Submitted
+        </p>
+
+        <h2 className="mt-3 font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown sm:text-5xl">
+          Thank you
+        </h2>
+
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-soft-brown sm:text-base">
+          Your order request has been received. Our team will review stock,
+          delivery charge, and payment details before confirming your order.
+        </p>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <a
+            href="/shop"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
+          >
+            Continue Shopping
+          </a>
+
+          <a
+            href="/contact"
+            className="inline-flex h-11 items-center justify-center rounded-full border border-warm-border bg-soft-white px-6 text-xs font-semibold tracking-[0.16em] text-deep-brown uppercase shadow-sm transition hover:bg-light-sand"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
