@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { AccountNavLink } from "@/components/layout/account-nav-link";
 import { useCart } from "@/components/cart/cart-provider";
 
 const navItems = [
@@ -17,10 +18,6 @@ const navItems = [
   {
     label: "Contact",
     href: "/contact",
-  },
-  {
-    label: "Account",
-    href: "/account",
   },
 ];
 
@@ -54,6 +51,8 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+
+          <AccountNavLink className="text-sm font-medium tracking-[0.18em] text-soft-brown uppercase transition hover:text-deep-brown" />
         </nav>
 
         <div className="flex flex-1 justify-end">

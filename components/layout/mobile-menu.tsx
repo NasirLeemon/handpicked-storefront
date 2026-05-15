@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Menu, MessageCircle, ShoppingBag, X } from "lucide-react";
+import { AccountNavLink } from "@/components/layout/account-nav-link";
 import { useEffect, useState } from "react";
 
 const navItems = [
@@ -16,10 +17,6 @@ const navItems = [
   {
     label: "Contact",
     href: "/contact",
-  },
-  {
-    label: "Account",
-    href: "/account",
   },
   {
     label: "Cart",
@@ -108,6 +105,21 @@ export function MobileMenu() {
                     )}
                   </Link>
                 ))}
+
+                <div className="flex items-center justify-between border-b border-warm-border py-5">
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-xs font-semibold tracking-[0.22em] text-muted-gold">
+                      {String(navItems.length + 1).padStart(2, "0")}
+                    </span>
+
+                    <AccountNavLink
+                      onClick={closeMenu}
+                      className="font-serif-brand text-5xl font-medium leading-none tracking-[-0.04em] text-deep-brown"
+                    />
+                  </div>
+
+                  <span className="h-px w-8 bg-muted-gold" />
+                </div>
               </nav>
 
               <div className="mt-auto pt-8">
