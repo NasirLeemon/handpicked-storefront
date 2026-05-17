@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+type InventoryProductDebug = {
+  id?: string;
+  name?: string;
+  slug?: string;
+  availableStock?: number;
+  status?: string;
+  showOnStorefront?: boolean;
+  images?: string[];
+};
+
 export async function GET() {
   const supabaseUrl = process.env.NEXT_PUBLIC_INVENTORY_SUPABASE_URL;
   const serviceRoleKey = process.env.INVENTORY_SUPABASE_SERVICE_ROLE_KEY;
@@ -36,12 +46,12 @@ export async function GET() {
     });
   }
 
-  const products = Array.isArray(data?.data?.products)
+  const products: InventoryProductDebug[] = Array.isArray(data?.data?.products)
     ? data.data.products
     : [];
 
   const storefrontProducts = products.filter(
-    (product) =>
+    (product: InventoryProductDebug) =>
       product.showOnStorefront === true &&
       Array.isArray(product.images) &&
       product.images.length > 0
@@ -52,7 +62,7 @@ export async function GET() {
     rowId: data.id,
     productCount: products.length,
     storefrontProductCount: storefrontProducts.length,
-    storefrontProducts: storefrontProducts.map((product) => ({
+    storefrontProducts: storefrontProducts.map((product: InventoryProductDebug) => ({
       id: product.id,
       name: product.name,
       slug: product.slug,
