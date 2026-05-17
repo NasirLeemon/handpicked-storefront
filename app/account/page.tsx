@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
 
 const dashboardUrl =
-  process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://handpicked-dashboard.vercel.app";
+  process.env.NEXT_PUBLIC_DASHBOARD_URL ||
+  "https://handpicked-dashboard.vercel.app";
 
 type AdminUser = {
   email: string;
@@ -12,7 +13,11 @@ type AdminUser = {
   active: boolean;
 };
 
+type AuthMode = "sign-in" | "sign-up";
+
 export default function AccountPage() {
+  const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,6 +25,7 @@ export default function AccountPage() {
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
 
   const [message, setMessage] = useState("");
+  const [isSuccessMessage, setIsSuccessMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
 
@@ -52,10 +58,11 @@ export default function AccountPage() {
     setAdminUser(data || null);
   }
 
-  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSignIn(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setMessage("");
+    setIsSuccessMessage(false);
     setIsLoading(true);
 
     try {
@@ -73,7 +80,49 @@ export default function AccountPage() {
 
       setUserEmail(data.user.email);
       await checkAdminAccess(data.user.email);
+      setIsSuccessMessage(true);
       setMessage("Signed in successfully.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleSignUp(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setMessage("");
+    setIsSuccessMessage(false);
+    setIsLoading(true);
+
+    try {
+      const supabase = getInventoryAuthClient();
+
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      if (data.user?.email && data.session) {
+        setUserEmail(data.user.email);
+        await checkAdminAccess(data.user.email);
+        setIsSuccessMessage(true);
+        setMessage("Account created successfully.");
+        return;
+      }
+
+      setIsSuccessMessage(true);
+      setMessage(
+        "Account created. Please check your email to confirm your account, then sign in."
+      );
+      setAuthMode("sign-in");
+      setPassword("");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Something went wrong.");
     } finally {
@@ -89,6 +138,8 @@ export default function AccountPage() {
     setAdminUser(null);
     setEmail("");
     setPassword("");
+    setAuthMode("sign-in");
+    setIsSuccessMessage(true);
     setMessage("Signed out successfully.");
   }
 
@@ -117,11 +168,50 @@ export default function AccountPage() {
           {!userEmail ? (
             <>
               <p className="mt-4 text-sm leading-7 text-soft-brown">
-                Sign in to manage your Handpicked account. Approved admins will
-                also see dashboard access here.
+                Sign in or create an account to manage your Handpicked profile.
+                Approved admins will also see dashboard access here.
               </p>
 
-              <form onSubmit={handleLogin} className="mt-7 grid gap-4">
+              <div className="mt-6 grid grid-cols-2 gap-2 rounded-full border border-warm-border bg-ivory p-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode("sign-in");
+                    setMessage("");
+                    setIsSuccessMessage(false);
+                  }}
+                  className={[
+                    "h-10 rounded-full text-xs font-semibold uppercase tracking-[0.14em] transition",
+                    authMode === "sign-in"
+                      ? "bg-[#4A3327] text-[#FFFDF9]"
+                      : "text-soft-brown hover:bg-soft-white",
+                  ].join(" ")}
+                >
+                  Sign In
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode("sign-up");
+                    setMessage("");
+                    setIsSuccessMessage(false);
+                  }}
+                  className={[
+                    "h-10 rounded-full text-xs font-semibold uppercase tracking-[0.14em] transition",
+                    authMode === "sign-up"
+                      ? "bg-[#4A3327] text-[#FFFDF9]"
+                      : "text-soft-brown hover:bg-soft-white",
+                  ].join(" ")}
+                >
+                  Create Account
+                </button>
+              </div>
+
+              <form
+                onSubmit={authMode === "sign-in" ? handleSignIn : handleSignUp}
+                className="mt-7 grid gap-4"
+              >
                 <label className="grid gap-2">
                   <span className="text-xs font-semibold uppercase tracking-[0.18em] text-soft-brown">
                     Email
@@ -144,14 +234,28 @@ export default function AccountPage() {
                   <input
                     type="password"
                     required
+                    minLength={6}
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     className="h-11 rounded-[1rem] border border-warm-border bg-ivory px-4 text-sm text-deep-brown outline-none transition focus:border-muted-gold"
                   />
+
+                  {authMode === "sign-up" ? (
+                    <span className="text-xs leading-5 text-soft-brown">
+                      Use at least 6 characters.
+                    </span>
+                  ) : null}
                 </label>
 
                 {message ? (
-                  <p className="rounded-[1rem] border border-muted-gold/30 bg-light-sand p-3 text-sm leading-6 text-soft-brown">
+                  <p
+                    className={[
+                      "rounded-[1rem] border p-3 text-sm leading-6",
+                      isSuccessMessage
+                        ? "border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]"
+                        : "border-muted-gold/30 bg-light-sand text-soft-brown",
+                    ].join(" ")}
+                  >
                     {message}
                   </p>
                 ) : null}
@@ -161,7 +265,13 @@ export default function AccountPage() {
                   disabled={isLoading}
                   className="mt-2 inline-flex h-11 items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold uppercase tracking-[0.16em] !text-[#FFFDF9] shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe"
                 >
-                  {isLoading ? "Signing in..." : "Sign In"}
+                  {isLoading
+                    ? authMode === "sign-in"
+                      ? "Signing in..."
+                      : "Creating..."
+                    : authMode === "sign-in"
+                      ? "Sign In"
+                      : "Create Account"}
                 </button>
               </form>
             </>
@@ -208,7 +318,14 @@ export default function AccountPage() {
               </button>
 
               {message ? (
-                <p className="rounded-[1rem] border border-muted-gold/30 bg-light-sand p-3 text-sm leading-6 text-soft-brown">
+                <p
+                  className={[
+                    "rounded-[1rem] border p-3 text-sm leading-6",
+                    isSuccessMessage
+                      ? "border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]"
+                      : "border-muted-gold/30 bg-light-sand text-soft-brown",
+                  ].join(" ")}
+                >
                   {message}
                 </p>
               ) : null}
