@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import { products as fallbackProducts } from "@/data/products";
 import type { Product, ProductAvailability } from "@/types/product";
 
 const CLOUD_DATA_ID = "main";
@@ -104,7 +103,7 @@ export async function getInventoryProductsForStorefront() {
   const supabase = getInventorySupabaseClient();
 
   if (!supabase) {
-    return fallbackProducts;
+    return [];
   }
 
   const { data, error } = await supabase
@@ -114,10 +113,10 @@ export async function getInventoryProductsForStorefront() {
     .single<InventoryCloudRow>();
 
   if (error || !data?.data?.products) {
-    return fallbackProducts;
+    return [];
   }
 
-  const storefrontProducts = data.data.products
+  return data.data.products
     .filter((product) => {
       return (
         product.showOnStorefront === true &&
@@ -126,12 +125,6 @@ export async function getInventoryProductsForStorefront() {
       );
     })
     .map(mapInventoryProduct);
-
-  if (storefrontProducts.length === 0) {
-    return fallbackProducts;
-  }
-
-  return storefrontProducts;
 }
 
 export async function getInventoryProductBySlug(slug: string) {
