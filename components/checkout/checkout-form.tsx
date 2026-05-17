@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
+import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutFormProps = {
@@ -9,11 +10,58 @@ type CheckoutFormProps = {
   clearCartOnSubmit?: boolean;
 };
 
+type CustomerProfile = {
+  full_name: string | null;
+  phone: string | null;
+  default_address: string | null;
+};
+
 export function CheckoutForm({ items }: CheckoutFormProps) {
   const { clearCart } = useCart();
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [note, setNote] = useState("");
+
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const supabase = getInventoryAuthClient();
+        const { data: userData } = await supabase.auth.getUser();
+
+        if (!userData.user?.id) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from("customer_profiles")
+          .select("full_name, phone, default_address")
+          .eq("user_id", userData.user.id)
+          .single();
+
+        if (!data) {
+          return;
+        }
+
+        const profile = data as CustomerProfile;
+
+        setName(profile.full_name || "");
+        setPhone(profile.phone || "");
+        setAddress(profile.default_address || "");
+        setProfileLoaded(true);
+      } catch {
+        // Checkout still works without profile autofill.
+      }
+    }
+
+    loadProfile();
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,13 +72,16 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
       return;
     }
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
+    const customerName = name.trim();
+    const customerPhone = phone.trim();
+    const customerAddress = address.trim();
+    const orderNote = note.trim();
 
-    const customerName = String(formData.get("name") || "");
-    const phone = String(formData.get("phone") || "");
-    const address = String(formData.get("address") || "");
-    const note = String(formData.get("note") || "");
+    if (!customerName || !customerPhone || !customerAddress) {
+      setIsSuccess(false);
+      setStatus("Name, phone number, and delivery address are required.");
+      return;
+    }
 
     setIsSubmitting(true);
     setIsSuccess(false);
@@ -44,9 +95,9 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         },
         body: JSON.stringify({
           customerName,
-          phone,
-          address,
-          note,
+          phone: customerPhone,
+          address: customerAddress,
+          note: orderNote,
           items,
         }),
       });
@@ -58,7 +109,6 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         setStatus(
           "Order request submitted successfully. Our team will review stock, delivery charge, and payment details before confirming your order."
         );
-        form.reset();
         clearCart();
         return;
       }
@@ -132,15 +182,37 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           Fill in your contact and delivery information. We will review and
           confirm availability before dispatch.
         </p>
+
+        {profileLoaded ? (
+          <p className="mt-3 rounded-[1rem] border border-[#D9E0CE] bg-[#F5F7F0] px-3 py-2 text-xs leading-5 text-[#5B654A]">
+            Your saved account details have been added automatically.
+          </p>
+        ) : null}
       </div>
 
       <div className="grid gap-4">
-        <CheckoutInput label="Full Name" name="name" required />
-        <CheckoutInput label="Phone Number" name="phone" type="tel" required />
+        <CheckoutInput
+          label="Full Name"
+          name="name"
+          value={name}
+          onChange={setName}
+          required
+        />
+
+        <CheckoutInput
+          label="Phone Number"
+          name="phone"
+          type="tel"
+          value={phone}
+          onChange={setPhone}
+          required
+        />
 
         <CheckoutTextarea
           label="Delivery Address"
           name="address"
+          value={address}
+          onChange={setAddress}
           required
           rows={3}
         />
@@ -148,6 +220,8 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         <CheckoutTextarea
           label="Order Note"
           name="note"
+          value={note}
+          onChange={setNote}
           rows={3}
           placeholder="Optional: preferred delivery time, size note, etc."
         />
@@ -190,6 +264,8 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 type CheckoutInputProps = {
   label: string;
   name: string;
+  value: string;
+  onChange: (value: string) => void;
   type?: string;
   required?: boolean;
   placeholder?: string;
@@ -198,6 +274,8 @@ type CheckoutInputProps = {
 function CheckoutInput({
   label,
   name,
+  value,
+  onChange,
   type = "text",
   required = false,
   placeholder,
@@ -213,6 +291,8 @@ function CheckoutInput({
         type={type}
         required={required}
         placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
         className="h-11 w-full rounded-[1rem] border border-warm-border bg-ivory px-4 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
       />
     </label>
@@ -222,6 +302,8 @@ function CheckoutInput({
 type CheckoutTextareaProps = {
   label: string;
   name: string;
+  value: string;
+  onChange: (value: string) => void;
   required?: boolean;
   placeholder?: string;
   rows?: number;
@@ -230,6 +312,8 @@ type CheckoutTextareaProps = {
 function CheckoutTextarea({
   label,
   name,
+  value,
+  onChange,
   required = false,
   placeholder,
   rows = 4,
@@ -245,6 +329,8 @@ function CheckoutTextarea({
         required={required}
         placeholder={placeholder}
         rows={rows}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
         className="w-full resize-none rounded-[1rem] border border-warm-border bg-ivory px-4 py-3 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
       />
     </label>
