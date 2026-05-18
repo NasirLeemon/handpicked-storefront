@@ -42,17 +42,17 @@ export function ProductCard({ product }: ProductCardProps) {
                 {product.category}
               </p>
 
-              <h3 className="mt-1.5 font-serif-brand text-[1.45rem] font-medium leading-tight tracking-[-0.03em] text-deep-brown transition group-hover:text-muted-gold sm:text-[1.65rem]">
+              <h3 className="mt-1.5 text-[1.05rem] font-medium leading-6 tracking-[-0.01em] text-deep-brown transition group-hover:text-muted-gold sm:text-[1.12rem]">
                 {product.name}
               </h3>
             </div>
 
-            <p className="shrink-0 rounded-full border border-warm-border bg-soft-white px-3 py-1.5 text-sm font-semibold text-deep-brown shadow-sm">
+            <p className="shrink-0 text-sm font-semibold text-deep-brown sm:text-[0.95rem]">
               ৳ {product.price.toLocaleString()}
             </p>
           </div>
 
-          <p className="mt-2 text-sm leading-5 text-soft-brown">
+          <p className="mt-1.5 text-xs leading-5 text-soft-brown sm:text-[0.82rem]">
             {product.color} · {product.sizes.join(", ")}
           </p>
         </div>
