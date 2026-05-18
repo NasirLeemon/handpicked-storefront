@@ -58,16 +58,16 @@ export function CategoryCard({
           <div
             className={
               featured
-                ? "absolute inset-0 bg-gradient-to-t from-[#21160F]/82 via-[#2F2118]/28 to-transparent"
-                : "absolute inset-0 bg-gradient-to-t from-[#21160F]/88 via-[#2F2118]/42 to-[#2F2118]/8"
+                ? "absolute inset-0 bg-gradient-to-t from-[#21160F]/38 via-transparent to-transparent"
+                : "absolute inset-0 bg-gradient-to-t from-[#21160F]/44 via-transparent to-transparent"
             }
           />
 
           <div
             className={
               featured
-                ? "absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#21160F]/82 to-transparent"
-                : "absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#21160F]/90 via-[#21160F]/42 to-transparent"
+                ? "absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-[#21160F]/68 via-[#21160F]/24 to-transparent"
+                : "absolute inset-x-0 bottom-0 h-[54%] bg-gradient-to-t from-[#21160F]/72 via-[#21160F]/28 to-transparent"
             }
           />
 
