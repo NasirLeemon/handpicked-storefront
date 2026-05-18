@@ -171,8 +171,8 @@ export function ShopProductsClient({ products }: ShopProductsClientProps) {
         </p>
       </div>
 
-      <div className="mb-8 hidden rounded-[1.75rem] border border-warm-border bg-soft-white px-5 py-4 md:block">
-        <div className="grid items-end gap-4 md:grid-cols-[1.45fr_1fr_1fr_1fr]">
+      <div className="mb-8 hidden border-b border-warm-border pb-6 md:block">
+        <div className="grid items-end gap-6 md:grid-cols-[1.45fr_1fr_1fr_1fr]">
           <ShopSearchInput value={search} onChange={setSearch} />
 
           <ShopFilterSelect
@@ -198,7 +198,7 @@ export function ShopProductsClient({ products }: ShopProductsClientProps) {
         </div>
       </div>
 
-      <div className="mb-5 hidden items-center justify-between gap-4 border-y border-warm-border py-5 md:flex">
+      <div className="mb-5 hidden items-center justify-between gap-4 border-b border-warm-border pb-5 md:flex">
         <p className="text-sm text-soft-brown">
           Showing{" "}
           <span className="font-medium text-deep-brown">

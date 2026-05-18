@@ -18,14 +18,14 @@ export function ShopFilterSelect({
 }: ShopFilterSelectProps) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1.5 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase md:text-[10px]">
+      <span className="mb-2 block text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase">
         {label}
       </span>
 
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-full border border-warm-border bg-soft-white px-4 text-sm text-deep-brown outline-none transition focus:border-muted-gold sm:h-12"
+        className="h-11 w-full border-b border-warm-border bg-transparent px-0 text-sm text-deep-brown outline-none transition focus:border-muted-gold sm:h-12"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
