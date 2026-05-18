@@ -14,7 +14,7 @@ export const collections: Collection[] = [
     title: "Ethnic",
     description: "Elegant festive pieces with refined boutique charm.",
     href: "/shop?category=Ethnic",
-    image: "/images/products/lemon green.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1778692428/peacock_green_n6yke2.png",
     label: "Featured",
     featured: true,
   },
@@ -23,7 +23,7 @@ export const collections: Collection[] = [
     title: "Co-ords",
     description: "Fresh matching sets for graceful everyday style.",
     href: "/shop?category=Co-ords",
-    image: "/images/products/blue coords.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1778692428/white_co-ords_la2yuv.png",
     label: "Everyday",
   },
   {
@@ -31,7 +31,7 @@ export const collections: Collection[] = [
     title: "Tops",
     description: "Polished tops made for easy, feminine styling.",
     href: "/shop?category=Tops",
-    image: "/images/products/red top.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1778692734/red-top_si8fwy.jpg",
     label: "Essentials",
   },
   {
@@ -39,7 +39,7 @@ export const collections: Collection[] = [
     title: "Beauty",
     description: "Curated beauty add-ons for soft finishing touches.",
     href: "/shop?category=Beauty",
-    image: "/images/products/blush.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1779089141/ChatGPT_Image_Feb_21_2026_11_39_14_PM_e7tka7.png",
     label: "Beauty",
   },
   {
@@ -47,7 +47,7 @@ export const collections: Collection[] = [
     title: "Accessories",
     description: "Delicate details to complete your boutique look.",
     href: "/shop?category=Accessories",
-    image: "/images/products/flower-clip.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1779089262/ChatGPT_Image_Feb_21_2026_11_51_25_PM_sdgdbj.png",
     label: "Details",
   },
 ];
