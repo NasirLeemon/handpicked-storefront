@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircle2, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
@@ -131,16 +132,16 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
   if (isSuccess) {
     return (
-      <div className="rounded-[1.5rem] border border-warm-border bg-soft-white p-6 text-center shadow-sm sm:p-8">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#D9E0CE] bg-[#F5F7F0] text-2xl text-[#5B654A]">
-          ✓
+      <div className="overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] p-8 text-center shadow-[0_22px_70px_rgba(47,33,24,0.08)] sm:p-10">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]">
+          <CheckCircle2 className="h-7 w-7" strokeWidth={1.7} />
         </div>
 
-        <p className="mt-5 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+        <p className="mt-6 text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
           Request Submitted
         </p>
 
-        <h2 className="mt-3 font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown sm:text-5xl">
+        <h2 className="mt-3 text-4xl font-medium tracking-[-0.045em] text-deep-brown sm:text-5xl">
           Thank you
         </h2>
 
@@ -149,17 +150,17 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           delivery charge, and payment details before confirming your order.
         </p>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-7 grid gap-3 sm:grid-cols-2">
           <a
             href="/shop"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49]"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_16px_34px_rgba(63,42,32,0.18)] transition hover:bg-[#5B4435]"
           >
             Continue Shopping
           </a>
 
           <a
             href="/contact"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-warm-border bg-soft-white px-6 text-xs font-semibold tracking-[0.16em] text-deep-brown uppercase shadow-sm transition hover:bg-light-sand"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-warm-border bg-transparent px-6 text-xs font-semibold tracking-[0.18em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold"
           >
             Contact Us
           </a>
@@ -171,26 +172,31 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-[1.5rem] border border-warm-border bg-soft-white p-5 shadow-sm"
+      className="overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]"
     >
-      <div className="mb-5">
-        <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-          Order Request
-        </p>
+      <div className="border-b border-warm-border px-5 py-4 sm:px-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
+              Delivery Details
+            </p>
 
-        <p className="mt-2 text-sm leading-6 text-soft-brown">
-          Fill in your contact and delivery information. We will review and
-          confirm availability before dispatch.
-        </p>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-soft-brown">
+              Fill in your contact and delivery information. We will review and
+              confirm availability before dispatch.
+            </p>
+          </div>
 
-        {profileLoaded ? (
-          <p className="mt-3 rounded-[1rem] border border-[#D9E0CE] bg-[#F5F7F0] px-3 py-2 text-xs leading-5 text-[#5B654A]">
-            Your saved account details have been added automatically.
-          </p>
-        ) : null}
+          {profileLoaded ? (
+            <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#D9E0CE] bg-[#F5F7F0] px-3 py-2 text-xs leading-5 text-[#5B654A]">
+              <Sparkles className="h-3.5 w-3.5" />
+              Saved details added
+            </p>
+          ) : null}
+        </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-4 px-5 py-5 sm:px-6">
         <CheckoutInput
           label="Full Name"
           name="name"
@@ -214,7 +220,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           value={address}
           onChange={setAddress}
           required
-          rows={3}
+          rows={2}
         />
 
         <CheckoutTextarea
@@ -222,14 +228,14 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           name="note"
           value={note}
           onChange={setNote}
-          rows={3}
+          rows={2}
           placeholder="Optional: preferred delivery time, size note, etc."
         />
       </div>
 
       {status ? (
         <p
-          className={`mt-5 rounded-[1rem] border p-3 text-sm leading-6 ${
+          className={`mx-5 rounded-[1rem] border px-4 py-3 text-sm leading-6 sm:mx-7 ${
             isSuccess
               ? "border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]"
               : "border-muted-gold/30 bg-light-sand text-soft-brown"
@@ -239,24 +245,26 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={items.length === 0 || isSubmitting}
-        className="mt-6 inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe sm:h-12 sm:text-sm"
-      >
-        {isSubmitting ? "Submitting..." : "Submit Order Request"}
-      </button>
+      <div className="px-5 pb-5 pt-1 sm:px-6">
+        <button
+          type="submit"
+          disabled={items.length === 0 || isSubmitting}
+          className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_16px_34px_rgba(63,42,32,0.18)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none sm:h-13"
+        >
+          {isSubmitting ? "Submitting..." : "Submit Order Request"}
+        </button>
 
-      {items.length === 0 ? (
-        <p className="mt-3 text-xs leading-5 text-soft-brown">
-          Add at least one product before submitting your order request.
-        </p>
-      ) : (
-        <p className="mt-3 text-xs leading-5 text-soft-brown">
-          This is not a final confirmation. We will confirm stock and delivery
-          details after review.
-        </p>
-      )}
+        {items.length === 0 ? (
+          <p className="mt-3 text-xs leading-5 text-soft-brown">
+            Add at least one product before submitting your order request.
+          </p>
+        ) : (
+          <p className="mt-3 text-xs leading-5 text-soft-brown">
+            This is not a final confirmation. We will confirm stock and delivery
+            details after review.
+          </p>
+        )}
+      </div>
     </form>
   );
 }
@@ -282,7 +290,7 @@ function CheckoutInput({
 }: CheckoutInputProps) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[10px] font-semibold tracking-[0.2em] text-soft-brown uppercase">
+      <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
         {label}
       </span>
 
@@ -293,7 +301,7 @@ function CheckoutInput({
         placeholder={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-[1rem] border border-warm-border bg-ivory px-4 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
+        className="h-10 w-full border-b border-warm-border bg-transparent px-0 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
       />
     </label>
   );
@@ -320,7 +328,7 @@ function CheckoutTextarea({
 }: CheckoutTextareaProps) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[10px] font-semibold tracking-[0.2em] text-soft-brown uppercase">
+      <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
         {label}
       </span>
 
@@ -331,7 +339,7 @@ function CheckoutTextarea({
         rows={rows}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full resize-none rounded-[1rem] border border-warm-border bg-ivory px-4 py-3 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
+        className="w-full resize-none border-b border-warm-border bg-transparent px-0 py-2 text-sm leading-6 text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
       />
     </label>
   );
