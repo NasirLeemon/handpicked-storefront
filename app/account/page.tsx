@@ -605,8 +605,7 @@ function AuthCard({
             value={password}
             onChange={setPassword}
             required
-            minLength={6}
-            helper={authMode === "sign-up" ? "Use at least 6 characters." : undefined}
+            helper={authMode === "sign-up" ? "Use your preferred password." : undefined}
           />
 
           {message ? (
