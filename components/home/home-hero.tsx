@@ -9,8 +9,8 @@ export function HomeHero() {
     <section className="relative min-h-[78vh] overflow-hidden bg-deep-brown sm:min-h-[86vh] lg:min-h-[calc(100vh-112px)]">
       <HeroCarousel />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-[#2F2118]/84 via-[#2F2118]/42 to-[#2F2118]/10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#2F2118]/56 via-transparent to-[#2F2118]/12" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#2F2118]/70 via-[#2F2118]/32 to-[#2F2118]/6" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#2F2118]/48 via-transparent to-[#2F2118]/8" />
 
       <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-7xl items-center px-4 py-14 sm:min-h-[86vh] sm:px-6 lg:min-h-[calc(100vh-112px)] lg:px-8">
         <motion.div
@@ -20,7 +20,7 @@ export function HomeHero() {
             duration: 1,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="max-w-3xl"
+          className="max-w-2xl"
         >
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -30,7 +30,7 @@ export function HomeHero() {
               delay: 0.15,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mb-5 text-xs font-semibold tracking-[0.34em] text-soft-gold uppercase"
+            className="mb-4 text-[10px] font-semibold tracking-[0.32em] text-soft-gold uppercase sm:text-xs"
           >
             New Season Collection
           </motion.p>
@@ -43,7 +43,7 @@ export function HomeHero() {
               delay: 0.25,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="font-serif-brand text-[3.6rem] font-medium leading-[0.88] tracking-[-0.055em] text-[#FFFDF9] sm:text-[6.5rem] lg:text-[8rem]"
+            className="font-serif-brand text-[3.1rem] font-medium leading-[0.9] tracking-[-0.055em] text-[#FFFDF9] sm:text-[5.4rem] lg:text-[6.7rem]"
           >
             Modern
             <span className="block italic text-[#E8DCCB]">grace</span>
@@ -58,7 +58,7 @@ export function HomeHero() {
               delay: 0.38,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mt-7 max-w-xl text-base leading-8 text-[#FFFDF9]/82 sm:text-lg"
+            className="mt-5 max-w-xl text-sm leading-7 text-[#FFFDF9]/84 sm:text-base sm:leading-8"
           >
             A curated collection of clothing, beauty, and accessories selected
             for soft elegance, refined details, and effortless everyday styling.
@@ -72,7 +72,7 @@ export function HomeHero() {
               delay: 0.5,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="mt-9 flex flex-row flex-wrap gap-3 sm:gap-4"
+            className="mt-7 flex flex-row flex-wrap gap-3"
           >
             <BoutiqueButton href="/shop">Shop New Arrivals</BoutiqueButton>
 
@@ -80,23 +80,23 @@ export function HomeHero() {
               Explore Collection
             </BoutiqueButton>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.9,
+              delay: 0.62,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="mt-7 hidden max-w-xl grid-cols-3 gap-3 border-t border-white/18 pt-5 text-[#FFFDF9] md:grid"
+          >
+            <HeroMeta label="Edit" value="Curated pieces" />
+            <HeroMeta label="Style" value="Soft elegance" />
+            <HeroMeta label="Delivery" value="Bangladesh" />
+          </motion.div>
         </motion.div>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.9,
-          delay: 0.7,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        className="absolute bottom-6 left-4 right-4 z-10 mx-auto hidden max-w-7xl items-end justify-between border-t border-white/20 pt-5 text-[#FFFDF9] md:flex"
-      >
-        <HeroMeta label="Collection" value="Handpicked edit" />
-        <HeroMeta label="Products" value="15 curated pieces" />
-        <HeroMeta label="Delivery" value="Dhaka + outside Dhaka" />
-      </motion.div>
     </section>
   );
 }
@@ -109,10 +109,10 @@ type HeroMetaProps = {
 function HeroMeta({ label, value }: HeroMetaProps) {
   return (
     <div>
-      <p className="text-[11px] font-semibold tracking-[0.24em] text-soft-gold uppercase">
+      <p className="text-[10px] font-semibold tracking-[0.22em] text-soft-gold uppercase">
         {label}
       </p>
-      <p className="mt-2 text-sm text-[#FFFDF9]/82">{value}</p>
+      <p className="mt-1.5 text-xs text-[#FFFDF9]/82">{value}</p>
     </div>
   );
 }
