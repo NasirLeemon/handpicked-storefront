@@ -10,15 +10,15 @@ export function SizeSelector({
   onSelectSize,
 }: SizeSelectorProps) {
   return (
-    <div className="mt-5 sm:mt-7">
+    <div>
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm font-medium text-deep-brown">Select Size</p>
-        <p className="text-[10px] font-medium tracking-[0.16em] text-muted-gold uppercase sm:text-xs">
+        <p className="text-sm font-semibold text-deep-brown">Size</p>
+        <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-gold uppercase">
           Required
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 sm:gap-3">
+      <div className="flex flex-wrap gap-2">
         {sizes.map((size) => {
           const isSelected = selectedSize === size;
 
@@ -27,10 +27,10 @@ export function SizeSelector({
               key={size}
               type="button"
               onClick={() => onSelectSize(size)}
-              className={`flex h-10 min-w-11 items-center justify-center rounded-full border px-4 text-sm font-medium transition sm:h-11 sm:min-w-12 ${
+              className={`flex h-11 min-w-12 items-center justify-center rounded-full border px-5 text-sm font-semibold transition ${
                 isSelected
-                  ? "border-deep-brown bg-deep-brown !text-[#FFFDF9]"
-                  : "border-warm-border bg-soft-white text-deep-brown hover:border-muted-gold hover:text-muted-gold"
+                  ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-[0_10px_24px_rgba(63,42,32,0.16)]"
+                  : "border-warm-border bg-white/55 text-deep-brown hover:border-muted-gold hover:text-muted-gold"
               }`}
             >
               {size}

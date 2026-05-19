@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
 import { QuantitySelector } from "@/components/product-detail/quantity-selector";
@@ -28,57 +29,110 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
   }
 
   return (
-    <aside className="rounded-[1.25rem] border border-warm-border bg-soft-white p-4 shadow-sm sm:rounded-[2rem] sm:p-6 lg:sticky lg:top-32 lg:p-8">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase sm:text-xs">
-          {product.category}
-        </p>
+    <aside className="lg:sticky lg:top-28">
+      <div className="relative overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
 
-        <AvailabilityBadge availability={product.availability} />
+        <div className="relative p-5 sm:p-7 lg:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-semibold tracking-[0.28em] text-muted-gold uppercase">
+                {product.category}
+              </p>
+
+              <div className="mt-3 flex w-fit items-center gap-2 rounded-full border border-warm-border bg-white/70 px-3 py-1.5 text-[11px] font-medium text-soft-brown shadow-sm backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5 text-muted-gold" />
+                Handpicked selection
+              </div>
+            </div>
+
+            <AvailabilityBadge availability={product.availability} />
+          </div>
+
+          <h1 className="mt-6 max-w-2xl text-[2rem] font-medium leading-[1.08] tracking-[-0.045em] text-deep-brown sm:text-[2.65rem] lg:text-[3rem]">
+            {product.name}
+          </h1>
+
+          <div className="mt-5 flex items-end justify-between gap-5 border-b border-warm-border pb-6">
+            <div>
+              <p className="text-[10px] font-semibold tracking-[0.22em] text-taupe uppercase">
+                Price
+              </p>
+              <p className="mt-1 text-3xl font-semibold tracking-[-0.04em] text-deep-brown">
+                ৳ {product.price.toLocaleString()}
+              </p>
+            </div>
+
+            <p className="max-w-[10rem] text-right text-xs leading-5 text-soft-brown">
+              Stock and delivery are confirmed before dispatch.
+            </p>
+          </div>
+
+          <p className="mt-6 max-w-xl text-sm leading-7 text-soft-brown sm:text-[0.95rem] sm:leading-8">
+            {product.description}
+          </p>
+
+          <div className="mt-7">
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+                Choose Options
+              </p>
+
+              <p className="text-sm text-soft-brown">
+                Color{" "}
+                <span className="font-semibold text-deep-brown">
+                  {product.color}
+                </span>
+              </p>
+            </div>
+
+            <SizeSelector
+              sizes={product.sizes}
+              selectedSize={selectedSize}
+              onSelectSize={setSelectedSize}
+            />
+
+            <QuantitySelector
+              quantity={quantity}
+              maxQuantity={availableStock}
+              onDecrease={decreaseQuantity}
+              onIncrease={increaseQuantity}
+            />
+          </div>
+
+          <div className="mt-8">
+            <ProductActionButtons
+              product={product}
+              isSoldOut={isSoldOut}
+              selectedSize={selectedSize}
+              quantity={quantity}
+            />
+          </div>
+
+          <div className="mt-7 grid gap-3 border-t border-warm-border pt-5 sm:grid-cols-3">
+            <div className="flex gap-2">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-gold" />
+              <p className="text-xs leading-5 text-soft-brown">
+                Quality checked before delivery
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Truck className="mt-0.5 h-4 w-4 shrink-0 text-muted-gold" />
+              <p className="text-xs leading-5 text-soft-brown">
+                Delivery available across Bangladesh
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-muted-gold" />
+              <p className="text-xs leading-5 text-soft-brown">
+                Order reviewed before confirmation
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <h1 className="mt-3 font-serif-brand text-3xl font-medium leading-none tracking-[-0.035em] text-deep-brown sm:mt-5 sm:text-6xl">
-        {product.name}
-      </h1>
-
-      <p className="mt-3 text-2xl font-semibold text-deep-brown sm:mt-5">
-        ৳ {product.price.toLocaleString()}
-      </p>
-
-      <p className="mt-3 text-sm leading-6 text-soft-brown sm:mt-6 sm:text-base sm:leading-8">
-        {product.description}
-      </p>
-
-      <div className="mt-4 rounded-[1rem] border border-warm-border bg-ivory p-3 sm:mt-8 sm:rounded-[1.5rem] sm:p-5">
-        <p className="text-sm font-medium text-deep-brown">
-          Color: <span className="text-soft-brown">{product.color}</span>
-        </p>
-
-        <SizeSelector
-          sizes={product.sizes}
-          selectedSize={selectedSize}
-          onSelectSize={setSelectedSize}
-        />
-
-        <QuantitySelector
-          quantity={quantity}
-          maxQuantity={availableStock}
-          onDecrease={decreaseQuantity}
-          onIncrease={increaseQuantity}
-        />
-      </div>
-
-      <ProductActionButtons
-        product={product}
-        isSoldOut={isSoldOut}
-        selectedSize={selectedSize}
-        quantity={quantity}
-      />
-
-      <p className="mt-3 text-xs leading-5 text-soft-brown sm:mt-5 sm:text-sm sm:leading-6">
-        Delivery charge, availability, and payment details will be confirmed
-        after your order request.
-      </p>
     </aside>
   );
 }
