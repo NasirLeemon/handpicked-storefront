@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Crown, LogOut, ShieldCheck, ShoppingBag, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  Crown,
+  LogOut,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Truck,
+  UserRound,
+} from "lucide-react";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
 
 const dashboardUrl =
@@ -240,8 +249,8 @@ export default function AccountPage() {
 
   if (isCheckingSession) {
     return (
-      <main className="min-h-screen bg-ivory px-4 py-10 text-deep-brown">
-        <div className="mx-auto max-w-xl rounded-[1.75rem] border border-warm-border bg-soft-white p-6 shadow-sm">
+      <main className="min-h-screen bg-ivory px-4 py-8 text-deep-brown">
+        <div className="mx-auto max-w-5xl rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] p-6 shadow-sm">
           <p className="text-sm text-soft-brown">Checking account...</p>
         </div>
       </main>
@@ -249,136 +258,120 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="min-h-screen bg-ivory px-4 py-10 text-deep-brown sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-ivory px-4 py-6 text-deep-brown sm:px-6 sm:py-8 lg:px-8">
       <section className="mx-auto max-w-6xl">
-        <div className="mb-8 rounded-[2rem] border border-warm-border bg-soft-white px-6 py-7 shadow-sm sm:px-8 lg:px-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-muted-gold">
-            Handpicked Account
-          </p>
+        <div className="mb-6 overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_16px_45px_rgba(47,33,24,0.055)]">
+          <div className="relative px-5 py-5 sm:px-6">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.13),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.74))]" />
 
-          <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h1 className="font-serif-brand text-5xl font-medium tracking-[-0.05em] text-deep-brown sm:text-6xl">
-                {userEmail ? `Welcome, ${displayName}` : "Your Handpicked profile"}
-              </h1>
+            <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold shadow-sm">
+                  <UserRound className="h-4.5 w-4.5" strokeWidth={1.7} />
+                </div>
 
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-soft-brown sm:text-base">
-                Save your delivery details, manage your account, and continue
-                shopping with a smoother checkout experience.
-              </p>
-            </div>
+                <div>
+                  <p className="text-[10px] font-semibold tracking-[0.26em] text-muted-gold uppercase">
+                    Handpicked Account
+                  </p>
 
-            {userEmail ? (
-              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-warm-border bg-ivory px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-soft-brown">
-                {adminUser ? <ShieldCheck className="h-4 w-4" /> : <UserRound className="h-4 w-4" />}
-                {adminUser ? `${adminUser.role} access` : "Customer account"}
+                  <h1 className="mt-1 text-3xl font-semibold tracking-[-0.045em] text-deep-brown sm:text-[2rem]">
+                    {userEmail ? `Welcome, ${displayName}` : "Your Handpicked profile"}
+                  </h1>
+                </div>
               </div>
-            ) : null}
+
+              <div className="max-w-md border-t border-warm-border pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                <p className="text-sm leading-6 text-soft-brown">
+                  Save your delivery details and enjoy a smoother checkout
+                  experience.
+                </p>
+
+                {userEmail ? (
+                  <p className="mt-1 text-xs font-medium tracking-[0.14em] text-muted-gold uppercase">
+                    {adminUser ? `${adminUser.role} access` : "Customer account"}
+                  </p>
+                ) : null}
+              </div>
+            </div>
           </div>
         </div>
 
         {!userEmail ? (
-          <div className="mx-auto max-w-xl rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm sm:p-8">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-warm-border bg-ivory text-deep-brown">
-              <UserRound className="h-6 w-6" strokeWidth={1.7} />
+          <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="relative overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.14),transparent_36%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.76))]" />
+
+              <div className="relative p-6 sm:p-8">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
+                  <Sparkles className="h-5 w-5" strokeWidth={1.7} />
+                </div>
+
+                <p className="mt-7 text-xs font-semibold tracking-[0.28em] text-muted-gold uppercase">
+                  Member Experience
+                </p>
+
+                <h2 className="mt-3 text-4xl font-medium leading-tight tracking-[-0.05em] text-deep-brown sm:text-5xl">
+                  A smoother way to shop Handpicked.
+                </h2>
+
+                <p className="mt-5 max-w-xl text-sm leading-7 text-soft-brown sm:text-base">
+                  Create an account to keep your delivery details ready for
+                  future orders. Your checkout becomes faster, cleaner, and more
+                  personal.
+                </p>
+
+                <div className="mt-8 grid gap-3">
+                  <AccountBenefit
+                    icon={<Truck className="h-4 w-4" strokeWidth={1.7} />}
+                    title="Faster checkout"
+                    description="Saved name, phone, and delivery address."
+                  />
+
+                  <AccountBenefit
+                    icon={<ShoppingBag className="h-4 w-4" strokeWidth={1.7} />}
+                    title="Easy order requests"
+                    description="Submit your selected pieces with less typing."
+                  />
+
+                  <AccountBenefit
+                    icon={<ShieldCheck className="h-4 w-4" strokeWidth={1.7} />}
+                    title="Admin access protected"
+                    description="Only approved owners/admins can open dashboard."
+                  />
+                </div>
+              </div>
             </div>
 
-            <h2 className="mt-5 text-center font-serif-brand text-4xl font-medium tracking-[-0.04em]">
-              {authMode === "sign-in" ? "Sign in" : "Create account"}
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-md text-center text-sm leading-6 text-soft-brown">
-              {authMode === "sign-in"
-                ? "Access your saved details and continue shopping faster."
-                : "Create a Handpicked account to save your delivery details for future orders."}
-            </p>
-
-            <div className="mt-6 grid grid-cols-2 gap-2 rounded-full border border-warm-border bg-ivory p-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode("sign-in");
-                  setMessage("");
-                  setIsSuccessMessage(false);
-                }}
-                className={[
-                  "h-10 rounded-full text-xs font-semibold uppercase tracking-[0.14em] transition",
-                  authMode === "sign-in"
-                    ? "bg-[#4A3327] text-[#FFFDF9]"
-                    : "text-soft-brown hover:bg-soft-white",
-                ].join(" ")}
-              >
-                Sign In
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthMode("sign-up");
-                  setMessage("");
-                  setIsSuccessMessage(false);
-                }}
-                className={[
-                  "h-10 rounded-full text-xs font-semibold uppercase tracking-[0.14em] transition",
-                  authMode === "sign-up"
-                    ? "bg-[#4A3327] text-[#FFFDF9]"
-                    : "text-soft-brown hover:bg-soft-white",
-                ].join(" ")}
-              >
-                Create Account
-              </button>
-            </div>
-
-            <form
-              onSubmit={authMode === "sign-in" ? handleSignIn : handleSignUp}
-              className="mt-7 grid gap-4"
-            >
-              <AccountInput
-                label="Email"
-                type="email"
-                value={email}
-                onChange={setEmail}
-                required
-              />
-
-              <AccountInput
-                label="Password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-                required
-                minLength={6}
-                helper={authMode === "sign-up" ? "Use at least 6 characters." : undefined}
-              />
-
-              {message ? (
-                <AccountMessage message={message} isSuccess={isSuccessMessage} />
-              ) : null}
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="mt-2 inline-flex h-12 items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold uppercase tracking-[0.16em] !text-[#FFFDF9] shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe"
-              >
-                {isLoading
-                  ? authMode === "sign-in"
-                    ? "Signing in..."
-                    : "Creating..."
-                  : authMode === "sign-in"
-                    ? "Sign In"
-                    : "Create Account"}
-              </button>
-            </form>
+            <AuthCard
+              authMode={authMode}
+              setAuthMode={setAuthMode}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              handleSignIn={handleSignIn}
+              handleSignUp={handleSignUp}
+              isLoading={isLoading}
+              message={message}
+              isSuccessMessage={isSuccessMessage}
+              clearMessage={() => {
+                setMessage("");
+                setIsSuccessMessage(false);
+              }}
+            />
           </div>
         ) : (
-          <div className="grid gap-5 lg:grid-cols-[0.9fr_1.35fr]">
-            <aside className="space-y-5">
-              <div className="rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#4A3327] text-xl font-semibold uppercase text-[#FFFDF9]">
+          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+            <aside className="relative overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.13),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
+
+              <div className="relative p-5 sm:p-6">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#3F2A20] text-xl font-semibold uppercase text-[#FFFDF9] shadow-[0_14px_30px_rgba(63,42,32,0.16)]">
                   {displayName.slice(0, 1)}
                 </div>
 
-                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-gold">
+                <p className="mt-5 text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
                   Signed In
                 </p>
 
@@ -390,7 +383,7 @@ export default function AccountPage() {
                   {userEmail}
                 </p>
 
-                <div className="mt-5 rounded-[1.25rem] border border-warm-border bg-ivory p-4">
+                <div className="mt-5 rounded-[1.5rem] border border-warm-border bg-white/50 p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-deep-brown">
                     {adminUser ? (
                       <>
@@ -416,7 +409,7 @@ export default function AccountPage() {
                   {adminUser ? (
                     <a
                       href={dashboardUrl}
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#4A3327] px-6 text-xs font-semibold uppercase tracking-[0.16em] !text-[#FFFDF9] shadow-sm transition hover:bg-[#6F5A49]"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_14px_30px_rgba(63,42,32,0.16)] transition hover:bg-[#5B4435]"
                     >
                       Open Dashboard
                       <ArrowRight className="h-4 w-4" />
@@ -425,7 +418,7 @@ export default function AccountPage() {
 
                   <a
                     href="/shop"
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-warm-border bg-soft-white px-6 text-xs font-semibold uppercase tracking-[0.16em] text-deep-brown shadow-sm transition hover:bg-light-sand"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-warm-border bg-white/45 px-6 text-xs font-semibold tracking-[0.18em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold"
                   >
                     <ShoppingBag className="h-4 w-4" />
                     Continue Shopping
@@ -434,7 +427,7 @@ export default function AccountPage() {
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-warm-border bg-ivory px-6 text-xs font-semibold uppercase tracking-[0.16em] text-soft-brown shadow-sm transition hover:bg-light-sand"
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-full text-xs font-semibold tracking-[0.16em] text-taupe uppercase transition hover:text-deep-brown"
                   >
                     <LogOut className="h-4 w-4" />
                     Sign Out
@@ -443,64 +436,222 @@ export default function AccountPage() {
               </div>
             </aside>
 
-            <section className="rounded-[2rem] border border-warm-border bg-soft-white p-6 shadow-sm sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-gold">
-                Saved Delivery Details
-              </p>
+            <section className="relative overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.10),transparent_34%)]" />
 
-              <h2 className="mt-3 font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown">
-                Profile details
-              </h2>
+              <form onSubmit={handleSaveProfile} className="relative">
+                <div className="border-b border-warm-border px-5 py-5 sm:px-7">
+                  <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
+                    Saved Delivery Details
+                  </p>
 
-              <p className="mt-3 max-w-xl text-sm leading-7 text-soft-brown">
-                These details will be used to fill your checkout form
-                automatically when you are signed in.
-              </p>
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-soft-brown">
+                    These details will automatically fill your checkout form
+                    when you are signed in.
+                  </p>
+                </div>
 
-              <form onSubmit={handleSaveProfile} className="mt-7 grid gap-5">
-                <AccountInput
-                  label="Full Name"
-                  value={fullName}
-                  onChange={setFullName}
-                />
-
-                <AccountInput
-                  label="Phone Number"
-                  type="tel"
-                  value={phone}
-                  onChange={setPhone}
-                />
-
-                <label className="grid gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-soft-brown">
-                    Default Delivery Address
-                  </span>
-
-                  <textarea
-                    rows={5}
-                    value={defaultAddress}
-                    onChange={(event) => setDefaultAddress(event.target.value)}
-                    className="resize-none rounded-[1.25rem] border border-warm-border bg-ivory px-4 py-3 text-sm leading-6 text-deep-brown outline-none transition focus:border-muted-gold"
+                <div className="grid gap-5 px-5 py-6 sm:px-7">
+                  <AccountInput
+                    label="Full Name"
+                    value={fullName}
+                    onChange={setFullName}
                   />
-                </label>
 
-                <button
-                  type="submit"
-                  disabled={isProfileSaving}
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-[#4A3327] px-6 text-xs font-semibold uppercase tracking-[0.16em] !text-[#FFFDF9] shadow-sm transition hover:bg-[#6F5A49] disabled:cursor-not-allowed disabled:bg-taupe"
-                >
-                  {isProfileSaving ? "Saving..." : "Save Profile"}
-                </button>
+                  <AccountInput
+                    label="Phone Number"
+                    type="tel"
+                    value={phone}
+                    onChange={setPhone}
+                  />
+
+                  <AccountTextarea
+                    label="Default Delivery Address"
+                    value={defaultAddress}
+                    onChange={setDefaultAddress}
+                    rows={4}
+                  />
+                </div>
 
                 {message ? (
-                  <AccountMessage message={message} isSuccess={isSuccessMessage} />
+                  <div className="px-5 sm:px-7">
+                    <AccountMessage message={message} isSuccess={isSuccessMessage} />
+                  </div>
                 ) : null}
+
+                <div className="px-5 pb-6 pt-2 sm:px-7">
+                  <button
+                    type="submit"
+                    disabled={isProfileSaving}
+                    className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_14px_30px_rgba(63,42,32,0.16)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none"
+                  >
+                    {isProfileSaving ? "Saving..." : "Save Profile"}
+                  </button>
+                </div>
               </form>
             </section>
           </div>
         )}
       </section>
     </main>
+  );
+}
+
+type AuthCardProps = {
+  authMode: AuthMode;
+  setAuthMode: (mode: AuthMode) => void;
+  email: string;
+  setEmail: (value: string) => void;
+  password: string;
+  setPassword: (value: string) => void;
+  handleSignIn: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleSignUp: (event: React.FormEvent<HTMLFormElement>) => void;
+  isLoading: boolean;
+  message: string;
+  isSuccessMessage: boolean;
+  clearMessage: () => void;
+};
+
+function AuthCard({
+  authMode,
+  setAuthMode,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  handleSignIn,
+  handleSignUp,
+  isLoading,
+  message,
+  isSuccessMessage,
+  clearMessage,
+}: AuthCardProps) {
+  return (
+    <div className="relative overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
+
+      <div className="relative p-5 sm:p-7">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
+              {authMode === "sign-in" ? "Welcome Back" : "Create Profile"}
+            </p>
+
+            <h2 className="mt-2 text-3xl font-semibold tracking-[-0.045em] text-deep-brown">
+              {authMode === "sign-in" ? "Sign in" : "Create account"}
+            </h2>
+          </div>
+
+          <div className="flex h-11 w-11 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
+            <UserRound className="h-5 w-5" strokeWidth={1.7} />
+          </div>
+        </div>
+
+        <p className="mt-3 max-w-md text-sm leading-6 text-soft-brown">
+          {authMode === "sign-in"
+            ? "Access your saved delivery details and continue shopping faster."
+            : "Save your delivery details for a faster Handpicked checkout."}
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 gap-1 rounded-full border border-warm-border bg-white/45 p-1">
+          <button
+            type="button"
+            onClick={() => {
+              setAuthMode("sign-in");
+              clearMessage();
+            }}
+            className={[
+              "h-10 rounded-full text-xs font-semibold uppercase tracking-[0.16em] transition",
+              authMode === "sign-in"
+                ? "bg-[#3F2A20] text-[#FFFDF9] shadow-sm"
+                : "text-soft-brown hover:text-deep-brown",
+            ].join(" ")}
+          >
+            Sign In
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setAuthMode("sign-up");
+              clearMessage();
+            }}
+            className={[
+              "h-10 rounded-full text-xs font-semibold uppercase tracking-[0.16em] transition",
+              authMode === "sign-up"
+                ? "bg-[#3F2A20] text-[#FFFDF9] shadow-sm"
+                : "text-soft-brown hover:text-deep-brown",
+            ].join(" ")}
+          >
+            Create Account
+          </button>
+        </div>
+
+        <form
+          onSubmit={authMode === "sign-in" ? handleSignIn : handleSignUp}
+          className="mt-6 grid gap-5"
+        >
+          <AccountInput
+            label="Email"
+            type="email"
+            value={email}
+            onChange={setEmail}
+            required
+          />
+
+          <AccountInput
+            label="Password"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            required
+            minLength={6}
+            helper={authMode === "sign-up" ? "Use at least 6 characters." : undefined}
+          />
+
+          {message ? (
+            <AccountMessage message={message} isSuccess={isSuccessMessage} />
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="inline-flex h-12 items-center justify-center rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_14px_30px_rgba(63,42,32,0.16)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none"
+          >
+            {isLoading
+              ? authMode === "sign-in"
+                ? "Signing in..."
+                : "Creating..."
+              : authMode === "sign-in"
+                ? "Sign In"
+                : "Create Account"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function AccountBenefit({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex gap-3 rounded-[1.35rem] border border-warm-border bg-white/45 p-4">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
+        {icon}
+      </div>
+
+      <div>
+        <p className="text-sm font-semibold text-deep-brown">{title}</p>
+        <p className="mt-1 text-xs leading-5 text-soft-brown">{description}</p>
+      </div>
+    </div>
   );
 }
 
@@ -524,8 +675,8 @@ function AccountInput({
   helper,
 }: AccountInputProps) {
   return (
-    <label className="grid gap-2">
-      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-soft-brown">
+    <label className="block">
+      <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
         {label}
       </span>
 
@@ -535,12 +686,41 @@ function AccountInput({
         minLength={minLength}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-12 rounded-[1.25rem] border border-warm-border bg-ivory px-4 text-sm text-deep-brown outline-none transition focus:border-muted-gold"
+        className="h-11 w-full border-b border-warm-border bg-transparent px-0 text-sm text-deep-brown outline-none transition focus:border-muted-gold"
       />
 
       {helper ? (
-        <span className="text-xs leading-5 text-soft-brown">{helper}</span>
+        <span className="mt-2 block text-xs leading-5 text-soft-brown">
+          {helper}
+        </span>
       ) : null}
+    </label>
+  );
+}
+
+function AccountTextarea({
+  label,
+  value,
+  onChange,
+  rows = 4,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  rows?: number;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
+        {label}
+      </span>
+
+      <textarea
+        rows={rows}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full resize-none border-b border-warm-border bg-transparent px-0 py-2 text-sm leading-6 text-deep-brown outline-none transition focus:border-muted-gold"
+      />
     </label>
   );
 }
@@ -555,7 +735,7 @@ function AccountMessage({
   return (
     <p
       className={[
-        "rounded-[1rem] border p-3 text-sm leading-6",
+        "rounded-[1rem] border px-4 py-3 text-sm leading-6",
         isSuccess
           ? "border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]"
           : "border-muted-gold/30 bg-light-sand text-soft-brown",
