@@ -1,5 +1,4 @@
-import { Gem, PackageCheck, Sparkles } from "lucide-react";
-import { Reveal } from "@/components/common/reveal";
+import { PackageCheck, Sparkles, WandSparkles } from "lucide-react";
 
 const trustItems = [
   {
@@ -14,7 +13,7 @@ const trustItems = [
     title: "Refined Boutique Feel",
     description:
       "A calm shopping experience with graceful pieces, soft details, and polished styling.",
-    icon: Gem,
+    icon: WandSparkles,
   },
   {
     number: "03",
@@ -27,39 +26,40 @@ const trustItems = [
 
 export function TrustStrip() {
   return (
-    <section className="hidden border-y border-warm-border bg-soft-white md:block">
-      <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
-        <div className="grid gap-5 md:grid-cols-3">
-          {trustItems.map((item, index) => {
-            const Icon = item.icon;
+    <section className="border-y border-warm-border bg-soft-white px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
+        {trustItems.map((item) => {
+          const Icon = item.icon;
 
-            return (
-              <Reveal key={item.title} delay={index * 0.08}>
-                <div className="group flex min-h-[230px] flex-col justify-between rounded-[1.75rem] border border-warm-border bg-ivory p-7 transition duration-500 hover:-translate-y-1 hover:border-muted-gold hover:shadow-[0_18px_60px_rgba(47,33,24,0.08)]">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
-                        {item.number}
-                      </p>
+          return (
+            <article
+              key={item.title}
+              className="relative overflow-hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)]"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.68))]" />
 
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-muted-gold/30 bg-soft-white text-muted-gold transition duration-500 group-hover:bg-light-sand">
-                        <Icon className="h-5 w-5" strokeWidth={1.6} />
-                      </div>
-                    </div>
-
-                    <h2 className="mt-5 font-serif-brand text-3xl font-medium leading-tight text-deep-brown sm:text-4xl">
-                      {item.title}
-                    </h2>
-                  </div>
-
-                  <p className="mt-6 text-sm leading-7 text-soft-brown">
-                    {item.description}
+              <div className="relative p-5">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
+                    {item.number}
                   </p>
+
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
+                    <Icon className="h-4 w-4" strokeWidth={1.7} />
+                  </div>
                 </div>
-              </Reveal>
-            );
-          })}
-        </div>
+
+                <h3 className="mt-7 text-2xl font-semibold tracking-[-0.04em] text-deep-brown">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-soft-brown">
+                  {item.description}
+                </p>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
