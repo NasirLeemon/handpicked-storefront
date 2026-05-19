@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, X } from "lucide-react";
-import { ProductImage } from "@/components/product/product-image";
+import { ProductImagePlaceholder } from "@/components/product/product-image-placeholder";
 import { useCart } from "@/components/cart/cart-provider";
 import { getProductBySlug } from "@/lib/products";
 import type { CartItem } from "@/types/cart";
@@ -29,16 +30,26 @@ export function CartItemCard({ item }: CartItemCardProps) {
   }
 
   return (
-    <article className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)] transition duration-500 hover:border-muted-gold hover:shadow-[0_20px_60px_rgba(47,33,24,0.075)]">
+    <article className="relative overflow-hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)] transition duration-500 hover:border-muted-gold hover:shadow-[0_20px_60px_rgba(47,33,24,0.075)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.08),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.62))]" />
 
-      <div className="relative grid grid-cols-[84px_1fr] gap-4 p-4 sm:grid-cols-[104px_1fr] sm:gap-5">
+      <div className="relative grid grid-cols-[86px_1fr] gap-3 p-4 sm:grid-cols-[104px_1fr] sm:gap-5">
         <Link
           href={`/product/${item.slug}`}
-          className="group overflow-hidden rounded-[1.25rem] border border-warm-border bg-light-sand"
+          className="group block h-[86px] w-[86px] self-start overflow-hidden rounded-[1.1rem] border border-warm-border bg-light-sand sm:h-[104px] sm:w-[104px]"
         >
-          <div className="relative aspect-[4/5] overflow-hidden">
-            <ProductImage src={image} alt={name} />
+          <div className="relative h-full w-full overflow-hidden">
+            {image ? (
+              <Image
+                src={image}
+                alt={name}
+                fill
+                sizes="120px"
+                className="object-cover object-top transition duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <ProductImagePlaceholder title="Image" label="Product" />
+            )}
           </div>
         </Link>
 
@@ -59,7 +70,8 @@ export function CartItemCard({ item }: CartItemCardProps) {
               </Link>
 
               <p className="mt-1.5 text-sm leading-5 text-soft-brown">
-                Size <span className="font-medium text-deep-brown">{item.size}</span>
+                Size{" "}
+                <span className="font-medium text-deep-brown">{item.size}</span>
               </p>
             </div>
 
@@ -73,7 +85,7 @@ export function CartItemCard({ item }: CartItemCardProps) {
             </button>
           </div>
 
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="inline-flex h-9 w-fit items-center overflow-hidden rounded-full border border-warm-border bg-white/60 shadow-sm">
               <button
                 type="button"
