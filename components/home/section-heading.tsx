@@ -15,22 +15,22 @@ export function SectionHeading({
   return (
     <Reveal>
       <div className="mx-auto max-w-2xl text-center">
-        <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full border border-muted-gold/30 bg-light-sand text-muted-gold">
-          <Sparkles className="h-4 w-4" strokeWidth={1.6} />
+        <div className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold shadow-sm">
+          <Sparkles className="h-3.5 w-3.5" strokeWidth={1.7} />
         </div>
 
         {eyebrow ? (
-          <p className="mb-3 text-xs font-semibold tracking-[0.3em] text-muted-gold uppercase">
+          <p className="mb-2 text-[10px] font-semibold tracking-[0.28em] text-muted-gold uppercase sm:text-xs">
             {eyebrow}
           </p>
         ) : null}
 
-        <h2 className="font-serif-brand text-4xl font-medium leading-[0.98] tracking-[-0.035em] text-deep-brown sm:text-5xl lg:text-6xl">
+        <h2 className="text-4xl font-semibold leading-[1.02] tracking-[-0.045em] text-deep-brown sm:text-5xl">
           {title}
         </h2>
 
         {description ? (
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-soft-brown sm:text-base">
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-soft-brown sm:text-base">
             {description}
           </p>
         ) : null}
