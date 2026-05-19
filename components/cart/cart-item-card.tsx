@@ -29,81 +29,81 @@ export function CartItemCard({ item }: CartItemCardProps) {
   }
 
   return (
-    <article className="rounded-[1.5rem] border border-warm-border bg-soft-white p-3 shadow-sm transition duration-500 hover:border-muted-gold hover:shadow-[0_18px_60px_rgba(47,33,24,0.08)] sm:grid sm:grid-cols-[132px_1fr] sm:gap-5 sm:p-5">
-      <div className="grid grid-cols-[96px_1fr] gap-4 sm:contents">
+    <article className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)] transition duration-500 hover:border-muted-gold hover:shadow-[0_20px_60px_rgba(47,33,24,0.075)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.08),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.62))]" />
+
+      <div className="relative grid grid-cols-[84px_1fr] gap-4 p-4 sm:grid-cols-[104px_1fr] sm:gap-5">
         <Link
           href={`/product/${item.slug}`}
-          className="group overflow-hidden rounded-[1.15rem] border border-warm-border bg-light-sand sm:rounded-[1.5rem]"
+          className="group overflow-hidden rounded-[1.25rem] border border-warm-border bg-light-sand"
         >
           <div className="relative aspect-[4/5] overflow-hidden">
             <ProductImage src={image} alt={name} />
           </div>
         </Link>
 
-        <div className="flex min-w-0 flex-col justify-between gap-3">
-          <div>
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                {color ? (
-                  <p className="mb-1 text-[10px] font-semibold tracking-[0.18em] text-muted-gold uppercase sm:mb-2 sm:text-xs">
-                    {color}
-                  </p>
-                ) : null}
-
-                <Link
-                  href={`/product/${item.slug}`}
-                  className="line-clamp-2 font-serif-brand text-2xl font-medium leading-none tracking-[-0.02em] text-deep-brown transition hover:text-muted-gold sm:text-3xl"
-                >
-                  {name}
-                </Link>
-
-                <p className="mt-2 text-xs text-soft-brown sm:mt-3 sm:text-sm">
-                  Size: {item.size}
+        <div className="min-w-0">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              {color ? (
+                <p className="text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase">
+                  {color}
                 </p>
-              </div>
+              ) : null}
 
-              <button
-                type="button"
-                onClick={() => removeItem(item.id)}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-warm-border bg-ivory text-taupe transition hover:border-muted-gold hover:text-deep-brown sm:h-9 sm:w-9"
-                aria-label="Remove item"
+              <Link
+                href={`/product/${item.slug}`}
+                className="mt-1 line-clamp-2 block text-base font-semibold leading-6 tracking-[-0.015em] text-deep-brown transition hover:text-muted-gold sm:text-lg"
               >
-                <X className="h-4 w-4" strokeWidth={1.7} />
-              </button>
+                {name}
+              </Link>
+
+              <p className="mt-1.5 text-sm leading-5 text-soft-brown">
+                Size <span className="font-medium text-deep-brown">{item.size}</span>
+              </p>
             </div>
+
+            <button
+              type="button"
+              onClick={() => removeItem(item.id)}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-warm-border bg-white/60 text-taupe transition hover:border-muted-gold hover:text-deep-brown"
+              aria-label="Remove item"
+            >
+              <X className="h-3.5 w-3.5" strokeWidth={1.7} />
+            </button>
           </div>
 
-          <div className="flex items-end justify-between gap-3">
-            <div className="inline-flex h-9 items-center overflow-hidden rounded-full border border-warm-border bg-ivory shadow-sm sm:h-11">
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="inline-flex h-9 w-fit items-center overflow-hidden rounded-full border border-warm-border bg-white/60 shadow-sm">
               <button
                 type="button"
                 onClick={decreaseQuantity}
-                className="flex h-full w-9 items-center justify-center text-deep-brown transition hover:bg-light-sand sm:w-11"
+                className="flex h-full w-9 items-center justify-center text-deep-brown transition hover:bg-light-sand"
                 aria-label="Decrease quantity"
               >
-                <Minus className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.7} />
+                <Minus className="h-3.5 w-3.5" strokeWidth={1.7} />
               </button>
 
-              <span className="flex h-full min-w-10 items-center justify-center border-x border-warm-border px-3 text-sm font-medium text-deep-brown sm:min-w-12 sm:px-4">
+              <span className="flex h-full min-w-10 items-center justify-center border-x border-warm-border px-3 text-sm font-semibold text-deep-brown">
                 {item.quantity}
               </span>
 
               <button
                 type="button"
                 onClick={increaseQuantity}
-                className="flex h-full w-9 items-center justify-center text-deep-brown transition hover:bg-light-sand sm:w-11"
+                className="flex h-full w-9 items-center justify-center text-deep-brown transition hover:bg-light-sand"
                 aria-label="Increase quantity"
               >
-                <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.7} />
+                <Plus className="h-3.5 w-3.5" strokeWidth={1.7} />
               </button>
             </div>
 
-            <div className="text-right">
-              <p className="text-[11px] text-soft-brown sm:text-sm">
+            <div className="text-left sm:text-right">
+              <p className="text-xs text-soft-brown">
                 ৳ {price.toLocaleString()} each
               </p>
 
-              <p className="mt-1 text-sm font-semibold text-deep-brown sm:text-base">
+              <p className="mt-0.5 text-lg font-semibold tracking-[-0.035em] text-deep-brown">
                 ৳ {(price * item.quantity).toLocaleString()}
               </p>
             </div>
