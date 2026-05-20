@@ -14,11 +14,15 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.slug}`} className="group block h-full">
       <article className="flex h-full flex-col">
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-light-sand shadow-sm transition duration-500 group-hover:-translate-y-1 group-hover:border-muted-gold group-hover:shadow-[0_22px_65px_rgba(47,33,24,0.10)]">
-          <div className="relative aspect-[4/5] overflow-hidden">
-            <ProductImage src={imageSrc} alt={product.name} />
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#F7EFE4] shadow-sm transition duration-500 group-hover:-translate-y-1 group-hover:border-muted-gold group-hover:shadow-[0_22px_65px_rgba(47,33,24,0.10)]">
+          <div className="relative aspect-[4/5] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(255,253,249,0.88),rgba(242,232,218,0.72)_58%,rgba(232,220,203,0.84))]">
+            <ProductImage
+              src={imageSrc}
+              alt={product.name}
+              objectPosition="object-[center_42%]"
+            />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-[#21160F]/16 via-transparent to-transparent opacity-80 transition duration-500 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#21160F]/14 via-transparent to-white/10 opacity-80 transition duration-500 group-hover:opacity-100" />
           </div>
 
           <div className="absolute left-3 top-3 sm:left-4 sm:top-4">

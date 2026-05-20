@@ -4,14 +4,24 @@ import { ProductImagePlaceholder } from "@/components/product/product-image-plac
 type ProductImageProps = {
   src?: string;
   alt: string;
-  priority?: boolean;
+  preload?: boolean;
+  sizes?: string;
+  fit?: "cover" | "contain";
+  objectPosition?: string;
+  scale?: string;
+  hoverScale?: string;
   className?: string;
 };
 
 export function ProductImage({
   src,
   alt,
-  priority = false,
+  preload = false,
+  sizes = "(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw",
+  fit = "cover",
+  objectPosition = "object-center",
+  scale = "scale-[1.01]",
+  hoverScale = "group-hover:scale-[1.05]",
   className = "",
 }: ProductImageProps) {
   if (!src) {
@@ -23,9 +33,11 @@ export function ProductImage({
       src={src}
       alt={alt}
       fill
-      priority={priority}
-      sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
-      className={`object-cover object-top transition duration-700 group-hover:scale-105 ${className}`}
+      preload={preload}
+      sizes={sizes}
+      className={`${
+        fit === "contain" ? "object-contain" : "object-cover"
+      } ${objectPosition} ${scale} ${hoverScale} transition duration-700 ${className}`}
     />
   );
 }
