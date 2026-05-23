@@ -26,7 +26,7 @@ const trustItems = [
 
 export function TrustStrip() {
   return (
-    <section className="border-y border-warm-border bg-soft-white px-4 py-10 sm:px-6 lg:px-8">
+    <section className="border-y border-warm-border bg-soft-white px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
         {trustItems.map((item) => {
           const Icon = item.icon;
@@ -38,7 +38,7 @@ export function TrustStrip() {
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.68))]" />
 
-              <div className="relative p-5">
+              <div className="relative p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
                     {item.number}
@@ -49,7 +49,7 @@ export function TrustStrip() {
                   </div>
                 </div>
 
-                <h3 className="mt-7 text-2xl font-semibold tracking-[-0.04em] text-deep-brown">
+                <h3 className="mt-7 font-serif-brand text-3xl font-medium tracking-[-0.04em] text-deep-brown">
                   {item.title}
                 </h3>
 

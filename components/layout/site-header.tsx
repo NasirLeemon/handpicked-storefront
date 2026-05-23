@@ -27,17 +27,18 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-[9999] border-b border-warm-border bg-ivory/94 backdrop-blur-xl">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.13),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
-      <div className="relative mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-1 items-center md:hidden">
+
+      <div className="relative mx-auto grid h-16 max-w-7xl grid-cols-[44px_1fr_auto] items-center gap-2 px-4 sm:px-6 md:flex md:h-16 md:justify-between lg:px-8">
+        <div className="flex items-center md:hidden">
           <MobileMenu />
         </div>
 
         <Link
           href="/"
-          className="flex flex-1 justify-center md:justify-start"
+          className="min-w-0 justify-self-center md:flex md:flex-1 md:justify-start"
           aria-label="Go to homepage"
         >
-          <span className="font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown sm:text-5xl md:text-4xl">
+          <span className="block truncate font-serif-brand text-[2.15rem] font-medium leading-none tracking-[-0.045em] text-deep-brown sm:text-4xl md:text-[2rem]">
             Handpicked
           </span>
         </Link>
@@ -47,17 +48,17 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-xs font-semibold tracking-[0.24em] text-deep-brown uppercase transition hover:text-muted-gold"
+              className="text-[11px] font-semibold tracking-[0.26em] text-deep-brown uppercase transition hover:text-muted-gold"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex flex-1 items-center justify-end gap-2.5">
+        <div className="flex items-center justify-end gap-2 md:flex-1">
           <Link
             href="/cart"
-            className="relative inline-flex h-10 items-center justify-center gap-2 rounded-full border border-warm-border bg-[#FFFDF9]/70 px-3 text-deep-brown shadow-sm transition hover:border-muted-gold hover:text-muted-gold md:px-4"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-warm-border/80 bg-[#FFFDF9]/70 text-deep-brown shadow-[0_8px_22px_rgba(47,33,24,0.045)] transition hover:border-muted-gold hover:bg-[#FFFDF9]/85 hover:text-muted-gold md:w-auto md:gap-2 md:px-4"
             aria-label={`Cart with ${totalItems} item${totalItems === 1 ? "" : "s"}`}
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={1.8} />
@@ -73,7 +74,7 @@ export function SiteHeader() {
             ) : null}
           </Link>
 
-          <AccountNavLink className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-warm-border bg-[#FFFDF9]/70 px-3 text-deep-brown shadow-sm transition hover:border-muted-gold hover:text-muted-gold md:px-4 md:text-[11px] md:font-semibold md:tracking-[0.18em] md:uppercase" />
+          <AccountNavLink className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-warm-border/80 bg-[#FFFDF9]/70 text-deep-brown shadow-[0_8px_22px_rgba(47,33,24,0.045)] transition hover:border-muted-gold hover:bg-[#FFFDF9]/85 hover:text-muted-gold md:w-auto md:gap-2 md:px-4 md:text-[11px] md:font-semibold md:tracking-[0.18em] md:uppercase" />
         </div>
       </div>
     </header>

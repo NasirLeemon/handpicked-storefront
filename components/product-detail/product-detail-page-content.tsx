@@ -13,9 +13,9 @@ export function ProductDetailPageContent({
   product,
 }: ProductDetailPageContentProps) {
   return (
-    <div className="bg-ivory px-4 py-6 text-deep-brown sm:px-6 sm:py-10 lg:px-8 lg:py-14">
+    <div className="bg-ivory px-4 py-5 text-deep-brown sm:px-6 sm:py-8 lg:px-8 lg:py-10">
       <div className="mx-auto max-w-7xl">
-        <nav className="mb-5 text-sm text-soft-brown sm:mb-8">
+        <nav className="mb-4 text-sm text-soft-brown sm:mb-6">
           <Link href="/" className="hover:text-deep-brown">
             Home
           </Link>
@@ -27,7 +27,7 @@ export function ProductDetailPageContent({
           <span className="text-deep-brown">{product.name}</span>
         </nav>
 
-        <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+        <div className="grid gap-5 lg:grid-cols-[0.98fr_0.92fr] lg:items-start lg:gap-10">
           <ProductGallery product={product} />
           <ProductPurchasePanel product={product} />
         </div>

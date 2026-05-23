@@ -15,12 +15,12 @@ export function CartSummary({ items }: CartSummaryProps) {
   const subtotal = getCartSubtotal(items);
 
   return (
-    <aside className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_18px_55px_rgba(47,33,24,0.075)] lg:sticky lg:top-28">
+    <aside className="relative overflow-hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_18px_55px_rgba(47,33,24,0.075)] lg:sticky lg:top-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
 
-      <div className="relative p-5">
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
+      <div className="relative p-4">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
             <PackageCheck className="h-4 w-4" strokeWidth={1.7} />
           </div>
 
@@ -53,7 +53,7 @@ export function CartSummary({ items }: CartSummaryProps) {
             Total
           </span>
 
-          <span className="text-2xl font-semibold tracking-[-0.04em] text-deep-brown">
+          <span className="text-xl font-semibold tracking-[-0.04em] text-deep-brown">
             ৳ {subtotal.toLocaleString()}+
           </span>
         </div>

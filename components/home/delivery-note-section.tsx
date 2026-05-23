@@ -2,7 +2,7 @@ import { PackageCheck } from "lucide-react";
 
 export function DeliveryNoteSection() {
   return (
-    <section className="bg-ivory px-4 py-10 sm:px-6 lg:px-8">
+    <section className="bg-ivory px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_18px_55px_rgba(47,33,24,0.065)]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.13),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
@@ -18,7 +18,7 @@ export function DeliveryNoteSection() {
                   Delivery Note
                 </p>
 
-                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-deep-brown sm:text-3xl">
+                <h2 className="mt-2 font-serif-brand text-3xl font-medium tracking-[-0.04em] text-deep-brown sm:text-3xl">
                   Outside Dhaka orders require advance payment
                 </h2>
               </div>

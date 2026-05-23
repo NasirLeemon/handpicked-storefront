@@ -9,27 +9,29 @@ type CartPageContentProps = {
 
 export function CartPageContent({ items }: CartPageContentProps) {
   return (
-    <div className="min-h-screen bg-ivory px-4 py-12 text-deep-brown sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-ivory px-4 py-5 text-deep-brown sm:px-6 sm:py-7 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 text-center">
-          <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-muted-gold uppercase">
-            Your Selection
-          </p>
+        <div className="mb-5 flex items-end justify-between gap-4 border-b border-warm-border pb-4">
+          <div>
+            <p className="text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase">
+              Your Selection
+            </p>
 
-          <h1 className="font-serif-brand text-5xl font-semibold tracking-tight text-deep-brown sm:text-6xl">
-            Your Cart
-          </h1>
+            <h1 className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-deep-brown sm:text-3xl">
+              Cart
+            </h1>
+          </div>
 
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-soft-brown">
-            Review your selected pieces before submitting your order request.
+          <p className="hidden max-w-md text-right text-sm leading-6 text-soft-brown sm:block">
+            Review your selected pieces before checkout.
           </p>
         </div>
 
         {items.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-            <div className="space-y-5">
+          <div className="grid gap-6 lg:grid-cols-[1fr_380px] lg:gap-8">
+            <div className="space-y-4">
               {items.map((item) => (
                 <CartItemCard key={item.id} item={item} />
               ))}

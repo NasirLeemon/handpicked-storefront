@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ProductImagePlaceholder } from "@/components/product/product-image-placeholder";
-
+import { optimizeCloudinaryImage } from "@/lib/cloudinary";
 type ProductImageProps = {
   src?: string;
   alt: string;
@@ -30,7 +30,7 @@ export function ProductImage({
 
   return (
     <Image
-      src={src}
+      src={optimizeCloudinaryImage(src)}
       alt={alt}
       fill
       preload={preload}

@@ -36,7 +36,7 @@ export function AccountNavLink({
       className={className}
       aria-label={label}
     >
-      <UserRound className="h-6 w-6 md:h-5 md:w-5" strokeWidth={1.8} />
+      <UserRound className="h-5 w-5" strokeWidth={1.8} />
       {showLabel ? <span className="hidden md:inline">{label}</span> : null}
     </Link>
   );

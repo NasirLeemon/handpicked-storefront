@@ -44,86 +44,88 @@ export function MobileMenu() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="flex h-10 w-10 items-center justify-center text-deep-brown"
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-warm-border bg-white/55 text-deep-brown shadow-sm"
         aria-label="Open menu"
       >
-        <Menu className="h-7 w-7" strokeWidth={1.7} />
+        <Menu className="h-4.5 w-4.5" strokeWidth={1.8} />
       </button>
 
       {isOpen ? (
         <div className="fixed inset-0 z-[99999] h-dvh w-screen overflow-y-auto bg-ivory text-deep-brown">
-          <div className="flex min-h-dvh flex-col">
-            <div className="flex h-20 shrink-0 items-center justify-between border-b border-warm-border bg-ivory px-5">
-              <Link
-                href="/"
-                onClick={closeMenu}
-                className="font-serif-brand text-4xl font-medium tracking-[-0.04em] text-deep-brown"
-              >
-                Handpicked
-              </Link>
+          <div className="flex min-h-dvh flex-col px-4 py-4">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_18px_55px_rgba(47,33,24,0.08)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.13),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
 
-              <button
-                type="button"
-                onClick={closeMenu}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-warm-border bg-soft-white text-deep-brown"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" strokeWidth={1.8} />
-              </button>
+              <div className="relative flex items-center justify-between px-5 py-4">
+                <Link
+                  href="/"
+                  onClick={closeMenu}
+                  className="text-2xl font-semibold tracking-[-0.045em] text-deep-brown"
+                >
+                  Handpicked
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={closeMenu}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-warm-border bg-white/60 text-deep-brown"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" strokeWidth={1.8} />
+                </button>
+              </div>
             </div>
 
-            <div className="flex flex-1 flex-col bg-ivory px-5 py-7">
-              <p className="text-xs font-semibold tracking-[0.3em] text-muted-gold uppercase">
-                Menu
-              </p>
-
-              <nav className="mt-5">
-                {navItems.map((item, index) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={closeMenu}
-                    className="flex items-center justify-between border-b border-warm-border py-5"
-                  >
-                    <div className="flex items-baseline gap-4">
-                      <span className="text-xs font-semibold tracking-[0.22em] text-muted-gold">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-
-                      <span className="font-serif-brand text-5xl font-medium leading-none tracking-[-0.04em] text-deep-brown">
-                        {item.label}
-                      </span>
-                    </div>
-
-                    {item.label === "Cart" ? (
-                      <ShoppingBag
-                        className="h-5 w-5 text-soft-brown"
-                        strokeWidth={1.7}
-                      />
-                    ) : (
-                      <span className="h-px w-8 bg-muted-gold" />
-                    )}
-                  </Link>
-                ))}
-
-                <div className="flex items-center justify-between border-b border-warm-border py-5">
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-xs font-semibold tracking-[0.22em] text-muted-gold">
-                      {String(navItems.length + 1).padStart(2, "0")}
+            <nav className="mt-4 overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_16px_45px_rgba(47,33,24,0.055)]">
+              {navItems.map((item, index) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeMenu}
+                  className="flex items-center justify-between border-b border-warm-border px-5 py-4 last:border-b-0"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-[10px] font-semibold tracking-[0.12em] text-muted-gold">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <AccountNavLink
-                      onClick={closeMenu}
-                      className="flex items-center gap-3 font-serif-brand text-5xl font-medium leading-none tracking-[-0.04em] text-deep-brown"
-                    />
+                    <span className="text-xl font-semibold tracking-[-0.035em] text-deep-brown">
+                      {item.label}
+                    </span>
                   </div>
 
-                  <span className="h-px w-8 bg-muted-gold" />
-                </div>
-              </nav>
+                  {item.label === "Cart" ? (
+                    <ShoppingBag
+                      className="h-5 w-5 text-soft-brown"
+                      strokeWidth={1.7}
+                    />
+                  ) : (
+                    <span className="h-px w-8 bg-muted-gold" />
+                  )}
+                </Link>
+              ))}
 
-              <div className="mt-auto pt-8">
-                <div className="rounded-[1.5rem] border border-warm-border bg-soft-white p-5">
+              <div className="flex items-center justify-between px-5 py-4">
+                <div className="flex items-center gap-4">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-[10px] font-semibold tracking-[0.12em] text-muted-gold">
+                    {String(navItems.length + 1).padStart(2, "0")}
+                  </span>
+
+                  <AccountNavLink
+                    onClick={closeMenu}
+                    className="flex items-center gap-3 text-xl font-semibold tracking-[-0.035em] text-deep-brown"
+                  />
+                </div>
+
+                <span className="h-px w-8 bg-muted-gold" />
+              </div>
+            </nav>
+
+            <div className="mt-auto pt-4">
+              <div className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_16px_45px_rgba(47,33,24,0.055)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
+
+                <div className="relative p-5">
                   <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
                     Personal Support
                   </p>
@@ -138,7 +140,7 @@ export function MobileMenu() {
                       href="https://m.me/843144242224804"
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#4A3327] px-4 text-xs font-semibold tracking-[0.14em] !text-[#FFFDF9] uppercase"
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#3F2A20] px-4 text-xs font-semibold tracking-[0.14em] !text-[#FFFDF9] uppercase shadow-[0_12px_28px_rgba(63,42,32,0.16)]"
                     >
                       <MessageCircle className="h-4 w-4" strokeWidth={1.7} />
                       Messenger
@@ -147,17 +149,17 @@ export function MobileMenu() {
                     <Link
                       href="/contact"
                       onClick={closeMenu}
-                      className="inline-flex h-11 items-center justify-center rounded-full border border-warm-border bg-ivory px-4 text-xs font-semibold tracking-[0.14em] text-deep-brown uppercase"
+                      className="inline-flex h-10 items-center justify-center rounded-full border border-warm-border bg-white/45 px-4 text-xs font-semibold tracking-[0.14em] text-deep-brown uppercase"
                     >
                       Contact
                     </Link>
                   </div>
                 </div>
-
-                <p className="mt-5 text-[11px] leading-5 text-taupe">
-                  Outside Dhaka orders require advance payment before dispatch.
-                </p>
               </div>
+
+              <p className="mt-4 px-1 text-[11px] leading-5 text-taupe">
+                Outside Dhaka orders require advance payment before dispatch.
+              </p>
             </div>
           </div>
         </div>
