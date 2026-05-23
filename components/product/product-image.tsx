@@ -30,14 +30,16 @@ export function ProductImage({
 
   return (
     <Image
-      src={optimizeCloudinaryImage(src)}
-      alt={alt}
-      fill
-      preload={preload}
-      sizes={sizes}
-      className={`${
-        fit === "contain" ? "object-contain" : "object-cover"
-      } ${objectPosition} ${scale} ${hoverScale} transition duration-700 ${className}`}
-    />
+  src={optimizeCloudinaryImage(src)}
+  alt={alt}
+  fill
+  preload={preload}
+  placeholder="blur"
+  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDQwMCA1MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNGOUYxRTgiLz48L3N2Zz4="
+  sizes={sizes}
+  className={`${
+    fit === "contain" ? "object-contain" : "object-cover"
+  } ${objectPosition} ${scale} ${hoverScale} transition duration-700 ${className}`}
+/>
   );
 }
