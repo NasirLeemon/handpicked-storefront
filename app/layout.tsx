@@ -23,47 +23,74 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://handpicked-storefront.vercel.app"),
+  metadataBase: new URL("https://handpickedbd.com"),
+
   title: {
-    default: "Handpicked | Premium Boutique Clothing",
+    default: "Handpicked | Boutique Clothing, Beauty & Accessories",
     template: "%s | Handpicked",
   },
+
   description:
-    "Shop premium boutique clothing, accessories, and beauty pieces thoughtfully selected for graceful everyday style.",
+    "Shop thoughtfully selected women's clothing, beauty products, and accessories from Handpicked, with delivery across Bangladesh.",
+
   keywords: [
     "Handpicked",
-    "boutique clothing",
-    "women fashion",
-    "ethnic wear",
-    "co-ords",
-    "beauty products",
-    "accessories",
-    "Bangladesh fashion",
+    "Handpicked Bangladesh",
+    "women's clothing Bangladesh",
+    "boutique clothing Bangladesh",
+    "ethnic wear Bangladesh",
+    "co-ords Bangladesh",
+    "beauty products Bangladesh",
+    "women's accessories Bangladesh",
   ],
+
   authors: [
     {
       name: "Handpicked",
+      url: "https://handpickedbd.com",
     },
   ],
+
   creator: "Handpicked",
+  publisher: "Handpicked",
+
+  alternates: {
+    canonical: "/",
+  },
+
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
     apple: "/icon.svg",
   },
+
   openGraph: {
-    title: "Handpicked | Premium Boutique Clothing",
+    title: "Handpicked | Boutique Clothing, Beauty & Accessories",
     description:
-      "Premium boutique clothing, accessories, and beauty pieces thoughtfully selected for graceful everyday style.",
+      "Shop thoughtfully selected women's clothing, beauty products, and accessories, with delivery across Bangladesh.",
+    url: "/",
     type: "website",
     locale: "en_US",
     siteName: "Handpicked",
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "Handpicked | Premium Boutique Clothing",
+    title: "Handpicked | Boutique Clothing, Beauty & Accessories",
     description:
-      "Shop premium boutique clothing, accessories, and beauty pieces thoughtfully selected for graceful everyday style.",
+      "Shop thoughtfully selected women's clothing, beauty products, and accessories, with delivery across Bangladesh.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
