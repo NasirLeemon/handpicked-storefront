@@ -25,6 +25,10 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL("https://handpickedbd.com"),
 
+  verification: {
+  google: "6lCvuykYaFH3ZA1VLQzC7vCfHg758RYKNe9GXwpVeIU",
+},
+
   title: {
     default: "Handpicked | Boutique Clothing, Beauty & Accessories",
     template: "%s | Handpicked",
