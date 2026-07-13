@@ -69,15 +69,15 @@ export const metadata: Metadata = {
     apple: "/icon.svg",
   },
 
-  openGraph: {
-    title: "Handpicked | Boutique Clothing, Beauty & Accessories",
-    description:
-      "Shop thoughtfully selected women's clothing, beauty products, and accessories, with delivery across Bangladesh.",
-    url: "/",
-    type: "website",
-    locale: "en_US",
-    siteName: "Handpicked",
-  },
+ openGraph: {
+  title: "Handpicked | Boutique Clothing, Beauty & Accessories",
+  description:
+    "Shop thoughtfully selected women's clothing, beauty products, and accessories, with delivery across Bangladesh.",
+  url: "https://handpickedbd.com",
+  type: "website",
+  locale: "en_US",
+  siteName: "Handpicked",
+},
 
   twitter: {
     card: "summary_large_image",
