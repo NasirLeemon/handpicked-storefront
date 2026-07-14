@@ -5,19 +5,19 @@ const values = [
   {
     title: "Carefully Chosen",
     description:
-      "Every piece is selected for wearable elegance, comfort, and everyday styling.",
+      "Every product is thoughtfully selected for quality, comfort, style, and everyday use.",
     icon: Sparkles,
   },
   {
-    title: "Soft Boutique Feel",
+    title: "Clothing, Beauty & More",
     description:
-      "A calm, personal shopping experience with feminine details and refined pieces.",
+      "Discover women's clothing, beauty essentials, and accessories in one curated collection.",
     icon: Heart,
   },
   {
     title: "Easy Support",
     description:
-      "Message us for size help, availability, delivery, and payment confirmation.",
+      "Message us for product details, sizing, availability, delivery, and order support.",
     icon: MessageCircle,
   },
 ];
@@ -43,11 +43,11 @@ export function AboutPageContent() {
 
             <div>
               <p className="text-base leading-8 text-soft-brown">
-                Handpicked is a curated boutique collection of clothing,
-                accessories, and beauty pieces selected for graceful everyday
-                style. We focus on pieces that feel elegant, wearable, and easy
-                to love.
-              </p>
+  Handpicked is a Bangladesh-based online boutique offering
+  thoughtfully selected women&apos;s clothing, beauty products, and
+  accessories. We focus on pieces that feel elegant, wearable, and
+  easy to love, with delivery available across Bangladesh.
+</p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link
@@ -105,8 +105,9 @@ export function AboutPageContent() {
               </p>
 
               <p className="mt-2 text-sm leading-7 text-soft-brown">
-                Choose your piece, submit your order request, and our team will
-                confirm availability, delivery charge, and payment details.
+                Choose your products and submit your order request. Our team will
+confirm availability, delivery charges, and payment details before
+dispatch.
               </p>
             </div>
 
