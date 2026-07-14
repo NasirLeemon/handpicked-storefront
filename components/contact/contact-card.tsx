@@ -1,7 +1,15 @@
-import { ArrowRight, Globe, MessageCircle, Phone } from "lucide-react";
+import type { ElementType } from "react";
+import {
+  ArrowRight,
+  Globe,
+  MessageCircle,
+  Phone,
+} from "lucide-react";
 import { businessInfo } from "@/data/business-info";
 
 export function ContactCard() {
+  const phoneUrl = `tel:${businessInfo.phone.replace(/[^\d+]/g, "")}`;
+
   return (
     <section className="grid items-start gap-6 lg:grid-cols-[1.08fr_0.92fr]">
       <div className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_18px_55px_rgba(47,33,24,0.075)]">
@@ -17,12 +25,17 @@ export function ContactCard() {
           </p>
 
           <h2 className="mt-2 max-w-xl text-3xl font-semibold leading-tight tracking-[-0.045em] text-deep-brown sm:text-4xl">
-            Ask about size, availability, or delivery
+            Need help choosing your piece?
           </h2>
 
           <p className="mt-4 max-w-2xl text-sm leading-7 text-soft-brown">
-            Message us on Facebook for product availability, size guidance,
-            delivery, and payment questions before you order.
+            Every order can begin with a conversation. Contact us for product
+            details, sizing, color, availability, delivery charges, payment
+            information, and order support.
+          </p>
+
+          <p className="mt-3 text-xs font-medium tracking-[0.14em] text-muted-gold uppercase">
+            Support hours: {businessInfo.supportHours}
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -50,21 +63,26 @@ export function ContactCard() {
 
       <div className="grid gap-3">
         <ContactInfoCard
+          href={businessInfo.messengerUrl}
           icon={MessageCircle}
           title="Messenger"
-          description="Fastest way to ask about products and orders."
+          description="Our fastest support channel. Tap to start chatting."
+          external
         />
 
         <ContactInfoCard
-          icon={Globe}
-          title="Facebook"
-          description="Follow latest pieces and boutique updates."
-        />
+  href={businessInfo.facebookUrl}
+  icon={Globe}
+  title="Facebook"
+  description="See new arrivals, product updates, and boutique posts."
+  external
+/>
 
         <ContactInfoCard
+          href={phoneUrl}
           icon={Phone}
           title="Phone"
-          description={businessInfo.phone}
+          description={`${businessInfo.phone} · ${businessInfo.supportHours}`}
         />
       </div>
     </section>
@@ -72,18 +90,27 @@ export function ContactCard() {
 }
 
 type ContactInfoCardProps = {
-  icon: React.ElementType;
+  href: string;
+  icon: ElementType;
   title: string;
   description: string;
+  external?: boolean;
 };
 
 function ContactInfoCard({
+  href,
   icon: Icon,
   title,
   description,
+  external = false,
 }: ContactInfoCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)]">
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noreferrer" : undefined}
+      className="group relative overflow-hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)] transition duration-300 hover:-translate-y-0.5 hover:border-muted-gold"
+    >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.10),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.64))]" />
 
       <div className="relative flex items-start gap-4 p-5">
@@ -92,7 +119,7 @@ function ContactInfoCard({
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold tracking-[-0.025em] text-deep-brown">
+          <h3 className="text-lg font-semibold tracking-[-0.025em] text-deep-brown transition group-hover:text-muted-gold">
             {title}
           </h3>
 
@@ -101,6 +128,6 @@ function ContactInfoCard({
           </p>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
