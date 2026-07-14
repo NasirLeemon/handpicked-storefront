@@ -39,7 +39,7 @@ export const collections: Collection[] = [
     title: "Beauty",
     description: "Curated beauty add-ons for soft finishing touches.",
     href: "/shop?category=Beauty",
-    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1779089141/ChatGPT_Image_Feb_21_2026_11_39_14_PM_e7tka7.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1779557420/tsbwpqwensxwwqfge388.png",
     label: "Beauty",
   },
   {
@@ -47,7 +47,7 @@ export const collections: Collection[] = [
     title: "Accessories",
     description: "Delicate details to complete your boutique look.",
     href: "/shop?category=Accessories",
-    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1779089262/ChatGPT_Image_Feb_21_2026_11_51_25_PM_sdgdbj.png",
+    image: "https://res.cloudinary.com/dbmqkkesn/image/upload/v1779558942/eiuat0uf2hq5ahub2prz.png",
     label: "Details",
   },
 ];
