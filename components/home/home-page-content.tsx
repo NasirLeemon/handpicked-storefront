@@ -11,13 +11,13 @@ export function HomePageContent() {
   return (
     <div className="min-h-screen bg-ivory text-deep-brown">
       <HomeHero />
-      <ShopByCollectionSection />
-      <TrustStrip />
-      <NewArrivalsSection />
-      <BrandStorySection />
-      <HowToOrderSection />
-      <DeliveryNoteSection />
-      <MessengerCtaSection />
+<TrustStrip />
+<ShopByCollectionSection />
+<NewArrivalsSection />
+<BrandStorySection />
+<HowToOrderSection />
+<DeliveryNoteSection />
+<MessengerCtaSection />
     </div>
   );
 }

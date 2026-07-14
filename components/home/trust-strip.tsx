@@ -1,65 +1,60 @@
-import { PackageCheck, Sparkles, WandSparkles } from "lucide-react";
+import {
+  MessageCircle,
+  PackageCheck,
+  Sparkles,
+} from "lucide-react";
 
 const trustItems = [
   {
-    number: "01",
-    title: "Carefully Selected",
+    title: "Thoughtfully Selected",
     description:
-      "Every piece is chosen with attention to silhouette, comfort, color, and everyday elegance.",
+      "Clothing, beauty, and accessories chosen with care for everyday elegance.",
     icon: Sparkles,
   },
   {
-    number: "02",
-    title: "Refined Boutique Feel",
+    title: "Personal Support",
     description:
-      "A calm shopping experience with graceful pieces, soft details, and polished styling.",
-    icon: WandSparkles,
+      "Ask about sizing, colors, availability, delivery, or payment before ordering.",
+    icon: MessageCircle,
   },
   {
-    number: "03",
     title: "Simple Ordering",
     description:
-      "Choose your piece, submit your order request, and our team will confirm the details.",
+      "Submit your order request and our team will confirm every detail.",
     icon: PackageCheck,
   },
 ];
 
 export function TrustStrip() {
   return (
-    <section className="border-y border-warm-border bg-soft-white px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
-        {trustItems.map((item) => {
-          const Icon = item.icon;
+    <section className="border-y border-warm-border bg-[#FFFDF9] px-4 py-6 sm:px-6 sm:py-7 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid divide-y divide-warm-border md:grid-cols-3 md:divide-x md:divide-y-0">
+          {trustItems.map((item) => {
+            const Icon = item.icon;
 
-          return (
-            <article
-              key={item.title}
-              className="relative overflow-hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_42px_rgba(47,33,24,0.055)]"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.68))]" />
-
-              <div className="relative p-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-                    {item.number}
-                  </p>
-
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
-                    <Icon className="h-4 w-4" strokeWidth={1.7} />
-                  </div>
+            return (
+              <article
+                key={item.title}
+                className="group flex items-start gap-4 px-1 py-5 first:pt-0 last:pb-0 md:px-7 md:py-2 md:first:pl-0 md:last:pr-0"
+              >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold transition duration-300 group-hover:border-muted-gold/45 group-hover:bg-[#F2E5D2]">
+                  <Icon className="h-[18px] w-[18px]" strokeWidth={1.7} />
                 </div>
 
-                <h3 className="mt-7 font-serif-brand text-3xl font-medium tracking-[-0.04em] text-deep-brown">
-                  {item.title}
-                </h3>
+                <div className="min-w-0">
+                  <h2 className="font-serif-brand text-[1.55rem] font-medium leading-tight tracking-[-0.03em] text-deep-brown sm:text-[1.7rem]">
+                    {item.title}
+                  </h2>
 
-                <p className="mt-3 text-sm leading-6 text-soft-brown">
-                  {item.description}
-                </p>
-              </div>
-            </article>
-          );
-        })}
+                  <p className="mt-2 max-w-sm text-sm leading-6 text-soft-brown">
+                    {item.description}
+                  </p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
