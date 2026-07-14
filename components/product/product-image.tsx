@@ -16,7 +16,7 @@ export function ProductImage({
   src,
   alt,
   preload = false,
-  sizes = "(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw",
+  sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 100vw",
   fit = "cover",
   objectPosition = "object-center",
   scale = "scale-[1.01]",
