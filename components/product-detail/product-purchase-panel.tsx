@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
@@ -12,20 +12,47 @@ type ProductPurchasePanelProps = {
   product: Product;
 };
 
-export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
+export function ProductPurchasePanel({
+  product,
+}: ProductPurchasePanelProps) {
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [showSizeError, setShowSizeError] = useState(false);
+  const [validationAttempt, setValidationAttempt] = useState(0);
+
+  const sizeSectionRef = useRef<HTMLDivElement>(null);
+
   const availableStock = Number(product.availableStock ?? 0);
-  const isSoldOut = product.availability === "sold-out" || availableStock <= 0;
+  const isSoldOut =
+    product.availability === "sold-out" || availableStock <= 0;
 
   function decreaseQuantity() {
-    setQuantity((currentQuantity) => Math.max(1, currentQuantity - 1));
+    setQuantity((currentQuantity) =>
+      Math.max(1, currentQuantity - 1)
+    );
   }
 
   function increaseQuantity() {
     setQuantity((currentQuantity) =>
       Math.min(availableStock, currentQuantity + 1)
     );
+  }
+
+  function handleSelectSize(size: string) {
+    setSelectedSize(size);
+    setShowSizeError(false);
+  }
+
+  function handleSizeRequired() {
+    setShowSizeError(true);
+    setValidationAttempt((currentAttempt) => currentAttempt + 1);
+
+    window.requestAnimationFrame(() => {
+      sizeSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
   }
 
   return (
@@ -58,6 +85,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
               <p className="text-[10px] font-semibold tracking-[0.22em] text-taupe uppercase">
                 Price
               </p>
+
               <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-deep-brown sm:text-[1.7rem]">
                 ৳ {product.price.toLocaleString()}
               </p>
@@ -75,7 +103,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
           <div className="mt-5">
             <div className="mb-5 flex items-center justify-between gap-4">
               <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-                Choose Options
+                Choose Your Size
               </p>
 
               <p className="text-sm text-soft-brown">
@@ -87,9 +115,14 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
             </div>
 
             <SizeSelector
+              ref={sizeSectionRef}
               sizes={product.sizes}
               selectedSize={selectedSize}
-              onSelectSize={setSelectedSize}
+              availableStock={availableStock}
+              isSoldOut={isSoldOut}
+              showError={showSizeError}
+              validationAttempt={validationAttempt}
+              onSelectSize={handleSelectSize}
             />
 
             <QuantitySelector
@@ -106,12 +139,14 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
               isSoldOut={isSoldOut}
               selectedSize={selectedSize}
               quantity={quantity}
+              onSizeRequired={handleSizeRequired}
             />
           </div>
 
           <div className="mt-5 grid gap-2 border-t border-warm-border pt-4 sm:grid-cols-3">
             <div className="flex gap-2">
               <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-gold" />
+
               <p className="text-[11px] leading-5 text-soft-brown">
                 Quality checked before delivery
               </p>
@@ -119,6 +154,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
 
             <div className="flex gap-2">
               <Truck className="mt-0.5 h-4 w-4 shrink-0 text-muted-gold" />
+
               <p className="text-[11px] leading-5 text-soft-brown">
                 Delivery available across Bangladesh
               </p>
@@ -126,6 +162,7 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
 
             <div className="flex gap-2">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-muted-gold" />
+
               <p className="text-[11px] leading-5 text-soft-brown">
                 Order reviewed before confirmation
               </p>
