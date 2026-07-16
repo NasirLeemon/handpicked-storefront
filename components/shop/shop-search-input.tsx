@@ -5,9 +5,12 @@ type ShopSearchInputProps = {
   onChange: (value: string) => void;
 };
 
-export function ShopSearchInput({ value, onChange }: ShopSearchInputProps) {
+export function ShopSearchInput({
+  value,
+  onChange,
+}: ShopSearchInputProps) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       <span className="mb-2 hidden text-[10px] font-semibold tracking-[0.24em] text-muted-gold uppercase md:block">
         Search
       </span>
@@ -22,7 +25,7 @@ export function ShopSearchInput({ value, onChange }: ShopSearchInputProps) {
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder="Search products"
-          className="h-11 w-full bg-transparent pl-7 pr-2 text-sm text-deep-brown outline-none transition placeholder:text-taupe sm:h-12"
+          className="h-11 w-full appearance-none border-0 bg-transparent pl-7 pr-2 text-sm text-deep-brown outline-none ring-0 transition placeholder:text-taupe focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 sm:h-12"
         />
       </div>
     </label>

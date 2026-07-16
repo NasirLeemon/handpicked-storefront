@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/common/reveal";
-import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/product/product-card";
+import type { Product } from "@/types/product";
 
 type ProductGridProps = {
   products: Product[];
@@ -8,9 +8,9 @@ type ProductGridProps = {
 
 export function ProductGrid({ products }: ProductGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
+    <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-x-4 md:gap-y-10 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
       {products.map((product, index) => (
-        <Reveal key={product.id} delay={(index % 4) * 0.06}>
+        <Reveal key={product.id} delay={(index % 6) * 0.04}>
           <ProductCard product={product} />
         </Reveal>
       ))}
