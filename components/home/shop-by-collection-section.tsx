@@ -57,7 +57,7 @@ export function ShopByCollectionSection() {
         </p>
 
         <div className="mt-10 flex justify-center lg:mt-12">
-          <BoutiqueButton href="/shop" variant="secondary">
+          <BoutiqueButton href="/shop">
             View All Collections
           </BoutiqueButton>
         </div>
