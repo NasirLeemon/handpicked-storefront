@@ -99,6 +99,15 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
       return;
     }
 
+    const normalizedPhone = customerPhone.replace(/\D/g, "");
+
+    if (!/^01\d{9}$/.test(normalizedPhone)) {
+      setIsSuccess(false);
+      setStatus("Enter a valid 11-digit Bangladesh phone number.");
+      return;
+    }
+
+
     setIsSubmitting(true);
     setIsSuccess(false);
     setStatus("");
@@ -111,7 +120,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         },
         body: JSON.stringify({
           customerName,
-          phone: customerPhone,
+          phone: normalizedPhone,
           address: customerAddress,
           note: orderNote,
           deliveryArea,

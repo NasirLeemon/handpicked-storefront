@@ -73,6 +73,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedPhone = phone.replace(/\D/g, "");
+
+    if (!/^01\d{9}$/.test(normalizedPhone)) {
+      return NextResponse.json(
+        { error: "Enter a valid 11-digit Bangladesh phone number." },
+        { status: 400 }
+      );
+    }
+
+
     if (items.length === 0) {
       return NextResponse.json(
         { error: "Order must include at least one product." },
@@ -87,7 +97,7 @@ export async function POST(request: NextRequest) {
       .from("website_orders")
       .insert({
         customer_name: customerName,
-        phone,
+        phone: normalizedPhone,
         address,
         note,
         items,
