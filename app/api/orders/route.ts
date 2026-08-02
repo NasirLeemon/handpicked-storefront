@@ -7,6 +7,8 @@ type CreateOrderBody = {
   phone?: string;
   address?: string;
   note?: string;
+  deliveryArea?: "inside_dhaka" | "suburb_dhaka" | "outside_dhaka";
+  deliveryCharge?: number;
   items?: CartItem[];
 };
 
@@ -46,7 +48,23 @@ export async function POST(request: NextRequest) {
     const phone = body.phone?.trim();
     const address = body.address?.trim();
     const note = body.note?.trim() || null;
+    const deliveryArea = body.deliveryArea;
     const items = Array.isArray(body.items) ? body.items : [];
+
+    const deliveryCharges = {
+      inside_dhaka: 80,
+      suburb_dhaka: 110,
+      outside_dhaka: 150,
+    } as const;
+
+    if (!deliveryArea || !(deliveryArea in deliveryCharges)) {
+      return NextResponse.json(
+        { error: "Please select a valid delivery area." },
+        { status: 400 }
+      );
+    }
+
+    const deliveryCharge = deliveryCharges[deliveryArea];
 
     if (!customerName || !phone || !address) {
       return NextResponse.json(
@@ -74,6 +92,8 @@ export async function POST(request: NextRequest) {
         note,
         items,
         subtotal,
+        delivery_area: deliveryArea,
+        delivery_charge: deliveryCharge,
         status: "new",
       })
       .select()

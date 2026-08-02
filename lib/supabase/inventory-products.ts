@@ -1,45 +1,50 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Product, ProductAvailability } from "@/types/product";
 
-const CLOUD_DATA_ID = "main";
+type CategoryRelation = {
+  name: string;
+} | null;
 
-type InventoryProductStatus = "Available" | "Low Stock" | "Sold Out";
+type VariantRow = {
+  id: string;
+  sku: string;
+  color: string | null;
+  size: string | null;
+  selling_price: number | string;
+  available_stock: number;
+  low_stock_threshold: number;
+  is_default: boolean;
+  is_active: boolean;
+};
 
-type InventoryProduct = {
+type ImageRow = {
+  url: string;
+  display_order: number;
+  is_primary: boolean;
+};
+
+type ProductRow = {
   id: string;
   name: string;
-  slug?: string;
-  category?: string;
-  description?: string;
-  details?: string;
-  images?: string[];
-  featured?: boolean;
-  isNewArrival?: boolean;
-  showOnStorefront?: boolean;
-  color: string;
-  size: string;
-  costPrice: number;
-  sellingPrice: number;
-  totalStock: number;
-  availableStock: number;
-  reservedStock: number;
-  soldStock: number;
-  returnedStock: number;
-  damagedStock: number;
-  status: InventoryProductStatus;
-};
-
-type InventoryCloudData = {
-  products?: InventoryProduct[];
-};
-
-type InventoryCloudRow = {
-  data: InventoryCloudData | null;
+  slug: string;
+  short_description: string | null;
+  description: string | null;
+  details: string | null;
+  is_featured: boolean;
+  is_new_arrival: boolean;
+  show_on_storefront: boolean;
+  status: "active" | "archived";
+  categories: CategoryRelation | CategoryRelation[];
+  product_variants: VariantRow[];
+  product_images: ImageRow[];
 };
 
 function getInventorySupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_INVENTORY_SUPABASE_URL;
-  const serviceRoleKey = process.env.INVENTORY_SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_INVENTORY_SUPABASE_URL;
+
+  const serviceRoleKey =
+    process.env.INVENTORY_SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
     return null;
@@ -52,54 +57,101 @@ function getInventorySupabaseClient() {
   });
 }
 
-function createSlug(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function mapAvailability(status: InventoryProductStatus): ProductAvailability {
-  if (status === "Sold Out") {
+function getAvailability(
+  availableStock: number,
+  lowStockThreshold: number,
+): ProductAvailability {
+  if (availableStock <= 0) {
     return "sold-out";
   }
 
-  if (status === "Low Stock") {
+  if (availableStock <= lowStockThreshold) {
     return "low-stock";
   }
 
   return "available";
 }
 
-function mapInventoryProduct(product: InventoryProduct): Product {
+function mapProduct(row: ProductRow): Product | null {
+  const activeVariants = row.product_variants.filter(
+    (variant) => variant.is_active,
+  );
+
+  if (activeVariants.length === 0) {
+    return null;
+  }
+
+  const defaultVariant =
+    activeVariants.find((variant) => variant.is_default) ??
+    activeVariants[0];
+
+  const sortedImages = [...row.product_images].sort(
+    (a, b) => a.display_order - b.display_order,
+  );
+
+  const images = sortedImages.map((image) => image.url);
+
+  if (images.length === 0) {
+    return null;
+  }
+
+  const categoryRelation = Array.isArray(row.categories)
+    ? row.categories[0] ?? null
+    : row.categories;
+
+  const sizes = [
+    ...new Set(
+      activeVariants
+        .map((variant) => variant.size?.trim())
+        .filter((size): size is string => Boolean(size)),
+    ),
+  ];
+
+  const colors = [
+    ...new Set(
+      activeVariants
+        .map((variant) => variant.color?.trim())
+        .filter((color): color is string => Boolean(color)),
+    ),
+  ];
+
+  const availableStock = activeVariants.reduce(
+    (sum, variant) => sum + Number(variant.available_stock || 0),
+    0,
+  );
+
+  const lowStockThreshold = activeVariants.reduce(
+    (sum, variant) => sum + Number(variant.low_stock_threshold || 0),
+    0,
+  );
+
   const description =
-    product.description ||
-    `${product.name} in ${product.color}. Message us for size, delivery, and availability support.`;
+    row.description ||
+    row.short_description ||
+    `${row.name}. Message us for delivery and availability support.`;
 
   return {
-    id: product.id,
-    slug: product.slug || createSlug(product.name),
-    name: product.name,
-    price: Number(product.sellingPrice || 0),
-    category: product.category || "Uncategorized",
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    price: Number(defaultVariant.selling_price || 0),
+    category: categoryRelation?.name || "Uncategorized",
     description,
-    details: product.details || description,
-    images: product.images || [],
-    color: product.color,
-    sizes: product.size
-      .split(",")
-      .map((size) => size.trim())
-      .filter(Boolean),
-    availability:
-      product.availableStock <= 0 ? "sold-out" : mapAvailability(product.status),
-    featured: Boolean(product.featured),
-    isNewArrival: Boolean(product.isNewArrival),
-    availableStock: Number(product.availableStock || 0),
+    details: row.details || description,
+    images,
+    color: colors.join(", "),
+    sizes,
+    availability: getAvailability(
+      availableStock,
+      lowStockThreshold,
+    ),
+    featured: row.is_featured,
+    isNewArrival: row.is_new_arrival,
+    availableStock,
   };
 }
 
-export async function getInventoryProductsForStorefront() {
+export async function getInventoryProductsForStorefront(): Promise<Product[]> {
   const supabase = getInventorySupabaseClient();
 
   if (!supabase) {
@@ -107,24 +159,52 @@ export async function getInventoryProductsForStorefront() {
   }
 
   const { data, error } = await supabase
-    .from("handpicked_app_data")
-    .select("data")
-    .eq("id", CLOUD_DATA_ID)
-    .single<InventoryCloudRow>();
+    .from("products")
+    .select(`
+      id,
+      name,
+      slug,
+      short_description,
+      description,
+      details,
+      is_featured,
+      is_new_arrival,
+      show_on_storefront,
+      status,
+      categories (
+        name
+      ),
+      product_variants (
+        id,
+        sku,
+        color,
+        size,
+        selling_price,
+        available_stock,
+        low_stock_threshold,
+        is_default,
+        is_active
+      ),
+      product_images (
+        url,
+        display_order,
+        is_primary
+      )
+    `)
+    .eq("status", "active")
+    .eq("show_on_storefront", true)
+    .order("created_at", {
+      ascending: false,
+    });
 
-  if (error || !data?.data?.products) {
+  if (error) {
+    console.error("Failed to load V2 storefront products:", error);
     return [];
   }
 
-  return data.data.products
-    .filter((product) => {
-      return (
-        product.showOnStorefront === true &&
-        Array.isArray(product.images) &&
-        product.images.length > 0
-      );
-    })
-    .map(mapInventoryProduct);
+  return ((data ?? []) as unknown as ProductRow[])
+    .map(mapProduct)
+    .filter((product): product is Product => product !== null);
 }
 
 export async function getInventoryProductBySlug(slug: string) {
@@ -141,11 +221,13 @@ export async function getInventoryNewArrivals() {
 
 export async function getInventoryRelatedProducts(
   category: string,
-  currentSlug: string
+  currentSlug: string,
 ) {
   const products = await getInventoryProductsForStorefront();
 
   return products.filter(
-    (product) => product.category === category && product.slug !== currentSlug
+    (product) =>
+      product.category === category &&
+      product.slug !== currentSlug,
   );
 }

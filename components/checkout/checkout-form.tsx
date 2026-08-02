@@ -11,6 +11,17 @@ type CheckoutFormProps = {
   clearCartOnSubmit?: boolean;
 };
 
+type DeliveryArea =
+  | "inside_dhaka"
+  | "suburb_dhaka"
+  | "outside_dhaka";
+
+const DELIVERY_CHARGES: Record<DeliveryArea, number> = {
+  inside_dhaka: 80,
+  suburb_dhaka: 110,
+  outside_dhaka: 150,
+};
+
 type CustomerProfile = {
   full_name: string | null;
   phone: string | null;
@@ -24,6 +35,10 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
+  const [deliveryArea, setDeliveryArea] =
+    useState<DeliveryArea>("inside_dhaka");
+
+  const deliveryCharge = DELIVERY_CHARGES[deliveryArea];
 
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
@@ -99,6 +114,8 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           phone: customerPhone,
           address: customerAddress,
           note: orderNote,
+          deliveryArea,
+          deliveryCharge,
           items,
         }),
       });
@@ -213,6 +230,31 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           onChange={setPhone}
           required
         />
+
+        <label className="block">
+          <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
+            Delivery Area
+          </span>
+
+          <select
+            name="deliveryArea"
+            value={deliveryArea}
+            onChange={(event) =>
+              setDeliveryArea(event.target.value as DeliveryArea)
+            }
+            className="h-11 w-full border-b border-warm-border bg-transparent text-sm text-deep-brown outline-none transition focus:border-muted-gold"
+          >
+            <option value="inside_dhaka">
+              Inside Dhaka — ৳80
+            </option>
+            <option value="suburb_dhaka">
+              Dhaka Suburb — ৳110
+            </option>
+            <option value="outside_dhaka">
+              Outside Dhaka — ৳150
+            </option>
+          </select>
+        </label>
 
         <CheckoutTextarea
           label="Delivery Address"
