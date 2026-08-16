@@ -34,6 +34,7 @@ type ProductRow = {
   is_new_arrival: boolean;
   show_on_storefront: boolean;
   status: "active" | "archived";
+  created_at: string;
   categories: CategoryRelation | CategoryRelation[];
   product_variants: VariantRow[];
   product_images: ImageRow[];
@@ -147,6 +148,7 @@ function mapProduct(row: ProductRow): Product | null {
     ),
     featured: row.is_featured,
     isNewArrival: row.is_new_arrival,
+    createdAt: row.created_at,
     availableStock,
   };
 }
@@ -171,6 +173,7 @@ export async function getInventoryProductsForStorefront(): Promise<Product[]> {
       is_new_arrival,
       show_on_storefront,
       status,
+      created_at,
       categories (
         name
       ),

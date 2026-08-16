@@ -14,5 +14,6 @@ export type Product = {
   availability: ProductAvailability;
   featured: boolean;
   isNewArrival: boolean;
+  createdAt?: string;
   availableStock?: number;
 };

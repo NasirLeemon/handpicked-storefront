@@ -84,7 +84,17 @@ function sortRecommendedProducts(products: Product[]) {
       return featuredDifference;
     }
 
-    return Number(b.isNewArrival) - Number(a.isNewArrival);
+    const newArrivalDifference =
+      Number(b.isNewArrival) - Number(a.isNewArrival);
+
+    if (newArrivalDifference !== 0) {
+      return newArrivalDifference;
+    }
+
+    return (
+      new Date(b.createdAt ?? 0).getTime() -
+      new Date(a.createdAt ?? 0).getTime()
+    );
   });
 }
 
@@ -141,7 +151,14 @@ export function ShopProductsClient({
         const aSoldOut = a.availability === "sold-out" ? 1 : 0;
         const bSoldOut = b.availability === "sold-out" ? 1 : 0;
 
-        return aSoldOut - bSoldOut;
+        if (aSoldOut !== bSoldOut) {
+          return aSoldOut - bSoldOut;
+        }
+
+        return (
+          new Date(b.createdAt ?? 0).getTime() -
+          new Date(a.createdAt ?? 0).getTime()
+        );
       });
     }
 
