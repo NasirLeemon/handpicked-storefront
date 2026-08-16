@@ -15,14 +15,23 @@ type ShopProductsClientProps = {
 
 const PRODUCTS_PER_PAGE = 18;
 
-const categoryOptions = [
-  { label: "All", value: "all" },
-  { label: "Co-ords", value: "Co-ords" },
-  { label: "Ethnic", value: "Ethnic" },
-  { label: "Tops", value: "Tops" },
-  { label: "Accessories", value: "Accessories" },
-  { label: "Beauty", value: "Beauty" },
-];
+function getCategoryOptions(products: Product[]) {
+  const categories = Array.from(
+    new Set(
+      products
+        .map((product) => product.category.trim())
+        .filter((category) => category && category !== "Uncategorized")
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  return [
+    { label: "All Categories", value: "all" },
+    ...categories.map((category) => ({
+      label: category,
+      value: category,
+    })),
+  ];
+}
 
 const availabilityOptions = [
   { label: "All", value: "all" },
@@ -32,21 +41,16 @@ const availabilityOptions = [
 ];
 
 const sortOptions = [
-  { label: "Featured", value: "featured" },
+  { label: "Recommended", value: "recommended" },
   { label: "Newest", value: "newest" },
-  { label: "Low to High", value: "price-low-high" },
-  { label: "High to Low", value: "price-high-low" },
+  { label: "Price: Low to High", value: "price-low-high" },
+  { label: "Price: High to Low", value: "price-high-low" },
 ];
 
-const preferredCategoryOrder = [
-  "Ethnic",
-  "Co-ords",
-  "Tops",
-  "Accessories",
-  "Beauty",
-];
-
-function getInitialCategory(categoryParam: string | null) {
+function getInitialCategory(
+  categoryParam: string | null,
+  categoryOptions: { label: string; value: string }[]
+) {
   if (!categoryParam) {
     return "all";
   }
@@ -60,58 +64,28 @@ function getInitialCategory(categoryParam: string | null) {
 
 function getSortLabel(value: string) {
   return (
-    sortOptions.find((option) => option.value === value)?.label ?? "Featured"
+    sortOptions.find((option) => option.value === value)?.label ?? "Recommended"
   );
 }
 
-function interleaveProductsByCategory(products: Product[]) {
-  const buckets = new Map<string, Product[]>();
+function sortRecommendedProducts(products: Product[]) {
+  return [...products].sort((a, b) => {
+    const aSoldOut = a.availability === "sold-out" ? 1 : 0;
+    const bSoldOut = b.availability === "sold-out" ? 1 : 0;
 
-  products.forEach((product) => {
-    const productCategory = product.category.trim() || "Other";
-    const existingProducts = buckets.get(productCategory) ?? [];
+    if (aSoldOut !== bSoldOut) {
+      return aSoldOut - bSoldOut;
+    }
 
-    buckets.set(productCategory, [...existingProducts, product]);
+    const featuredDifference =
+      Number(b.featured) - Number(a.featured);
+
+    if (featuredDifference !== 0) {
+      return featuredDifference;
+    }
+
+    return Number(b.isNewArrival) - Number(a.isNewArrival);
   });
-
-  const orderedCategories = [
-    ...preferredCategoryOrder.filter((category) => buckets.has(category)),
-    ...Array.from(buckets.keys()).filter(
-      (category) => !preferredCategoryOrder.includes(category)
-    ),
-  ];
-
-  const result: Product[] = [];
-  let hasProductsRemaining = true;
-
-  while (hasProductsRemaining) {
-    hasProductsRemaining = false;
-
-    orderedCategories.forEach((category) => {
-      const categoryProducts = buckets.get(category);
-
-      if (categoryProducts && categoryProducts.length > 0) {
-        const nextProduct = categoryProducts.shift();
-
-        if (nextProduct) {
-          result.push(nextProduct);
-          hasProductsRemaining = true;
-        }
-      }
-    });
-  }
-
-  return result;
-}
-
-function sortFeaturedProducts(products: Product[]) {
-  const featuredProducts = products.filter((product) => product.featured);
-  const regularProducts = products.filter((product) => !product.featured);
-
-  return [
-    ...interleaveProductsByCategory(featuredProducts),
-    ...interleaveProductsByCategory(regularProducts),
-  ];
 }
 
 export function ShopProductsClient({
@@ -119,12 +93,17 @@ export function ShopProductsClient({
 }: ShopProductsClientProps) {
   const searchParams = useSearchParams();
 
+  const categoryOptions = useMemo(
+    () => getCategoryOptions(products),
+    [products]
+  );
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(() =>
-    getInitialCategory(searchParams.get("category"))
+    getInitialCategory(searchParams.get("category"), categoryOptions)
   );
   const [availability, setAvailability] = useState("all");
-  const [sort, setSort] = useState("featured");
+  const [sort, setSort] = useState("recommended");
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -158,12 +137,15 @@ export function ShopProductsClient({
     }
 
     if (sort === "newest") {
-      return [...result].sort(
-        (a, b) => Number(b.isNewArrival) - Number(a.isNewArrival)
-      );
+      return [...result].sort((a, b) => {
+        const aSoldOut = a.availability === "sold-out" ? 1 : 0;
+        const bSoldOut = b.availability === "sold-out" ? 1 : 0;
+
+        return aSoldOut - bSoldOut;
+      });
     }
 
-    return sortFeaturedProducts(result);
+    return sortRecommendedProducts(result);
   }, [availability, category, products, search, sort]);
 
   const visibleProducts = useMemo(
@@ -181,7 +163,7 @@ export function ShopProductsClient({
     setSearch("");
     setCategory("all");
     setAvailability("all");
-    setSort("featured");
+    setSort("recommended");
     setVisibleCount(PRODUCTS_PER_PAGE);
     setFiltersOpen(false);
     setSortOpen(false);
@@ -203,81 +185,82 @@ export function ShopProductsClient({
 
   return (
     <div>
-      <div className="mb-5 rounded-[1.4rem] border border-warm-border bg-[#FFFDF9] p-4 shadow-[0_10px_35px_rgba(47,33,24,0.04)] md:hidden">
+      <div className="mb-4 md:hidden">
         <ShopSearchInput value={search} onChange={setSearch} />
 
-        <div className="relative mt-4 flex items-center justify-between gap-4">
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setFiltersOpen(true)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-deep-brown"
+            className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[11px] font-medium text-deep-brown"
           >
-            Filters
-
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-warm-border bg-soft-white">
-              <SlidersHorizontal className="h-4 w-4" strokeWidth={1.7} />
-            </span>
+            <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.7} />
+            Category
           </button>
 
           <button
             type="button"
-            onClick={() => setSortOpen((current) => !current)}
-            className="inline-flex items-center gap-2 text-sm text-deep-brown"
+            onClick={() => setFiltersOpen(true)}
+            className="inline-flex h-8 shrink-0 items-center rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[11px] font-medium text-deep-brown"
           >
-            <span className="font-semibold">Sort:</span>
-
-            <span className="border-b border-muted-gold pb-0.5 text-soft-brown">
-              {getSortLabel(sort)}⌄
-            </span>
+            Availability
           </button>
 
-          {sortOpen ? (
-            <div className="absolute right-0 top-12 z-30 w-52 overflow-hidden rounded-2xl border border-warm-border bg-soft-white shadow-[0_18px_50px_rgba(47,33,24,0.16)]">
-              {sortOptions.map((option) => {
-                const isSelected = sort === option.value;
+          <div className="relative col-span-2">
+            <button
+              type="button"
+              onClick={() => setSortOpen((current) => !current)}
+              className="inline-flex h-8 w-full items-center justify-between rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[11px] font-medium text-deep-brown"
+            >
+              {getSortLabel(sort)}
+              <span className="text-[10px] text-muted-gold">⌄</span>
+            </button>
 
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => handleSortChange(option.value)}
-                    className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm transition ${
-                      isSelected
-                        ? "bg-light-sand font-semibold text-deep-brown"
-                        : "text-soft-brown hover:bg-ivory hover:text-deep-brown"
-                    }`}
-                  >
-                    {option.label}
+            {sortOpen ? (
+              <div className="absolute right-0 top-10 z-30 w-48 overflow-hidden rounded-xl border border-warm-border bg-soft-white shadow-[0_16px_40px_rgba(47,33,24,0.14)]">
+                {sortOptions.map((option) => {
+                  const isSelected = sort === option.value;
 
-                    {isSelected ? (
-                      <span className="text-muted-gold">✓</span>
-                    ) : null}
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleSortChange(option.value)}
+                      className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[12px] transition ${
+                        isSelected
+                          ? "bg-light-sand font-semibold text-deep-brown"
+                          : "text-soft-brown hover:bg-ivory hover:text-deep-brown"
+                      }`}
+                    >
+                      {option.label}
+                      {isSelected ? (
+                        <span className="text-muted-gold">✓</span>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between border-t border-warm-border pt-4">
-          <p className="text-xs text-soft-brown">
-            Showing{" "}
-            <span className="font-semibold text-deep-brown">
-              {showingCount}
-            </span>{" "}
-            of{" "}
-            <span className="font-semibold text-deep-brown">
+        <div className="mt-2 flex items-center justify-between px-0.5">
+          <p className="text-[10px] text-soft-brown">
+            <span className="font-medium text-deep-brown">
               {filteredProducts.length}
-            </span>
+            </span>{" "}
+            products
           </p>
 
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-[10px] font-semibold tracking-[0.16em] text-muted-gold uppercase"
-          >
-            Clear
-          </button>
+          {(search || category !== "all" || availability !== "all" || sort !== "recommended") ? (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-[9px] font-semibold tracking-[0.12em] text-muted-gold uppercase"
+            >
+              Clear
+            </button>
+          ) : null}
         </div>
       </div>
 

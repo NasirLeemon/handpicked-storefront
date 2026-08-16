@@ -25,7 +25,7 @@ export function ShopSearchInput({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder="Search products"
-          className="h-11 w-full appearance-none border-0 bg-transparent pl-7 pr-2 text-sm text-deep-brown outline-none ring-0 transition placeholder:text-taupe focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 sm:h-12"
+          className="h-9 sm:h-11 w-full appearance-none border-0 bg-transparent pl-7 pr-2 text-[0.78rem] sm:text-sm text-deep-brown outline-none ring-0 transition placeholder:text-taupe focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 sm:h-12"
         />
       </div>
     </label>
