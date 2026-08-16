@@ -33,6 +33,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
   const [deliveryArea, setDeliveryArea] =
@@ -62,6 +63,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           .single();
 
         if (!data) {
+          setEmail(userData.user.email || "");
           return;
         }
 
@@ -69,6 +71,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
         setName(profile.full_name || "");
         setPhone(profile.phone || "");
+        setEmail(userData.user.email || "");
         setAddress(profile.default_address || "");
         setProfileLoaded(true);
       } catch {
@@ -90,12 +93,22 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
     const customerName = name.trim();
     const customerPhone = phone.trim();
+    const customerEmail = email.trim().toLowerCase();
     const customerAddress = address.trim();
     const orderNote = note.trim();
 
-    if (!customerName || !customerPhone || !customerAddress) {
+    if (!customerName || !customerPhone || !customerEmail || !customerAddress) {
       setIsSuccess(false);
-      setStatus("Name, phone number, and delivery address are required.");
+      setStatus("Name, phone number, email, and delivery address are required.");
+      return;
+    }
+
+    const emailPattern =
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+    if (!emailPattern.test(customerEmail)) {
+      setIsSuccess(false);
+      setStatus("Enter a valid email address.");
       return;
     }
 
@@ -120,6 +133,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         },
         body: JSON.stringify({
           customerName,
+          customerEmail,
           phone: normalizedPhone,
           address: customerAddress,
           note: orderNote,
@@ -198,16 +212,16 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] shadow-[0_22px_70px_rgba(47,33,24,0.08)]"
+      className="overflow-hidden rounded-[1.25rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_40px_rgba(47,33,24,0.06)] sm:rounded-[2rem] sm:shadow-[0_22px_70px_rgba(47,33,24,0.08)]"
     >
-      <div className="border-b border-warm-border px-5 py-4 sm:px-6">
+      <div className="border-b border-warm-border px-4 py-3 sm:px-6 sm:py-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
+            <p className="text-[9px] font-semibold tracking-[0.2em] text-muted-gold uppercase sm:text-xs sm:tracking-[0.26em]">
               Delivery Details
             </p>
 
-            <p className="mt-2 max-w-xl text-sm leading-6 text-soft-brown">
+            <p className="mt-1 max-w-xl text-[0.7rem] leading-5 text-soft-brown sm:mt-2 sm:text-sm sm:leading-6">
               Fill in your contact and delivery information. We will review and
               confirm availability before dispatch.
             </p>
@@ -222,7 +236,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 px-5 py-5 sm:px-6">
+      <div className="grid gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
         <CheckoutInput
           label="Full Name"
           name="name"
@@ -240,8 +254,18 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           required
         />
 
+        <CheckoutInput
+          label="Email Address"
+          name="email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          required
+          placeholder="you@example.com"
+        />
+
         <label className="block">
-          <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
+          <span className="mb-1 block text-[8px] font-semibold tracking-[0.17em] text-muted-gold uppercase sm:mb-2 sm:text-[10px] sm:tracking-[0.22em]">
             Delivery Area
           </span>
 
@@ -251,7 +275,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
             onChange={(event) =>
               setDeliveryArea(event.target.value as DeliveryArea)
             }
-            className="h-11 w-full border-b border-warm-border bg-transparent text-sm text-deep-brown outline-none transition focus:border-muted-gold"
+            className="h-9 w-full border-b border-warm-border bg-transparent text-[0.76rem] text-deep-brown outline-none transition focus:border-muted-gold sm:h-11 sm:text-sm"
           >
             <option value="inside_dhaka">
               Inside Dhaka — ৳80
@@ -271,7 +295,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           value={address}
           onChange={setAddress}
           required
-          rows={2}
+          rows={1}
         />
 
         <CheckoutTextarea
@@ -279,8 +303,8 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           name="note"
           value={note}
           onChange={setNote}
-          rows={2}
-          placeholder="Optional: preferred delivery time, size note, etc."
+          rows={1}
+          placeholder="Optional: delivery time, size note, etc."
         />
       </div>
 
@@ -296,21 +320,21 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
         </p>
       ) : null}
 
-      <div className="px-5 pb-5 pt-1 sm:px-6">
+      <div className="px-4 pb-4 pt-0 sm:px-6 sm:pb-5 sm:pt-1">
         <button
           type="submit"
           disabled={items.length === 0 || isSubmitting}
-          className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_16px_34px_rgba(63,42,32,0.18)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none sm:h-13"
+          className="inline-flex h-10 w-full items-center justify-center rounded-full bg-[#3F2A20] px-5 text-[0.68rem] font-semibold tracking-[0.14em] sm:h-12 sm:px-6 sm:text-xs sm:tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_16px_34px_rgba(63,42,32,0.18)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none sm:h-13"
         >
           {isSubmitting ? "Submitting..." : "Submit Order Request"}
         </button>
 
         {items.length === 0 ? (
-          <p className="mt-3 text-xs leading-5 text-soft-brown">
+          <p className="mt-2 text-[0.66rem] leading-4 text-soft-brown sm:mt-3 sm:text-xs sm:leading-5">
             Add at least one product before submitting your order request.
           </p>
         ) : (
-          <p className="mt-3 text-xs leading-5 text-soft-brown">
+          <p className="mt-2 text-[0.66rem] leading-4 text-soft-brown sm:mt-3 sm:text-xs sm:leading-5">
             This is not a final confirmation. We will confirm stock and delivery
             details after review.
           </p>
@@ -341,7 +365,7 @@ function CheckoutInput({
 }: CheckoutInputProps) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
+      <span className="mb-1 block text-[8px] font-semibold tracking-[0.17em] text-muted-gold uppercase sm:mb-2 sm:text-[10px] sm:tracking-[0.22em]">
         {label}
       </span>
 
@@ -352,7 +376,7 @@ function CheckoutInput({
         placeholder={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-10 w-full border-b border-warm-border bg-transparent px-0 text-sm text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
+        className="h-8 w-full border-b border-warm-border bg-transparent px-0 text-[0.76rem] text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold sm:h-10 sm:text-sm"
       />
     </label>
   );
@@ -379,7 +403,7 @@ function CheckoutTextarea({
 }: CheckoutTextareaProps) {
   return (
     <label className="block">
-      <span className="mb-2 block text-[10px] font-semibold tracking-[0.22em] text-muted-gold uppercase">
+      <span className="mb-1 block text-[8px] font-semibold tracking-[0.17em] text-muted-gold uppercase sm:mb-2 sm:text-[10px] sm:tracking-[0.22em]">
         {label}
       </span>
 
@@ -390,7 +414,7 @@ function CheckoutTextarea({
         rows={rows}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full resize-none border-b border-warm-border bg-transparent px-0 py-2 text-sm leading-6 text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold"
+        className="w-full resize-none border-b border-warm-border bg-transparent px-0 py-1.5 text-[0.76rem] leading-5 text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold sm:py-2 sm:text-sm sm:leading-6"
       />
     </label>
   );

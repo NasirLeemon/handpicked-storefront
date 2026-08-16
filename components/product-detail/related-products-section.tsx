@@ -1,4 +1,5 @@
 import { SectionHeading } from "@/components/home/section-heading";
+import { ProductCard } from "@/components/product/product-card";
 import { ProductGrid } from "@/components/product/product-grid";
 import { getInventoryRelatedProducts } from "@/lib/supabase/inventory-products";
 import type { Product } from "@/types/product";
@@ -12,22 +13,57 @@ export async function RelatedProductsSection({
 }: RelatedProductsSectionProps) {
   const relatedProducts = (
     await getInventoryRelatedProducts(product.category, product.slug)
-  ).slice(0, 4);
+  ).slice(0, 6);
 
   if (relatedProducts.length === 0) {
     return null;
   }
 
   return (
-    <section className="mt-10 sm:mt-16">
-      <SectionHeading
-        eyebrow="Curated Picks"
-        title="You May Also Like"
-        description="Explore similar handpicked pieces from the same collection."
-      />
+    <section className="mt-7 sm:mt-16">
+      {/* Compact mobile heading */}
+      <div className="sm:hidden">
+        <p className="text-[8px] font-semibold tracking-[0.24em] text-muted-gold uppercase">
+          You may also like
+        </p>
 
-      <div className="mt-8 sm:mt-12">
-        <ProductGrid products={relatedProducts} />
+        <div className="mt-1 flex items-end justify-between gap-4">
+          <h2 className="font-serif-brand text-[1.7rem] font-medium leading-none tracking-[-0.035em] text-deep-brown">
+            Similar Picks
+          </h2>
+
+          <span className="shrink-0 text-[9px] tracking-[0.12em] text-soft-brown uppercase">
+            Swipe →
+          </span>
+        </div>
+      </div>
+
+      {/* Existing premium desktop heading */}
+      <div className="hidden sm:block">
+        <SectionHeading
+          eyebrow="Curated Picks"
+          title="You May Also Like"
+          description="Explore similar handpicked pieces from the same collection."
+        />
+      </div>
+
+      {/* Mobile: horizontally swipeable products */}
+      <div className="-mx-4 mt-4 overflow-x-auto px-4 pb-2 sm:hidden">
+        <div className="flex w-max gap-3">
+          {relatedProducts.map((relatedProduct) => (
+            <div
+              key={relatedProduct.id}
+              className="w-[42vw] max-w-[180px] shrink-0"
+            >
+              <ProductCard product={relatedProduct} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tablet/Desktop: normal product grid */}
+      <div className="mt-12 hidden sm:block">
+        <ProductGrid products={relatedProducts.slice(0, 4)} />
       </div>
     </section>
   );

@@ -39,7 +39,7 @@ export const SizeSelector = forwardRef<
     <div ref={ref} className="scroll-mt-28">
       <div
         key={validationAttempt}
-        className={`rounded-[1.25rem] border p-4 transition duration-300 ${
+        className={`rounded-[1rem] border p-3 transition duration-300 sm:rounded-[1.25rem] sm:p-4 ${
           showError
             ? "border-muted-gold bg-light-sand/70 shadow-[0_0_0_4px_rgba(176,138,85,0.12)]"
             : "border-transparent bg-transparent"
@@ -52,12 +52,12 @@ export const SizeSelector = forwardRef<
         }}
       >
         <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-deep-brown">
+          <p className="text-[0.76rem] font-semibold text-deep-brown sm:text-sm">
             Size
           </p>
 
           {!selectedSize && !isSoldOut ? (
-            <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-gold uppercase">
+            <p className="text-[8px] font-semibold tracking-[0.14em] text-muted-gold uppercase sm:text-[10px] sm:tracking-[0.18em]">
               Required
             </p>
           ) : null}
@@ -87,7 +87,7 @@ export const SizeSelector = forwardRef<
                 disabled={isSoldOut}
                 onClick={() => onSelectSize(size)}
                 aria-pressed={isSelected}
-                className={`flex h-11 min-w-12 items-center justify-center rounded-full border px-5 text-sm font-semibold transition ${
+                className={`flex h-9 min-w-10 items-center justify-center rounded-full border px-4 text-[0.76rem] font-semibold transition sm:h-11 sm:min-w-12 sm:px-5 sm:text-sm ${
                   isSelected
                     ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-[0_10px_24px_rgba(63,42,32,0.16)]"
                     : "border-warm-border bg-white/55 text-deep-brown hover:border-muted-gold hover:text-muted-gold"
@@ -100,7 +100,7 @@ export const SizeSelector = forwardRef<
         </div>
 
         {selectedSize || isSoldOut ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-soft-brown">
+          <div className="mt-2.5 flex items-center gap-2 text-[0.68rem] text-soft-brown sm:mt-3 sm:text-xs">
             {!isSoldOut ? (
               <Check
                 className="h-4 w-4 shrink-0 text-muted-gold"

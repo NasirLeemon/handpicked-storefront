@@ -32,8 +32,8 @@ export function ProductDetailPageContent({
           <ProductPurchasePanel product={product} />
         </div>
 
-        <ProductDetailsAccordion product={product} />
         <RelatedProductsSection product={product} />
+        <ProductDetailsAccordion product={product} />
       </div>
     </div>
   );

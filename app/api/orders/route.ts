@@ -4,6 +4,7 @@ import type { CartItem } from "@/types/cart";
 
 type CreateOrderBody = {
   customerName?: string;
+  customerEmail?: string;
   phone?: string;
   address?: string;
   note?: string;
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as CreateOrderBody;
 
     const customerName = body.customerName?.trim();
+    const customerEmail = body.customerEmail?.trim().toLowerCase();
     const phone = body.phone?.trim();
     const address = body.address?.trim();
     const note = body.note?.trim() || null;
@@ -66,9 +68,19 @@ export async function POST(request: NextRequest) {
 
     const deliveryCharge = deliveryCharges[deliveryArea];
 
-    if (!customerName || !phone || !address) {
+    if (!customerName || !customerEmail || !phone || !address) {
       return NextResponse.json(
-        { error: "Name, phone, and address are required." },
+        { error: "Name, email, phone, and address are required." },
+        { status: 400 }
+      );
+    }
+
+    const emailPattern =
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+    if (!emailPattern.test(customerEmail)) {
+      return NextResponse.json(
+        { error: "Enter a valid email address." },
         { status: 400 }
       );
     }
@@ -97,6 +109,7 @@ export async function POST(request: NextRequest) {
       .from("website_orders")
       .insert({
         customer_name: customerName,
+        customer_email: customerEmail,
         phone: normalizedPhone,
         address,
         note,

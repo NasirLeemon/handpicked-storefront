@@ -113,7 +113,7 @@ export function ShopProductsClient({
     getInitialCategory(searchParams.get("category"), categoryOptions)
   );
   const [availability, setAvailability] = useState("all");
-  const [sort, setSort] = useState("recommended");
+  const [sort, setSort] = useState("newest");
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -180,7 +180,7 @@ export function ShopProductsClient({
     setSearch("");
     setCategory("all");
     setAvailability("all");
-    setSort("recommended");
+    setSort("newest");
     setVisibleCount(PRODUCTS_PER_PAGE);
     setFiltersOpen(false);
     setSortOpen(false);
@@ -269,7 +269,7 @@ export function ShopProductsClient({
             products
           </p>
 
-          {(search || category !== "all" || availability !== "all" || sort !== "recommended") ? (
+          {(search || category !== "all" || availability !== "all" || sort !== "newest") ? (
             <button
               type="button"
               onClick={clearFilters}

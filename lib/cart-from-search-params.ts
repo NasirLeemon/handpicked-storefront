@@ -1,6 +1,6 @@
 import type { CartItem } from "@/types/cart";
 import { mockCartItems } from "@/data/cart";
-import { getProductBySlug } from "@/lib/products";
+import { getInventoryProductBySlug } from "@/lib/supabase/inventory-products";
 
 type CartSearchParams = {
   product?: string;
@@ -8,10 +8,10 @@ type CartSearchParams = {
   qty?: string;
 };
 
-export function getCartItemsFromSearchParams(
+export async function getCartItemsFromSearchParams(
   searchParams: CartSearchParams,
   fallbackToMock = true
-): CartItem[] {
+): Promise<CartItem[]> {
   const productSlug = searchParams.product;
   const selectedSize = searchParams.size;
   const quantity = Number(searchParams.qty || "1");
@@ -20,7 +20,7 @@ export function getCartItemsFromSearchParams(
     return fallbackToMock ? mockCartItems : [];
   }
 
-  const product = getProductBySlug(productSlug);
+  const product = await getInventoryProductBySlug(productSlug);
 
   if (!product) {
     return fallbackToMock ? mockCartItems : [];
@@ -36,7 +36,11 @@ export function getCartItemsFromSearchParams(
       image: product.images[0] || "",
       color: product.color,
       size: selectedSize,
-      quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
+      quantity:
+        Number.isFinite(quantity) && quantity > 0
+          ? quantity
+          : 1,
+      availableStock: product.availableStock,
     },
   ];
 }

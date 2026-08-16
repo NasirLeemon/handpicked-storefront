@@ -20,7 +20,7 @@ export default async function CheckoutPage({
   searchParams,
 }: CheckoutPageProps) {
   const resolvedSearchParams = await searchParams;
-  const urlItems = getCartItemsFromSearchParams(resolvedSearchParams, false);
+  const urlItems = await getCartItemsFromSearchParams(resolvedSearchParams, false);
 
   return <CheckoutPageClient urlItems={urlItems} />;
 }
