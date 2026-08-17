@@ -198,7 +198,13 @@ export function ShopProductsClient({
 
   function clearFilters() {
     setSearch("");
-    setCategory("all");
+
+    setCategory(
+      catalogOnly && initialCategory
+        ? initialCategory
+        : "all"
+    );
+
     setAvailability("all");
     setSort("newest");
     setVisibleCount(PRODUCTS_PER_PAGE);
@@ -360,16 +366,16 @@ export function ShopProductsClient({
               sort !== "newest") ? (
               <div className="mt-2 flex items-center justify-between px-0.5">
                 <p className="text-[10px] text-soft-brown">
-                  <span className="font-medium text-deep-brown">
+                  <span className="font-semibold text-deep-brown">
                     {filteredProducts.length}
                   </span>{" "}
-                  products
+                  results
                 </p>
 
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="text-[9px] font-semibold tracking-[0.12em] text-muted-gold uppercase"
+                  className="text-[8px] font-semibold tracking-[0.1em] text-muted-gold uppercase transition hover:text-deep-brown"
                 >
                   Clear
                 </button>
@@ -387,54 +393,54 @@ export function ShopProductsClient({
         </div>
       ) : null}
 
-      <div className={`${catalogOnly ? "md:block" : "md:hidden"} mb-6 hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_12px_40px_rgba(47,33,24,0.045)] ${
-        catalogOnly ? "p-4 lg:p-5" : "p-5 lg:p-6"
-      }`}>
-        <div className="grid items-end gap-5 md:grid-cols-[1.45fr_1fr_1fr_1fr] lg:gap-6">
-          <ShopSearchInput value={search} onChange={setSearch} />
+      {catalogOnly ? (
+        <div className="mb-6 hidden md:block">
+          <div className="flex items-end gap-6 border-b border-warm-border pb-3">
+            <div className="min-w-0 flex-1">
+              <ShopSearchInput value={search} onChange={setSearch} />
+            </div>
 
-          <ShopFilterSelect
-            label="Category"
-            value={category}
-            options={categoryOptions}
-            onChange={setCategory}
-          />
+            <div className="w-[170px]">
+              <ShopFilterSelect
+                label="Availability"
+                value={availability}
+                options={availabilityOptions}
+                onChange={setAvailability}
+              />
+            </div>
 
-          <ShopFilterSelect
-            label="Availability"
-            value={availability}
-            options={availabilityOptions}
-            onChange={setAvailability}
-          />
+            <div className="w-[170px]">
+              <ShopFilterSelect
+                label="Sort"
+                value={sort}
+                options={sortOptions}
+                onChange={setSort}
+              />
+            </div>
+          </div>
 
-          <ShopFilterSelect
-            label="Sort"
-            value={sort}
-            options={sortOptions}
-            onChange={setSort}
-          />
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-xs text-soft-brown">
+              <span className="font-medium text-deep-brown">
+                {filteredProducts.length}
+              </span>{" "}
+              products
+            </p>
+
+            {(search ||
+              availability !== "all" ||
+              sort !== "newest") ? (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="text-[10px] font-semibold tracking-[0.12em] text-muted-gold uppercase transition hover:text-deep-brown"
+              >
+                Clear
+              </button>
+            ) : null}
+          </div>
         </div>
-
-        <div className="mt-1 flex items-center justify-between border-warm-border pt-4">
-          <p className="text-sm text-soft-brown">
-            Showing{" "}
-            <span className="font-medium text-deep-brown">{showingCount}</span>{" "}
-            of{" "}
-            <span className="font-medium text-deep-brown">
-              {filteredProducts.length}
-            </span>{" "}
-            pieces
-          </p>
-
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-[11px] font-semibold tracking-[0.17em] text-muted-gold uppercase transition hover:text-deep-brown"
-          >
-            Clear Filters
-          </button>
-        </div>
-      </div>
+      ) : null}
 
       <MobileFilterDrawer
         isOpen={filtersOpen}
@@ -447,6 +453,7 @@ export function ShopProductsClient({
         onAvailabilityChange={setAvailability}
         onClear={clearFilters}
         resultCount={filteredProducts.length}
+        showCategory={!catalogOnly}
       />
 
       {isCuratedView ? (
@@ -548,7 +555,7 @@ export function ShopProductsClient({
           ))}
         </div>
       ) : filteredProducts.length > 0 ? (
-        <>
+        <div className={catalogOnly ? "mt-1" : ""}>
           <ProductGrid products={visibleProducts} />
 
           {hasMoreProducts ? (
@@ -566,7 +573,7 @@ export function ShopProductsClient({
               </button>
             </div>
           ) : null}
-        </>
+        </div>
       ) : (
         <div className="rounded-[2rem] border border-warm-border bg-soft-white px-6 py-16 text-center">
           <h2 className="font-serif-brand text-4xl font-medium text-deep-brown">

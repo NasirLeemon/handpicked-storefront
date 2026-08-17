@@ -19,6 +19,7 @@ type MobileFilterDrawerProps = {
   onAvailabilityChange: (value: string) => void;
   onClear: () => void;
   resultCount: number;
+  showCategory?: boolean;
 };
 
 export function MobileFilterDrawer({
@@ -32,6 +33,7 @@ export function MobileFilterDrawer({
   onAvailabilityChange,
   onClear,
   resultCount,
+  showCategory = true,
 }: MobileFilterDrawerProps) {
   if (!isOpen) {
     return null;
@@ -63,12 +65,14 @@ export function MobileFilterDrawer({
         </div>
 
         <div className="grid gap-5 py-6">
-          <ShopFilterSelect
-            label="Category"
-            value={category}
-            options={categoryOptions}
-            onChange={onCategoryChange}
-          />
+          {showCategory ? (
+            <ShopFilterSelect
+              label="Category"
+              value={category}
+              options={categoryOptions}
+              onChange={onCategoryChange}
+            />
+          ) : null}
 
           <ShopFilterSelect
             label="Availability"
