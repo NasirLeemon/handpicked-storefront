@@ -64,7 +64,10 @@ export async function RelatedProductsSection({
 
       {/* Tablet/Desktop: normal product grid */}
       <div className="mt-7 hidden sm:block">
-        <ProductGrid products={relatedProducts.slice(0, 4)} />
+        <ProductGrid
+          products={relatedProducts.slice(0, 4)}
+          variant="curated"
+        />
       </div>
     </section>
   );
