@@ -39,10 +39,10 @@ export const SizeSelector = forwardRef<
     <div ref={ref} className="scroll-mt-28">
       <div
         key={validationAttempt}
-        className={`rounded-[1rem] border p-3 transition duration-300 sm:rounded-[1.25rem] sm:p-4 ${
+        className={`transition duration-300 ${
           showError
-            ? "border-muted-gold bg-light-sand/70 shadow-[0_0_0_4px_rgba(176,138,85,0.12)]"
-            : "border-transparent bg-transparent"
+            ? "rounded-xl border border-muted-gold bg-light-sand/60 p-3 shadow-[0_0_0_3px_rgba(176,138,85,0.10)]"
+            : ""
         }`}
         style={{
           animation:
@@ -51,13 +51,13 @@ export const SizeSelector = forwardRef<
               : undefined,
         }}
       >
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="text-[0.76rem] font-semibold text-deep-brown sm:text-sm">
-            Size
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <p className="text-xs font-medium text-deep-brown">
+            Select size
           </p>
 
           {!selectedSize && !isSoldOut ? (
-            <p className="text-[8px] font-semibold tracking-[0.14em] text-muted-gold uppercase sm:text-[10px] sm:tracking-[0.18em]">
+            <p className="text-[9px] font-medium tracking-[0.12em] text-muted-gold uppercase">
               Required
             </p>
           ) : null}
@@ -87,10 +87,10 @@ export const SizeSelector = forwardRef<
                 disabled={isSoldOut}
                 onClick={() => onSelectSize(size)}
                 aria-pressed={isSelected}
-                className={`flex h-9 min-w-10 items-center justify-center rounded-full border px-4 text-[0.76rem] font-semibold transition sm:h-11 sm:min-w-12 sm:px-5 sm:text-sm ${
+                className={`flex h-9 min-w-[4.5rem] items-center justify-center rounded-lg border px-3 text-xs font-medium transition sm:h-10 sm:text-[13px] ${
                   isSelected
-                    ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-[0_10px_24px_rgba(63,42,32,0.16)]"
-                    : "border-warm-border bg-white/55 text-deep-brown hover:border-muted-gold hover:text-muted-gold"
+                    ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-sm"
+                    : "border-warm-border bg-white/70 text-deep-brown hover:border-muted-gold"
                 } disabled:cursor-not-allowed disabled:opacity-50`}
               >
                 {size}
@@ -100,7 +100,7 @@ export const SizeSelector = forwardRef<
         </div>
 
         {selectedSize || isSoldOut ? (
-          <div className="mt-2.5 flex items-center gap-2 text-[0.68rem] text-soft-brown sm:mt-3 sm:text-xs">
+          <div className="mt-2 flex items-center gap-2 text-[11px] text-soft-brown">
             {!isSoldOut ? (
               <Check
                 className="h-4 w-4 shrink-0 text-muted-gold"

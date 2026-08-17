@@ -1,16 +1,20 @@
 "use client";
 
-import { SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, SlidersHorizontal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MobileFilterDrawer } from "@/components/shop/mobile-filter-drawer";
 import { ProductGrid } from "@/components/product/product-grid";
 import { ShopFilterSelect } from "@/components/shop/shop-filter-select";
 import { ShopSearchInput } from "@/components/shop/shop-search-input";
+import { toCategorySlug } from "@/lib/shop/category-slug";
 import type { Product } from "@/types/product";
 
 type ShopProductsClientProps = {
   products: Product[];
+  initialCategory?: string;
+  catalogOnly?: boolean;
 };
 
 const PRODUCTS_PER_PAGE = 18;
@@ -100,6 +104,8 @@ function sortRecommendedProducts(products: Product[]) {
 
 export function ShopProductsClient({
   products,
+  initialCategory,
+  catalogOnly = false,
 }: ShopProductsClientProps) {
   const searchParams = useSearchParams();
 
@@ -110,6 +116,7 @@ export function ShopProductsClient({
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(() =>
+    initialCategory ??
     getInitialCategory(searchParams.get("category"), categoryOptions)
   );
   const [availability, setAvailability] = useState("all");
@@ -200,88 +207,173 @@ export function ShopProductsClient({
     filteredProducts.length
   );
 
+  const isCuratedView =
+    !catalogOnly &&
+    search.trim().length === 0 &&
+    category === "all" &&
+    availability === "all" &&
+    sort === "newest";
+
+  const curatedProducts = useMemo(() => {
+    return [...products].sort((a, b) => {
+      const aSoldOut = a.availability === "sold-out" ? 1 : 0;
+      const bSoldOut = b.availability === "sold-out" ? 1 : 0;
+
+      if (aSoldOut !== bSoldOut) {
+        return aSoldOut - bSoldOut;
+      }
+
+      return (
+        new Date(b.createdAt ?? 0).getTime() -
+        new Date(a.createdAt ?? 0).getTime()
+      );
+    });
+  }, [products]);
+
+  const featuredProducts = useMemo(
+    () => curatedProducts.filter((product) => product.featured).slice(0, 6),
+    [curatedProducts]
+  );
+
+  const categorySections = useMemo(() => {
+    const storefrontCategoryOrder = [
+      "Hair Care",
+      "Skincare",
+      "Beauty",
+      "Personal Care",
+      "Ethnic",
+      "Co-ords",
+      "Kurti",
+      "Tops",
+      "Bottom",
+      "Accessories",
+      "Earrings",
+    ];
+
+    const categoryOrder = new Map(
+      storefrontCategoryOrder.map((categoryName, index) => [
+        categoryName,
+        index,
+      ])
+    );
+
+    return categoryOptions
+      .filter((option) => option.value !== "all")
+      .map((option) => ({
+        category: option.value,
+        products: curatedProducts
+          .filter((product) => product.category === option.value)
+          .slice(0, 4),
+      }))
+      .filter((section) => section.products.length > 0)
+      .sort((a, b) => {
+        const aOrder =
+          categoryOrder.get(a.category) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder =
+          categoryOrder.get(b.category) ?? Number.MAX_SAFE_INTEGER;
+
+        if (aOrder !== bOrder) {
+          return aOrder - bOrder;
+        }
+
+        return a.category.localeCompare(b.category);
+      });
+  }, [categoryOptions, curatedProducts]);
+
   return (
     <div>
       <div className="mb-4 md:hidden">
         <ShopSearchInput value={search} onChange={setSearch} />
 
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setFiltersOpen(true)}
-            className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[11px] font-medium text-deep-brown"
-          >
-            <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.7} />
-            Category
-          </button>
+        {catalogOnly ? (
+          <>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setFiltersOpen(true)}
+                className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[10px] font-medium text-deep-brown"
+              >
+                <SlidersHorizontal
+                  className="h-3.5 w-3.5"
+                  strokeWidth={1.7}
+                />
+                Filters
+              </button>
 
-          <button
-            type="button"
-            onClick={() => setFiltersOpen(true)}
-            className="inline-flex h-8 shrink-0 items-center rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[11px] font-medium text-deep-brown"
-          >
-            Availability
-          </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setSortOpen((current) => !current)}
+                  className="inline-flex h-8 w-full items-center justify-between rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[10px] font-medium text-deep-brown"
+                >
+                  {getSortLabel(sort)}
+                  <span className="text-[10px] text-muted-gold">⌄</span>
+                </button>
 
-          <div className="relative col-span-2">
-            <button
-              type="button"
-              onClick={() => setSortOpen((current) => !current)}
-              className="inline-flex h-8 w-full items-center justify-between rounded-full border border-warm-border bg-[#FFFDF9] px-3 text-[11px] font-medium text-deep-brown"
-            >
-              {getSortLabel(sort)}
-              <span className="text-[10px] text-muted-gold">⌄</span>
-            </button>
+                {sortOpen ? (
+                  <div className="absolute right-0 top-10 z-30 w-48 overflow-hidden rounded-xl border border-warm-border bg-soft-white shadow-[0_16px_40px_rgba(47,33,24,0.14)]">
+                    {sortOptions.map((option) => {
+                      const isSelected = sort === option.value;
 
-            {sortOpen ? (
-              <div className="absolute right-0 top-10 z-30 w-48 overflow-hidden rounded-xl border border-warm-border bg-soft-white shadow-[0_16px_40px_rgba(47,33,24,0.14)]">
-                {sortOptions.map((option) => {
-                  const isSelected = sort === option.value;
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => handleSortChange(option.value)}
+                          className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[12px] transition ${
+                            isSelected
+                              ? "bg-light-sand font-semibold text-deep-brown"
+                              : "text-soft-brown hover:bg-ivory hover:text-deep-brown"
+                          }`}
+                        >
+                          {option.label}
 
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => handleSortChange(option.value)}
-                      className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[12px] transition ${
-                        isSelected
-                          ? "bg-light-sand font-semibold text-deep-brown"
-                          : "text-soft-brown hover:bg-ivory hover:text-deep-brown"
-                      }`}
-                    >
-                      {option.label}
-                      {isSelected ? (
-                        <span className="text-muted-gold">✓</span>
-                      ) : null}
-                    </button>
-                  );
-                })}
+                          {isSelected ? (
+                            <span className="text-muted-gold">✓</span>
+                          ) : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
+            {(search ||
+              availability !== "all" ||
+              sort !== "newest") ? (
+              <div className="mt-2 flex items-center justify-between px-0.5">
+                <p className="text-[10px] text-soft-brown">
+                  <span className="font-medium text-deep-brown">
+                    {filteredProducts.length}
+                  </span>{" "}
+                  products
+                </p>
+
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="text-[9px] font-semibold tracking-[0.12em] text-muted-gold uppercase"
+                >
+                  Clear
+                </button>
               </div>
             ) : null}
-          </div>
-        </div>
-
-        <div className="mt-2 flex items-center justify-between px-0.5">
-          <p className="text-[10px] text-soft-brown">
-            <span className="font-medium text-deep-brown">
-              {filteredProducts.length}
-            </span>{" "}
-            products
-          </p>
-
-          {(search || category !== "all" || availability !== "all" || sort !== "newest") ? (
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="text-[9px] font-semibold tracking-[0.12em] text-muted-gold uppercase"
-            >
-              Clear
-            </button>
-          ) : null}
-        </div>
+          </>
+        ) : null}
       </div>
 
-      <div className="mb-6 hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] p-5 shadow-[0_12px_40px_rgba(47,33,24,0.045)] md:block lg:p-6">
+      {!catalogOnly ? (
+        <div className="mb-6 hidden md:block">
+          <div className="max-w-md">
+            <ShopSearchInput value={search} onChange={setSearch} />
+          </div>
+        </div>
+      ) : null}
+
+      <div className={`${catalogOnly ? "md:block" : "md:hidden"} mb-6 hidden rounded-[1.5rem] border border-warm-border bg-[#FFFDF9] shadow-[0_12px_40px_rgba(47,33,24,0.045)] ${
+        catalogOnly ? "p-4 lg:p-5" : "p-5 lg:p-6"
+      }`}>
         <div className="grid items-end gap-5 md:grid-cols-[1.45fr_1fr_1fr_1fr] lg:gap-6">
           <ShopSearchInput value={search} onChange={setSearch} />
 
@@ -341,7 +433,105 @@ export function ShopProductsClient({
         resultCount={filteredProducts.length}
       />
 
-      {filteredProducts.length > 0 ? (
+      {isCuratedView ? (
+        <div className="space-y-12 sm:space-y-16">
+          {featuredProducts.length > 0 ? (
+            <section>
+              <div className="mb-5 sm:mb-7">
+                <p className="text-[9px] font-semibold tracking-[0.22em] text-muted-gold uppercase sm:text-[10px]">
+                  Handpicked for you
+                </p>
+
+                <div className="mt-1 inline-block">
+                  <h2 className="font-serif-brand text-[1.9rem] font-medium leading-none tracking-[-0.03em] text-deep-brown sm:text-[2.6rem]">
+                    Featured Picks
+                  </h2>
+                  <div className="mt-1 h-[2px] w-full rounded-full bg-muted-gold" />
+                </div>
+              </div>
+
+              <ProductGrid products={featuredProducts} variant="featured" />
+
+              <div className="mt-5 flex justify-center sm:mt-8">
+                <Link
+                  href="/shop/featured"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#3F2A20] bg-[#3F2A20] px-5 text-[10px] font-semibold tracking-[0.13em] uppercase md:hidden"
+                >
+                  <span style={{ color: "#FFFDF9" }}>
+                    View All Featured
+                  </span>
+
+                  <ArrowRight
+                    className="h-3.5 w-3.5"
+                    color="#FFFDF9"
+                    strokeWidth={1.7}
+                  />
+                </Link>
+
+                <Link
+                  href="/shop/featured"
+                  className="group hidden h-11 items-center justify-center gap-2 rounded-full border border-warm-border bg-[#FFFDF9] px-7 text-[11px] font-semibold tracking-[0.13em] uppercase transition-all duration-300 hover:border-deep-brown hover:bg-deep-brown md:inline-flex"
+                >
+                  <span className="text-[#3F2A20] transition-colors duration-300 group-hover:text-[#FFFDF9]">
+                    View All Featured
+                  </span>
+
+                  <ArrowRight
+                    className="h-3.5 w-3.5 text-[#3F2A20] transition-colors duration-300 group-hover:text-[#FFFDF9]"
+                    strokeWidth={1.7}
+                  />
+                </Link>
+              </div>
+            </section>
+          ) : null}
+
+          {categorySections.map((section) => (
+            <section key={section.category}>
+              <div className="mb-5 sm:mb-7">
+                <div className="inline-block">
+                  <h2 className="font-serif-brand text-[1.9rem] font-medium leading-none tracking-[-0.03em] text-deep-brown sm:text-[2.5rem]">
+                    {section.category}
+                  </h2>
+                  <div className="mt-1 h-[2px] w-full rounded-full bg-muted-gold" />
+                </div>
+              </div>
+
+              <ProductGrid products={section.products} variant="curated" />
+
+              <div className="mt-5 flex justify-center sm:mt-8">
+                <Link
+                  href={`/shop/${toCategorySlug(section.category)}`}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#3F2A20] bg-[#3F2A20] px-5 text-[10px] font-semibold tracking-[0.13em] uppercase md:hidden"
+                >
+                  <span style={{ color: "#FFFDF9" }}>
+                    View All {section.category}
+                  </span>
+
+                  <ArrowRight
+                    className="h-3.5 w-3.5"
+                    color="#FFFDF9"
+                    strokeWidth={1.7}
+                  />
+                </Link>
+
+                <Link
+                  href={`/shop/${toCategorySlug(section.category)}`}
+                  className="group hidden h-11 items-center justify-center gap-2 rounded-full border border-warm-border bg-[#FFFDF9] px-7 text-[11px] font-semibold tracking-[0.13em] uppercase transition-all duration-300 hover:border-deep-brown hover:bg-deep-brown md:inline-flex"
+                >
+                  <span className="text-[#3F2A20] transition-colors duration-300 group-hover:text-[#FFFDF9]">
+                    View All {section.category}
+                  </span>
+
+                  <ArrowRight
+                    className="h-3.5 w-3.5 text-[#3F2A20] transition-colors duration-300 group-hover:text-[#FFFDF9]"
+                    strokeWidth={1.7}
+                  />
+                </Link>
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : filteredProducts.length > 0 ? (
         <>
           <ProductGrid products={visibleProducts} />
 

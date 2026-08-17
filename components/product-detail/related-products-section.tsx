@@ -1,4 +1,3 @@
-import { SectionHeading } from "@/components/home/section-heading";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductGrid } from "@/components/product/product-grid";
 import { getInventoryRelatedProducts } from "@/lib/supabase/inventory-products";
@@ -38,13 +37,15 @@ export async function RelatedProductsSection({
         </div>
       </div>
 
-      {/* Existing premium desktop heading */}
-      <div className="hidden sm:block">
-        <SectionHeading
-          eyebrow="Curated Picks"
-          title="You May Also Like"
-          description="Explore similar handpicked pieces from the same collection."
-        />
+      {/* Clean desktop heading */}
+      <div className="hidden text-center sm:block">
+        <h2 className="font-serif-brand text-[2.4rem] font-medium leading-none tracking-[-0.035em] text-deep-brown lg:text-[2.8rem]">
+          You May Also Like
+        </h2>
+
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-soft-brown">
+          Explore similar handpicked pieces from the same collection.
+        </p>
       </div>
 
       {/* Mobile: horizontally swipeable products */}
@@ -62,7 +63,7 @@ export async function RelatedProductsSection({
       </div>
 
       {/* Tablet/Desktop: normal product grid */}
-      <div className="mt-12 hidden sm:block">
+      <div className="mt-7 hidden sm:block">
         <ProductGrid products={relatedProducts.slice(0, 4)} />
       </div>
     </section>

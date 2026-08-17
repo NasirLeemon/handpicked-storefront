@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 type ShopSearchInputProps = {
   value: string;
@@ -25,8 +25,19 @@ export function ShopSearchInput({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder="Search products"
-          className="h-9 sm:h-11 w-full appearance-none border-0 bg-transparent pl-7 pr-2 text-[0.78rem] sm:text-sm text-deep-brown outline-none ring-0 transition placeholder:text-taupe focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 sm:h-12"
+          className="h-9 w-full appearance-none border-0 bg-transparent pl-7 pr-9 text-[0.78rem] text-deep-brown outline-none ring-0 transition placeholder:text-taupe focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 sm:h-12 sm:text-sm"
         />
+
+        {value ? (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            aria-label="Clear search"
+            className="absolute right-0 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-taupe transition hover:bg-light-sand hover:text-deep-brown"
+          >
+            <X className="h-4 w-4" strokeWidth={1.8} />
+          </button>
+        ) : null}
       </div>
     </label>
   );
