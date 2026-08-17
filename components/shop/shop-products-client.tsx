@@ -231,7 +231,7 @@ export function ShopProductsClient({
   }, [products]);
 
   const featuredProducts = useMemo(
-    () => curatedProducts.filter((product) => product.featured).slice(0, 6),
+    () => curatedProducts.filter((product) => product.featured).slice(0, 8),
     [curatedProducts]
   );
 

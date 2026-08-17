@@ -15,7 +15,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Link href={`/product/${product.slug}`} className="group block h-full">
       <article className="overflow-hidden rounded-[1.05rem] sm:rounded-[1.4rem] border border-warm-border/70 bg-[#FFFDF9] transition duration-300 group-hover:border-muted-gold group-hover:shadow-[0_18px_45px_rgba(47,33,24,0.08)]">
        <div className="relative overflow-hidden rounded-t-[1.05rem] sm:rounded-t-[1.4rem] border-b border-warm-border bg-[#F7EFE4]">
-          <div className="relative aspect-[1/1.15] sm:aspect-[4/5] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(255,253,249,0.88),rgba(242,232,218,0.72)_58%,rgba(232,220,203,0.84))]">
+          <div className="relative aspect-[1/1.15] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(255,253,249,0.88),rgba(242,232,218,0.72)_58%,rgba(232,220,203,0.84))] sm:aspect-[4/5] lg:aspect-square">
             <ProductImage
               src={imageSrc}
               alt={`${product.name} in ${product.color} – ${product.category} from Handpicked`}
@@ -40,14 +40,14 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2.5 sm:px-3.5 sm:pb-3.5 sm:pt-3">
+        <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2.5 sm:px-3.5 sm:pb-3.5 sm:pt-3 lg:min-h-[7.25rem] lg:px-4 lg:pb-4 lg:pt-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <p className="truncate text-[8px] font-semibold tracking-[0.18em] text-muted-gold uppercase sm:text-[9px] sm:tracking-[0.24em]">
                 {product.category}
               </p>
 
-              <h3 className="mt-1 line-clamp-2 min-h-[2.15rem] text-[0.82rem] font-medium leading-[1.05rem] tracking-[-0.01em] text-deep-brown transition group-hover:text-muted-gold sm:min-h-[2.6rem] sm:text-[0.98rem] sm:leading-5">
+              <h3 className="mt-1 line-clamp-2 min-h-[2.15rem] text-[0.82rem] font-medium leading-[1.05rem] tracking-[-0.01em] text-deep-brown transition group-hover:text-muted-gold sm:min-h-[2.6rem] sm:text-[0.98rem] sm:leading-5 lg:text-[1rem] lg:leading-[1.3rem]">
                 {product.name}
               </h3>
             </div>
