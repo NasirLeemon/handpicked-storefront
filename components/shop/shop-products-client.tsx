@@ -23,7 +23,12 @@ function getCategoryOptions(products: Product[]) {
   const categories = Array.from(
     new Set(
       products
-        .map((product) => product.category.trim())
+        .flatMap((product) =>
+          product.categories?.length
+            ? product.categories
+            : [product.category]
+        )
+        .map((category) => category.trim())
         .filter((category) => category && category !== "Uncategorized")
     )
   ).sort((a, b) => a.localeCompare(b));
@@ -129,15 +134,23 @@ export function ShopProductsClient({
     const normalizedSearch = search.trim().toLowerCase();
 
     const result = products.filter((product) => {
+      const productCategories =
+        product.categories?.length
+          ? product.categories
+          : [product.category];
+
       const matchesSearch =
         normalizedSearch.length === 0 ||
         product.name.toLowerCase().includes(normalizedSearch) ||
-        product.category.toLowerCase().includes(normalizedSearch) ||
+        productCategories.some((productCategory) =>
+          productCategory.toLowerCase().includes(normalizedSearch)
+        ) ||
         product.color.toLowerCase().includes(normalizedSearch) ||
         product.description.toLowerCase().includes(normalizedSearch);
 
       const matchesCategory =
-        category === "all" || product.category === category;
+        category === "all" ||
+        productCategories.includes(category);
 
       const matchesAvailability =
         availability === "all" || product.availability === availability;
@@ -262,7 +275,10 @@ export function ShopProductsClient({
       .map((option) => ({
         category: option.value,
         products: curatedProducts
-          .filter((product) => product.category === option.value)
+          .filter(
+            (product) =>
+              product.category === option.value
+          )
           .slice(0, 4),
       }))
       .filter((section) => section.products.length > 0)

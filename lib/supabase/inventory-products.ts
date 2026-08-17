@@ -5,6 +5,10 @@ type CategoryRelation = {
   name: string;
 } | null;
 
+type ProductCategoryRelation = {
+  categories: CategoryRelation | CategoryRelation[];
+};
+
 type VariantRow = {
   id: string;
   sku: string;
@@ -36,6 +40,7 @@ type ProductRow = {
   status: "active" | "archived";
   created_at: string;
   categories: CategoryRelation | CategoryRelation[];
+  product_categories: ProductCategoryRelation[];
   product_variants: VariantRow[];
   product_images: ImageRow[];
 };
@@ -96,9 +101,34 @@ function mapProduct(row: ProductRow): Product | null {
     return null;
   }
 
-  const categoryRelation = Array.isArray(row.categories)
+  const legacyCategoryRelation = Array.isArray(row.categories)
     ? row.categories[0] ?? null
     : row.categories;
+
+  const categories = [
+    ...new Set(
+      (row.product_categories ?? [])
+        .flatMap((relation) =>
+          Array.isArray(relation.categories)
+            ? relation.categories
+            : [relation.categories]
+        )
+        .map((category) => category?.name?.trim())
+        .filter((name): name is string => Boolean(name))
+    ),
+  ];
+
+  const primaryCategory =
+    legacyCategoryRelation?.name?.trim() ||
+    categories[0] ||
+    "Uncategorized";
+
+  if (
+    primaryCategory !== "Uncategorized" &&
+    !categories.includes(primaryCategory)
+  ) {
+    categories.unshift(primaryCategory);
+  }
 
   const sizes = [
     ...new Set(
@@ -136,7 +166,8 @@ function mapProduct(row: ProductRow): Product | null {
     slug: row.slug,
     name: row.name,
     price: Number(defaultVariant.selling_price || 0),
-    category: categoryRelation?.name || "Uncategorized",
+    category: primaryCategory,
+    categories,
     description,
     details: row.details || description,
     images,
@@ -174,8 +205,13 @@ export async function getInventoryProductsForStorefront(): Promise<Product[]> {
       show_on_storefront,
       status,
       created_at,
-      categories (
+      categories!products_category_id_fkey (
         name
+      ),
+      product_categories (
+        categories (
+          name
+        )
       ),
       product_variants (
         id,

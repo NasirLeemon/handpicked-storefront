@@ -23,7 +23,11 @@ export default async function ShopCategoryPage({
   const categories = Array.from(
     new Set(
       products
-        .map((product) => product.category)
+        .flatMap((product) =>
+          product.categories?.length
+            ? product.categories
+            : [product.category]
+        )
         .filter(
           (category) =>
             category &&
@@ -41,7 +45,12 @@ export default async function ShopCategoryPage({
   }
 
   const categoryProducts = products.filter(
-    (product) => product.category === categoryName
+    (product) =>
+      (
+        product.categories?.length
+          ? product.categories
+          : [product.category]
+      ).includes(categoryName)
   );
 
   return (
