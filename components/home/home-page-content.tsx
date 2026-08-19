@@ -12,8 +12,8 @@ export function HomePageContent() {
     <div className="min-h-screen bg-ivory text-deep-brown">
       <HomeHero />
 <TrustStrip />
-<ShopByCollectionSection />
 <NewArrivalsSection />
+<ShopByCollectionSection />
 <BrandStorySection />
 <HowToOrderSection />
 <DeliveryNoteSection />
