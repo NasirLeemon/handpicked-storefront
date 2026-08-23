@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Check, ShoppingBag } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductImage } from "@/components/product/product-image";
+import { useCart } from "@/components/cart/cart-provider";
 import type { Product } from "@/types/product";
 
 type ProductCardProps = {
@@ -9,59 +14,113 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
+  const { addItem } = useCart();
+  const [isAdded, setIsAdded] = useState(false);
+
   const imageSrc = product.images[0];
+  const isSoldOut = product.availability === "sold-out";
+  const requiresSizeSelection = product.sizes.length > 1;
+  const defaultSize = product.sizes[0] || "Default";
+
+  function handleAddToCart() {
+    if (isSoldOut) {
+      return;
+    }
+
+    if (requiresSizeSelection) {
+      router.push(`/product/${product.slug}`);
+      return;
+    }
+
+    addItem({
+      product,
+      size: defaultSize,
+      quantity: 1,
+    });
+
+    setIsAdded(true);
+    window.setTimeout(() => setIsAdded(false), 1500);
+  }
+
+  function handleOrderNow() {
+    if (isSoldOut) {
+      return;
+    }
+
+    if (requiresSizeSelection) {
+      router.push(`/product/${product.slug}`);
+      return;
+    }
+
+    router.push(
+      `/checkout?product=${product.slug}&size=${encodeURIComponent(defaultSize)}&qty=1`
+    );
+  }
 
   return (
-    <Link href={`/product/${product.slug}`} className="group block h-full">
-      <article className="overflow-hidden rounded-[1.05rem] sm:rounded-[1.4rem] border border-warm-border/70 bg-[#FFFDF9] transition duration-300 group-hover:border-muted-gold group-hover:shadow-[0_18px_45px_rgba(47,33,24,0.08)]">
-       <div className="relative overflow-hidden rounded-t-[1.05rem] sm:rounded-t-[1.4rem] border-b border-warm-border bg-[#F7EFE4]">
-          <div className="relative aspect-[1/1.15] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(255,253,249,0.88),rgba(242,232,218,0.72)_58%,rgba(232,220,203,0.84))] sm:aspect-[4/5] lg:aspect-square">
+    <article className="flex h-full flex-col overflow-hidden border border-[#DCCDBF] bg-[#FFFDF9] transition duration-300 hover:border-[#A98B72] hover:shadow-[0_12px_32px_rgba(47,33,24,0.07)]">
+      <Link href={`/product/${product.slug}`} className="group block">
+        <div className="relative overflow-hidden bg-[#FFFDF9]">
+          <div className="relative aspect-square overflow-hidden bg-[#FFFDF9]">
             <ProductImage
               src={imageSrc}
               alt={`${product.name} in ${product.color} – ${product.category} from Handpicked`}
               objectPosition="object-[center_42%]"
             />
-
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#21160F]/14 via-transparent to-white/10 opacity-80 transition duration-500 group-hover:opacity-100" />
           </div>
 
           <div className="absolute left-2 top-2 sm:left-3 sm:top-3">
             <AvailabilityBadge availability={product.availability} />
           </div>
-
-          <div className="absolute bottom-3 left-3 right-3 hidden translate-y-2 opacity-0 transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 sm:block">
-            <div className="flex items-center justify-between rounded-full border border-white/45 bg-[#FFFDF9]/88 px-3.5 py-2.5 text-[9px] font-semibold tracking-[0.17em] text-deep-brown uppercase shadow-sm backdrop-blur-md">
-              <span>View Details</span>
-
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#4A3327] text-[#FFFDF9]">
-                <ArrowUpRight className="h-3 w-3" strokeWidth={1.7} />
-              </span>
-            </div>
-          </div>
         </div>
+      </Link>
 
-        <div className="flex flex-1 flex-col px-2.5 pb-2.5 pt-2.5 sm:px-3.5 sm:pb-3.5 sm:pt-3 lg:min-h-[7.25rem] lg:px-4 lg:pb-4 lg:pt-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[8px] font-semibold tracking-[0.18em] text-muted-gold uppercase sm:text-[9px] sm:tracking-[0.24em]">
-                {product.category}
-              </p>
+      <div className="flex flex-1 flex-col border-t border-[#E3D8CE] bg-[#F8F1E9] px-3 py-3 sm:px-3.5 sm:py-3.5">
+        <Link href={`/product/${product.slug}`} className="group block">
+          <p className="text-[7px] font-semibold tracking-[0.22em] text-[#9B7458] uppercase sm:text-[8px]">
+            {product.category}
+          </p>
 
-              <h3 className="mt-1 line-clamp-2 min-h-[2.15rem] text-[0.82rem] font-medium leading-[1.05rem] tracking-[-0.01em] text-deep-brown transition group-hover:text-muted-gold sm:min-h-[2.6rem] sm:text-[0.98rem] sm:leading-5 lg:text-[1rem] lg:leading-[1.3rem]">
-                {product.name}
-              </h3>
-            </div>
+          <h3 className="mt-1.5 line-clamp-2 min-h-[2.1rem] text-[0.72rem] font-medium leading-[1.05rem] tracking-[-0.01em] text-[#35231A] transition-colors duration-300 group-hover:text-[#8D674D] sm:min-h-[2.2rem] sm:text-[0.78rem] sm:leading-[1.1rem]">
+            {product.name}
+          </h3>
 
-            <p className="shrink-0 pt-[1px] text-[0.76rem] font-semibold text-deep-brown sm:text-[0.86rem]">
-              ৳ {product.price.toLocaleString()}
+          <div className="pt-2">
+            <div className="mb-1.5 h-px w-6 bg-[#76503B]/35 transition-all duration-300 group-hover:w-10" />
+
+            <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
+              ৳{product.price.toLocaleString()}
             </p>
           </div>
+        </Link>
 
-          <p className="mt-1 line-clamp-1 text-[0.64rem] leading-4 text-soft-brown sm:mt-1.5 sm:text-[0.76rem] sm:leading-5">
-            {product.color} · {product.sizes.join(", ")}
-          </p>
+        <div className="mt-2.5 space-y-1.5">
+          <button
+            type="button"
+            disabled={isSoldOut}
+            onClick={handleAddToCart}
+            className="inline-flex h-8 w-full items-center justify-center gap-1.5 whitespace-nowrap bg-[#3F2A20] px-3 text-[8px] font-semibold tracking-[0.08em] text-[#FFFDF9] uppercase transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#CFC2B5] sm:h-9 sm:text-[9px]"
+          >
+            {isAdded ? (
+              <Check className="h-3 w-3 shrink-0" strokeWidth={2} />
+            ) : (
+              <ShoppingBag className="h-3 w-3 shrink-0" strokeWidth={1.8} />
+            )}
+
+            {isSoldOut ? "Sold Out" : isAdded ? "Added" : "Add to Cart"}
+          </button>
+
+          <button
+            type="button"
+            disabled={isSoldOut}
+            onClick={handleOrderNow}
+            className="inline-flex h-7 w-full items-center justify-center whitespace-nowrap border border-[#3F2A20]/60 text-[8px] font-semibold tracking-[0.1em] text-[#3F2A20] uppercase transition hover:text-[#8D674D] disabled:cursor-not-allowed disabled:text-[#A99788] sm:h-8 sm:text-[9px]"
+          >
+            {isSoldOut ? "Unavailable" : "Order Now"}
+          </button>
         </div>
-      </article>
-    </Link>
+      </div>
+    </article>
   );
 }
