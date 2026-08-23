@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2, Sparkles } from "lucide-react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
@@ -146,6 +147,35 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
       const responseText = await response.text();
 
       if (response.ok) {
+        try {
+          const result = responseText ? JSON.parse(responseText) : {};
+          const order = result.order;
+
+          if (order?.id) {
+            const subtotal = items.reduce(
+              (total, item) => total + Number(item.price) * Number(item.quantity),
+              0
+            );
+
+            sendGAEvent("event", "purchase", {
+              transaction_id: String(order.id),
+              value: subtotal + deliveryCharge,
+              currency: "BDT",
+              shipping: deliveryCharge,
+              items: items.map((item) => ({
+                item_id: item.productId,
+                item_name: item.name,
+                item_variant:
+                  [item.color, item.size].filter(Boolean).join(" / ") || undefined,
+                price: Number(item.price),
+                quantity: Number(item.quantity),
+              })),
+            });
+          }
+        } catch {
+          // Analytics must never interrupt a successful checkout.
+        }
+
         setIsSuccess(true);
         setStatus(
           "Order request submitted successfully. Our team will review stock, delivery charge, and payment details before confirming your order."
