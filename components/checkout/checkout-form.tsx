@@ -157,9 +157,11 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
               0
             );
 
+            const purchaseValue = subtotal + deliveryCharge;
+
             sendGAEvent("event", "purchase", {
               transaction_id: String(order.id),
-              value: subtotal + deliveryCharge,
+              value: purchaseValue,
               currency: "BDT",
               shipping: deliveryCharge,
               items: items.map((item) => ({
@@ -170,6 +172,23 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                 price: Number(item.price),
                 quantity: Number(item.quantity),
               })),
+            });
+
+            const fbq = (
+              window as typeof window & {
+                fbq?: (...args: unknown[]) => void;
+              }
+            ).fbq;
+
+            fbq?.("track", "Purchase", {
+              value: purchaseValue,
+              currency: "BDT",
+              content_type: "product",
+              content_ids: items.map((item) => item.productId),
+              num_items: items.reduce(
+                (total, item) => total + Number(item.quantity),
+                0
+              ),
             });
           }
         } catch {
