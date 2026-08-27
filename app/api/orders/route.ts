@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
     const message =
       error instanceof Error
         ? error.message
-        : "Something went wrong while creating the order.";
+        : "Something went wrong while placing the order.";
 
     return NextResponse.json({ error: message }, { status: 500 });
   }

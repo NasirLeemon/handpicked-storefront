@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/cart/cart-provider";
+import { AddedToCartPanel } from "@/components/cart/added-to-cart-panel";
 import type { Product } from "@/types/product";
 
 type ProductActionButtonsProps = {
@@ -22,6 +24,7 @@ export function ProductActionButtons({
 }: ProductActionButtonsProps) {
   const router = useRouter();
   const { addItem } = useCart();
+  const [showAddedPanel, setShowAddedPanel] = useState(false);
 
   const requiresSizeSelection =
     product.sizes.filter(Boolean).length > 1;
@@ -45,6 +48,8 @@ export function ProductActionButtons({
       size: selectedSize,
       quantity,
     });
+
+    setShowAddedPanel(true);
   }
 
   function handleOrderNow() {
@@ -65,7 +70,8 @@ export function ProductActionButtons({
   }
 
   return (
-    <div className="grid gap-2.5 sm:gap-3">
+    <>
+      <div className="grid gap-2.5 sm:gap-3">
       <button
         type="button"
         onClick={handleAddToCart}
@@ -83,6 +89,16 @@ export function ProductActionButtons({
         Order Now
         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
       </button>
-    </div>
+      </div>
+
+      {showAddedPanel ? (
+        <AddedToCartPanel
+          productName={product.name}
+          quantity={quantity}
+          price={product.price}
+          onClose={() => setShowAddedPanel(false)}
+        />
+      ) : null}
+    </>
   );
 }

@@ -1,26 +1,22 @@
 "use client";
 
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2, MapPin, Sparkles } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
+import {
+  checkoutDeliveryAreas,
+  type CheckoutDeliveryArea,
+} from "@/components/checkout/checkout-form-options";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutFormProps = {
   items: CartItem[];
   clearCartOnSubmit?: boolean;
-};
-
-type DeliveryArea =
-  | "inside_dhaka"
-  | "suburb_dhaka"
-  | "outside_dhaka";
-
-const DELIVERY_CHARGES: Record<DeliveryArea, number> = {
-  inside_dhaka: 80,
-  suburb_dhaka: 110,
-  outside_dhaka: 150,
+  deliveryArea: CheckoutDeliveryArea | "";
+  deliveryCharge?: number;
+  onDeliveryAreaChange: (area: CheckoutDeliveryArea) => void;
 };
 
 type CustomerProfile = {
@@ -29,7 +25,13 @@ type CustomerProfile = {
   default_address: string | null;
 };
 
-export function CheckoutForm({ items }: CheckoutFormProps) {
+export function CheckoutForm({
+  items,
+  clearCartOnSubmit = false,
+  deliveryArea,
+  deliveryCharge,
+  onDeliveryAreaChange,
+}: CheckoutFormProps) {
   const { clearCart } = useCart();
 
   const [name, setName] = useState("");
@@ -37,15 +39,23 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
-  const [deliveryArea, setDeliveryArea] =
-    useState<DeliveryArea>("inside_dhaka");
-
-  const deliveryCharge = DELIVERY_CHARGES[deliveryArea];
 
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [orderReference, setOrderReference] = useState("");
+
+  const subtotal = items.reduce(
+    (total, item) =>
+      total +
+      Number(item.price || 0) * Number(item.quantity || 0),
+    0
+  );
+
+  const total = subtotal + (deliveryCharge ?? 0);
+  const hasDeliveryArea =
+    Boolean(deliveryArea) && typeof deliveryCharge === "number";
 
   useEffect(() => {
     async function loadProfile() {
@@ -63,8 +73,9 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
           .eq("user_id", userData.user.id)
           .single();
 
+        setEmail(userData.user.email || "");
+
         if (!data) {
-          setEmail(userData.user.email || "");
           return;
         }
 
@@ -72,7 +83,6 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
         setName(profile.full_name || "");
         setPhone(profile.phone || "");
-        setEmail(userData.user.email || "");
         setAddress(profile.default_address || "");
         setProfileLoaded(true);
       } catch {
@@ -83,12 +93,18 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
     loadProfile();
   }, []);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     if (items.length === 0) {
-      setIsSuccess(false);
-      setStatus("Add at least one product before submitting your order request.");
+      setStatus("Your cart is empty.");
+      return;
+    }
+
+    if (!deliveryArea || typeof deliveryCharge !== "number") {
+      setStatus("Please select your delivery area.");
       return;
     }
 
@@ -98,9 +114,15 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
     const customerAddress = address.trim();
     const orderNote = note.trim();
 
-    if (!customerName || !customerPhone || !customerEmail || !customerAddress) {
-      setIsSuccess(false);
-      setStatus("Name, phone number, email, and delivery address are required.");
+    if (
+      !customerName ||
+      !customerPhone ||
+      !customerEmail ||
+      !customerAddress
+    ) {
+      setStatus(
+        "Please complete your name, phone, email, and delivery address."
+      );
       return;
     }
 
@@ -108,7 +130,6 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
       /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
     if (!emailPattern.test(customerEmail)) {
-      setIsSuccess(false);
       setStatus("Enter a valid email address.");
       return;
     }
@@ -116,14 +137,13 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
     const normalizedPhone = customerPhone.replace(/\D/g, "");
 
     if (!/^01\d{9}$/.test(normalizedPhone)) {
-      setIsSuccess(false);
-      setStatus("Enter a valid 11-digit Bangladesh phone number.");
+      setStatus(
+        "Enter a valid 11-digit Bangladesh phone number."
+      );
       return;
     }
 
-
     setIsSubmitting(true);
-    setIsSuccess(false);
     setStatus("");
 
     try {
@@ -146,74 +166,97 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
       const responseText = await response.text();
 
-      if (response.ok) {
-        try {
-          const result = responseText ? JSON.parse(responseText) : {};
-          const order = result.order;
+      let result: {
+        order?: {
+          id?: string;
+          order_number?: string;
+        };
+        error?: string;
+      } = {};
 
-          if (order?.id) {
-            const subtotal = items.reduce(
-              (total, item) => total + Number(item.price) * Number(item.quantity),
-              0
-            );
+      try {
+        result = responseText
+          ? JSON.parse(responseText)
+          : {};
+      } catch {
+        result = {};
+      }
 
-            const purchaseValue = subtotal + deliveryCharge;
-
-            sendGAEvent("event", "purchase", {
-              transaction_id: String(order.id),
-              value: purchaseValue,
-              currency: "BDT",
-              shipping: deliveryCharge,
-              items: items.map((item) => ({
-                item_id: item.productId,
-                item_name: item.name,
-                item_variant:
-                  [item.color, item.size].filter(Boolean).join(" / ") || undefined,
-                price: Number(item.price),
-                quantity: Number(item.quantity),
-              })),
-            });
-
-            const fbq = (
-              window as typeof window & {
-                fbq?: (...args: unknown[]) => void;
-              }
-            ).fbq;
-
-            fbq?.("track", "Purchase", {
-              value: purchaseValue,
-              currency: "BDT",
-              content_type: "product",
-              content_ids: items.map((item) => item.productId),
-              num_items: items.reduce(
-                (total, item) => total + Number(item.quantity),
-                0
-              ),
-            });
-          }
-        } catch {
-          // Analytics must never interrupt a successful checkout.
-        }
-
-        setIsSuccess(true);
+      if (!response.ok) {
         setStatus(
-          "Order request submitted successfully. Our team will review stock, delivery charge, and payment details before confirming your order."
+          result.error ||
+            "Unable to place your order. Please try again."
         );
-        clearCart();
         return;
       }
 
+      const order = result.order;
+
+      if (order?.order_number) {
+        setOrderReference(order.order_number);
+      } else if (order?.id) {
+        setOrderReference(
+          `HP-${String(order.id).replace(/-/g, "").slice(0, 6).toUpperCase()}`
+        );
+      }
+
       try {
-        const result = responseText ? JSON.parse(responseText) : {};
-        setStatus(result.error || "Failed to submit order request.");
+        if (order?.id) {
+          sendGAEvent("event", "purchase", {
+            transaction_id: String(order.id),
+            value: total,
+            currency: "BDT",
+            shipping: deliveryCharge,
+            items: items.map((item) => ({
+              item_id: item.productId,
+              item_name: item.name,
+              item_variant:
+                [item.color, item.size]
+                  .filter(Boolean)
+                  .join(" / ") || undefined,
+              price: Number(item.price),
+              quantity: Number(item.quantity),
+            })),
+          });
+
+          const fbq = (
+            window as typeof window & {
+              fbq?: (...args: unknown[]) => void;
+            }
+          ).fbq;
+
+          fbq?.("track", "Purchase", {
+            value: total,
+            currency: "BDT",
+            content_type: "product",
+            content_ids: items.map(
+              (item) => item.productId
+            ),
+            num_items: items.reduce(
+              (itemTotal, item) =>
+                itemTotal + Number(item.quantity),
+              0
+            ),
+          });
+        }
       } catch {
-        setStatus("Failed to submit order request. Please try again.");
+        // Analytics must never interrupt checkout.
+      }
+
+      setIsSuccess(true);
+
+      if (clearCartOnSubmit) {
+        clearCart();
       }
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Unknown network error.";
+        error instanceof Error
+          ? error.message
+          : "Unknown network error.";
 
-      setStatus(`Failed to submit order request: ${message}`);
+      setStatus(
+        `Unable to place your order: ${message}`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -221,173 +264,231 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
   if (isSuccess) {
     return (
-      <div className="overflow-hidden rounded-[2rem] border border-warm-border bg-[#FFFDF9] p-8 text-center shadow-[0_22px_70px_rgba(47,33,24,0.08)] sm:p-10">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]">
-          <CheckCircle2 className="h-7 w-7" strokeWidth={1.7} />
+      <section className="rounded-sm border border-warm-border bg-[#FFFDF9] p-6 text-center shadow-[0_12px_35px_rgba(47,33,24,0.055)] sm:p-8">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-sm bg-[#EEF5EC] text-[#4F7652]">
+          <CheckCircle2
+            className="h-7 w-7"
+            strokeWidth={1.8}
+          />
         </div>
 
-        <p className="mt-6 text-xs font-semibold tracking-[0.26em] text-muted-gold uppercase">
-          Request Submitted
+        <p className="mt-5 text-[10px] font-semibold tracking-[0.2em] text-muted-gold uppercase">
+          Order Received
         </p>
 
-        <h2 className="mt-3 text-4xl font-medium tracking-[-0.045em] text-deep-brown sm:text-5xl">
-          Thank you
+        <h2 className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-deep-brown sm:text-3xl">
+          Thank you,{" "}
+          {name.trim().split(" ")[0] || "Apu"}
         </h2>
 
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-soft-brown sm:text-base">
-          Your order request has been received. Our team will review stock,
-          delivery charge, and payment details before confirming your order.
+        <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-soft-brown">
+          Your order has been received successfully. We’ll send you a
+          confirmation shortly.
         </p>
 
-        <div className="mt-7 grid gap-3 sm:grid-cols-2">
-          <a
-            href="/shop"
-            className="inline-flex h-12 items-center justify-center rounded-full bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_16px_34px_rgba(63,42,32,0.18)] transition hover:bg-[#5B4435]"
-          >
-            Continue Shopping
-          </a>
+        {orderReference ? (
+          <div className="mx-auto mt-5 max-w-sm rounded-sm bg-light-sand px-4 py-3">
+            <p className="text-[9px] font-semibold tracking-[0.15em] text-muted-gold uppercase">
+              Order number
+            </p>
 
-          <a
-            href="/contact"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-warm-border bg-transparent px-6 text-xs font-semibold tracking-[0.18em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold"
-          >
-            Contact Us
-          </a>
+            <p className="mt-1 break-all text-xs font-semibold text-deep-brown">
+              {orderReference}
+            </p>
+          </div>
+        ) : null}
+
+        <div className="mx-auto mt-5 flex max-w-sm items-center justify-between border-t border-warm-border pt-4">
+          <span className="text-sm text-soft-brown">
+            Order total
+          </span>
+
+          <span className="text-lg font-semibold text-deep-brown">
+            ৳{total.toLocaleString()}
+          </span>
         </div>
-      </div>
+
+        <a
+          href="/shop"
+          className="mt-6 inline-flex h-11 min-w-48 items-center justify-center rounded-sm bg-[#3F2A20] px-6 text-xs font-semibold tracking-[0.12em] !text-white uppercase transition hover:bg-[#5B4435]"
+        >
+          Continue Shopping
+        </a>
+      </section>
     );
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="overflow-hidden rounded-[1.25rem] border border-warm-border bg-[#FFFDF9] shadow-[0_14px_40px_rgba(47,33,24,0.06)] sm:rounded-[2rem] sm:shadow-[0_22px_70px_rgba(47,33,24,0.08)]"
+      className="rounded-sm border border-warm-border bg-[#FFFDF9] shadow-[0_12px_35px_rgba(47,33,24,0.055)]"
     >
-      <div className="border-b border-warm-border px-4 py-3 sm:px-6 sm:py-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <section className="p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-[9px] font-semibold tracking-[0.2em] text-muted-gold uppercase sm:text-xs sm:tracking-[0.26em]">
-              Delivery Details
-            </p>
+            <h2 className="text-base font-semibold text-deep-brown">
+              Contact information
+            </h2>
 
-            <p className="mt-1 max-w-xl text-[0.7rem] leading-5 text-soft-brown sm:mt-2 sm:text-sm sm:leading-6">
-              Fill in your contact and delivery information. We will review and
-              confirm availability before dispatch.
+            <p className="mt-1 text-xs text-soft-brown">
+              We’ll use these details for your order.
             </p>
           </div>
 
           {profileLoaded ? (
-            <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#D9E0CE] bg-[#F5F7F0] px-3 py-2 text-xs leading-5 text-[#5B654A]">
-              <Sparkles className="h-3.5 w-3.5" />
-              Saved details added
-            </p>
+            <span className="inline-flex items-center gap-1.5 rounded-sm bg-[#EEF5EC] px-2.5 py-1.5 text-[9px] font-medium text-[#4F7652]">
+              <Sparkles className="h-3 w-3" />
+              Saved details
+            </span>
           ) : null}
         </div>
-      </div>
 
-      <div className="grid gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
-        <CheckoutInput
-          label="Full Name"
-          name="name"
-          value={name}
-          onChange={setName}
-          required
-        />
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <CheckoutInput
+            label="Full name"
+            name="name"
+            value={name}
+            onChange={setName}
+            required
+            autoComplete="name"
+            placeholder="Your full name"
+          />
 
-        <CheckoutInput
-          label="Phone Number"
-          name="phone"
-          type="tel"
-          value={phone}
-          onChange={setPhone}
-          required
-        />
+          <CheckoutInput
+            label="Phone number"
+            name="phone"
+            type="tel"
+            value={phone}
+            onChange={setPhone}
+            required
+            autoComplete="tel"
+            inputMode="numeric"
+            placeholder="01XXXXXXXXX"
+          />
 
-        <CheckoutInput
-          label="Email Address"
-          name="email"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          required
-          placeholder="you@example.com"
-        />
+          <div className="sm:col-span-2">
+            <CheckoutInput
+              label="Email address"
+              name="email"
+              type="email"
+              value={email}
+              onChange={setEmail}
+              required
+              autoComplete="email"
+              placeholder="you@example.com"
+            />
+          </div>
+        </div>
+      </section>
 
-        <label className="block">
-          <span className="mb-1 block text-[8px] font-semibold tracking-[0.17em] text-muted-gold uppercase sm:mb-2 sm:text-[10px] sm:tracking-[0.22em]">
-            Delivery Area
-          </span>
+      <section className="border-t border-warm-border p-4 sm:p-5">
+        <div className="flex items-center gap-2">
+          <MapPin className="h-4 w-4 text-muted-gold" />
 
-          <select
-            name="deliveryArea"
-            value={deliveryArea}
-            onChange={(event) =>
-              setDeliveryArea(event.target.value as DeliveryArea)
-            }
-            className="h-9 w-full border-b border-warm-border bg-transparent text-[0.76rem] text-deep-brown outline-none transition focus:border-muted-gold sm:h-11 sm:text-sm"
-          >
-            <option value="inside_dhaka">
-              Inside Dhaka — ৳80
-            </option>
-            <option value="suburb_dhaka">
-              Dhaka Suburb — ৳110
-            </option>
-            <option value="outside_dhaka">
-              Outside Dhaka — ৳150
-            </option>
-          </select>
-        </label>
+          <h2 className="text-base font-semibold text-deep-brown">
+            Delivery
+          </h2>
+        </div>
 
-        <CheckoutTextarea
-          label="Delivery Address"
-          name="address"
-          value={address}
-          onChange={setAddress}
-          required
-          rows={1}
-        />
+        <p className="mt-1 text-xs text-soft-brown">
+          Choose your delivery area.
+        </p>
 
-        <CheckoutTextarea
-          label="Order Note"
-          name="note"
-          value={note}
-          onChange={setNote}
-          rows={1}
-          placeholder="Optional: delivery time, size note, etc."
-        />
-      </div>
+        <div
+          className="mt-4 grid gap-2 sm:grid-cols-3"
+          role="radiogroup"
+          aria-label="Delivery area"
+        >
+          {checkoutDeliveryAreas.map((option) => {
+            const isSelected =
+              deliveryArea === option.value;
+
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() =>
+                  onDeliveryAreaChange(option.value)
+                }
+                className={`rounded-sm border px-3 py-2 text-left transition ${
+                  isSelected
+                    ? "border-[#3F2A20] bg-[#F7F0E8] shadow-[0_0_0_1px_rgba(63,42,32,0.05)]"
+                    : "border-warm-border bg-white hover:border-muted-gold"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-deep-brown">
+                    {option.label}
+                  </span>
+
+                  <span className="shrink-0 text-xs font-semibold text-deep-brown">
+                    ৳{option.charge}
+                  </span>
+                </div>
+
+                {option.description ? (
+                  <span className="mt-1 block text-[9px] leading-3.5 text-taupe">
+                    {option.description}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 grid gap-3">
+          <CheckoutTextarea
+            label="Delivery address"
+            name="address"
+            value={address}
+            onChange={setAddress}
+            required
+            rows={2}
+            autoComplete="street-address"
+            placeholder="House, road, area, district"
+          />
+
+          <CheckoutTextarea
+            label="Order note"
+            optional
+            name="note"
+            value={note}
+            onChange={setNote}
+            rows={1}
+            placeholder="Anything we should know?"
+          />
+        </div>
+      </section>
 
       {status ? (
-        <p
-          className={`mx-5 rounded-[1rem] border px-4 py-3 text-sm leading-6 sm:mx-7 ${
-            isSuccess
-              ? "border-[#D9E0CE] bg-[#F5F7F0] text-[#5B654A]"
-              : "border-muted-gold/30 bg-light-sand text-soft-brown"
-          }`}
-        >
+        <div className="mx-4 mb-4 rounded-sm border border-[#E7D2B2] bg-[#FFF8EC] px-3 py-2.5 text-xs leading-5 text-[#805C2E] sm:mx-5">
           {status}
-        </p>
+        </div>
       ) : null}
 
-      <div className="px-4 pb-4 pt-0 sm:px-6 sm:pb-5 sm:pt-1">
+      <div className="border-t border-warm-border p-4 sm:p-5">
         <button
           type="submit"
-          disabled={items.length === 0 || isSubmitting}
-          className="inline-flex h-10 w-full items-center justify-center rounded-full bg-[#3F2A20] px-5 text-[0.68rem] font-semibold tracking-[0.14em] sm:h-12 sm:px-6 sm:text-xs sm:tracking-[0.18em] !text-[#FFFDF9] uppercase shadow-[0_16px_34px_rgba(63,42,32,0.18)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none sm:h-13"
+          disabled={
+            items.length === 0 ||
+            isSubmitting ||
+            !hasDeliveryArea
+          }
+          className="inline-flex h-11 w-full items-center justify-center rounded-sm bg-[#3F2A20] px-5 text-xs font-semibold tracking-[0.1em] !text-white uppercase shadow-[0_12px_28px_rgba(63,42,32,0.16)] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#D8CAB9] disabled:shadow-none"
         >
-          {isSubmitting ? "Submitting..." : "Submit Order Request"}
+          {isSubmitting
+            ? "Placing Order..."
+            : !hasDeliveryArea
+              ? "Select Delivery Area"
+              : `Place Order · ৳${total.toLocaleString()}`}
         </button>
 
-        {items.length === 0 ? (
-          <p className="mt-2 text-[0.66rem] leading-4 text-soft-brown sm:mt-3 sm:text-xs sm:leading-5">
-            Add at least one product before submitting your order request.
-          </p>
-        ) : (
-          <p className="mt-2 text-[0.66rem] leading-4 text-soft-brown sm:mt-3 sm:text-xs sm:leading-5">
-            This is not a final confirmation. We will confirm stock and delivery
-            details after review.
-          </p>
-        )}
+        <p className="mt-2 text-center text-[10px] leading-4 text-soft-brown">
+          Review your details and total before placing your
+          order.
+        </p>
       </div>
     </form>
   );
@@ -401,6 +502,16 @@ type CheckoutInputProps = {
   type?: string;
   required?: boolean;
   placeholder?: string;
+  autoComplete?: string;
+  inputMode?:
+    | "none"
+    | "text"
+    | "tel"
+    | "url"
+    | "email"
+    | "numeric"
+    | "decimal"
+    | "search";
 };
 
 function CheckoutInput({
@@ -411,11 +522,19 @@ function CheckoutInput({
   type = "text",
   required = false,
   placeholder,
+  autoComplete,
+  inputMode,
 }: CheckoutInputProps) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[8px] font-semibold tracking-[0.17em] text-muted-gold uppercase sm:mb-2 sm:text-[10px] sm:tracking-[0.22em]">
+      <span className="mb-1.5 block text-[10px] font-medium text-deep-brown">
         {label}
+
+        {required ? (
+          <span className="ml-0.5 text-[#B75A4B]">
+            *
+          </span>
+        ) : null}
       </span>
 
       <input
@@ -424,8 +543,12 @@ function CheckoutInput({
         required={required}
         placeholder={placeholder}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-8 w-full border-b border-warm-border bg-transparent px-0 text-[0.76rem] text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold sm:h-10 sm:text-sm"
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        onChange={(event) =>
+          onChange(event.target.value)
+        }
+        className="h-10 w-full rounded-sm border border-warm-border bg-white px-3.5 text-sm text-deep-brown outline-none transition placeholder:text-[#B5A69B] focus:border-[#8D674D] focus:ring-2 focus:ring-[#8D674D]/10"
       />
     </label>
   );
@@ -437,8 +560,10 @@ type CheckoutTextareaProps = {
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
+  optional?: boolean;
   placeholder?: string;
   rows?: number;
+  autoComplete?: string;
 };
 
 function CheckoutTextarea({
@@ -447,13 +572,27 @@ function CheckoutTextarea({
   value,
   onChange,
   required = false,
+  optional = false,
   placeholder,
-  rows = 4,
+  rows = 3,
+  autoComplete,
 }: CheckoutTextareaProps) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[8px] font-semibold tracking-[0.17em] text-muted-gold uppercase sm:mb-2 sm:text-[10px] sm:tracking-[0.22em]">
+      <span className="mb-1.5 block text-[10px] font-medium text-deep-brown">
         {label}
+
+        {required ? (
+          <span className="ml-0.5 text-[#B75A4B]">
+            *
+          </span>
+        ) : null}
+
+        {optional ? (
+          <span className="ml-1 font-normal text-taupe">
+            (optional)
+          </span>
+        ) : null}
       </span>
 
       <textarea
@@ -462,8 +601,11 @@ function CheckoutTextarea({
         placeholder={placeholder}
         rows={rows}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full resize-none border-b border-warm-border bg-transparent px-0 py-1.5 text-[0.76rem] leading-5 text-deep-brown outline-none transition placeholder:text-taupe focus:border-muted-gold sm:py-2 sm:text-sm sm:leading-6"
+        autoComplete={autoComplete}
+        onChange={(event) =>
+          onChange(event.target.value)
+        }
+        className="w-full resize-none rounded-sm border border-warm-border bg-white px-3.5 py-3 text-sm leading-5 text-deep-brown outline-none transition placeholder:text-[#B5A69B] focus:border-[#8D674D] focus:ring-2 focus:ring-[#8D674D]/10"
       />
     </label>
   );

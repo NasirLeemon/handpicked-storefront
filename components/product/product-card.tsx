@@ -7,6 +7,7 @@ import { Check, ShoppingBag } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductImage } from "@/components/product/product-image";
 import { useCart } from "@/components/cart/cart-provider";
+import { AddedToCartPanel } from "@/components/cart/added-to-cart-panel";
 import type { Product } from "@/types/product";
 
 type ProductCardProps = {
@@ -17,6 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const { addItem } = useCart();
   const [isAdded, setIsAdded] = useState(false);
+  const [showAddedPanel, setShowAddedPanel] = useState(false);
 
   const imageSrc = product.images[0];
   const isSoldOut =
@@ -45,6 +47,8 @@ export function ProductCard({ product }: ProductCardProps) {
     });
 
     setIsAdded(true);
+    setShowAddedPanel(true);
+
     window.setTimeout(() => setIsAdded(false), 1500);
   }
 
@@ -71,7 +75,8 @@ export function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <article className="flex h-full flex-col overflow-hidden border border-[#DCCDBF] bg-[#FFFDF9] transition duration-300 hover:border-[#A98B72] hover:shadow-[0_12px_32px_rgba(47,33,24,0.07)]">
+    <>
+      <article className="flex h-full flex-col overflow-hidden border border-[#DCCDBF] bg-[#FFFDF9] transition duration-300 hover:border-[#A98B72] hover:shadow-[0_12px_32px_rgba(47,33,24,0.07)]">
       <Link href={`/product/${product.slug}`} className="group block">
         <div className="relative overflow-hidden bg-[#FFFDF9]">
           <div className="relative aspect-square overflow-hidden bg-[#FFFDF9]">
@@ -135,6 +140,16 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
       </div>
-    </article>
+      </article>
+
+      {showAddedPanel ? (
+        <AddedToCartPanel
+          productName={product.name}
+          quantity={1}
+          price={product.price}
+          onClose={() => setShowAddedPanel(false)}
+        />
+      ) : null}
+    </>
   );
 }

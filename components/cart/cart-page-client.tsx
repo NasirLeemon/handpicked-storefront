@@ -1,6 +1,7 @@
 "use client";
 
-import { ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { CartItemCard } from "@/components/cart/cart-item-card";
 import { CartSummary } from "@/components/cart/cart-summary";
 import { EmptyCart } from "@/components/cart/empty-cart";
@@ -9,61 +10,71 @@ import { useCart } from "@/components/cart/cart-provider";
 export function CartPageClient() {
   const { items } = useCart();
 
+  const totalItems = items.reduce(
+    (total, item) => total + Number(item.quantity || 0),
+    0
+  );
+
   return (
-    <div className="min-h-screen bg-ivory px-4 py-4 text-deep-brown sm:px-6 sm:py-7 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-5 overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_16px_45px_rgba(47,33,24,0.055)]">
-          <div className="relative px-4 py-4 sm:px-6">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.13),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.74))]" />
+    <main className="min-h-screen bg-ivory px-4 py-5 text-deep-brown sm:px-6 sm:py-8 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-5 flex items-end justify-between gap-4 border-b border-warm-border pb-4 sm:mb-7">
+          <div>
+            <p className="text-[9px] font-semibold tracking-[0.2em] text-muted-gold uppercase sm:text-[10px]">
+              Shopping Cart
+            </p>
 
-            <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold shadow-sm">
-                  <ShoppingBag className="h-4.5 w-4.5" strokeWidth={1.7} />
-                </div>
+            <div className="mt-1 flex items-baseline gap-2">
+              <h1 className="text-2xl font-semibold tracking-[-0.04em] text-deep-brown sm:text-3xl">
+                Your cart
+              </h1>
 
-                <div>
-                  <p className="text-[10px] font-semibold tracking-[0.26em] text-muted-gold uppercase">
-                    Your Selection
-                  </p>
-
-                  <h1 className="mt-1 text-2xl font-semibold tracking-[-0.045em] text-deep-brown sm:text-[2rem]">
-                    Cart
-                  </h1>
-                </div>
-              </div>
-
-              <div className="max-w-md border-t border-warm-border pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
-                <p className="text-sm leading-6 text-soft-brown">
-                  Review your selected pieces before submitting your order
-                  request.
-                </p>
-
-                <p className="mt-1 text-xs font-medium tracking-[0.14em] text-muted-gold uppercase">
-                  {items.length} {items.length === 1 ? "item" : "items"} selected
-                </p>
-              </div>
+              {items.length > 0 ? (
+                <span className="text-sm text-soft-brown">
+                  ({totalItems} {totalItems === 1 ? "item" : "items"})
+                </span>
+              ) : null}
             </div>
           </div>
+
+          {items.length > 0 ? (
+            <Link
+              href="/shop"
+              className="hidden items-center gap-2 text-xs font-semibold text-soft-brown transition hover:text-deep-brown sm:inline-flex"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Continue shopping
+            </Link>
+          ) : null}
         </div>
 
         {items.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="grid gap-6 lg:grid-cols-[1fr_380px] lg:gap-8">
-            <div className="space-y-4">
-              {items.map((item, index) => (
-                <CartItemCard
-                  key={`${item.slug}-${item.size}-${index}`}
-                  item={item}
-                />
-              ))}
+          <>
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+              <div className="space-y-3">
+                {items.map((item, index) => (
+                  <CartItemCard
+                    key={`${item.slug}-${item.size}-${index}`}
+                    item={item}
+                  />
+                ))}
+              </div>
+
+              <CartSummary items={items} />
             </div>
 
-            <CartSummary items={items} />
-          </div>
+            <Link
+              href="/shop"
+              className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-soft-brown transition hover:text-deep-brown sm:hidden"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Continue shopping
+            </Link>
+          </>
         )}
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,110 +1,138 @@
-import { PackageCheck } from "lucide-react";
+import Image from "next/image";
 import { getCartSubtotal } from "@/lib/cart";
 import type { CartItem } from "@/types/cart";
 
 type CheckoutOrderSummaryProps = {
   items: CartItem[];
+  deliveryCharge?: number;
 };
 
-export function CheckoutOrderSummary({ items }: CheckoutOrderSummaryProps) {
+export function CheckoutOrderSummary({
+  items,
+  deliveryCharge,
+}: CheckoutOrderSummaryProps) {
   const subtotal = getCartSubtotal(items);
+  const hasDeliveryCharge = typeof deliveryCharge === "number";
+  const total = subtotal + (deliveryCharge ?? 0);
+
+  const totalItems = items.reduce(
+    (sum, item) => sum + Number(item.quantity || 0),
+    0
+  );
 
   return (
-    <aside className="relative overflow-hidden rounded-[1.75rem] border border-warm-border bg-[#FFFDF9] shadow-[0_18px_55px_rgba(47,33,24,0.075)] lg:sticky lg:top-28">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(176,138,85,0.12),transparent_34%),linear-gradient(180deg,rgba(255,252,248,0.98),rgba(250,244,236,0.72))]" />
+    <aside className="border border-warm-border bg-[#FFFDF9] p-4 shadow-[0_10px_30px_rgba(47,33,24,0.045)] sm:p-5">
+      <div className="flex items-end justify-between gap-4 border-b border-warm-border pb-4">
+        <div>
+          <p className="text-[9px] font-semibold tracking-[0.18em] text-muted-gold uppercase">
+            Your Order
+          </p>
 
-      <div className="relative p-5">
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold">
-            <PackageCheck className="h-4 w-4" strokeWidth={1.7} />
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold tracking-[0.24em] text-muted-gold uppercase">
-              Summary
-            </p>
-            <p className="mt-0.5 text-xs text-soft-brown">
-              Request details before confirmation.
-            </p>
-          </div>
+          <h2 className="mt-1 text-lg font-semibold tracking-[-0.025em] text-deep-brown">
+            Order summary
+          </h2>
         </div>
 
-        {items.length === 0 ? (
-          <p className="text-sm leading-6 text-soft-brown">
-            Your order summary is empty. Please add a product before submitting
-            an order request.
-          </p>
-        ) : (
-          <>
-            <div className="space-y-3">
-              {items.map((item, index) => {
-                const price = Number(item.price || 0);
-                const quantity = Number(item.quantity || 0);
+        <p className="text-[11px] text-soft-brown">
+          {totalItems} {totalItems === 1 ? "item" : "items"}
+        </p>
+      </div>
 
-                return (
-                  <div
-                    key={`${item.slug}-${item.size}-${index}`}
-                    className="border-b border-warm-border pb-3 last:border-b-0"
-                  >
-                    <div className="flex justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="line-clamp-2 text-sm font-semibold text-deep-brown">
-                          {item.name}
-                        </p>
+      {items.length === 0 ? (
+        <p className="py-5 text-sm text-soft-brown">
+          Your cart is empty.
+        </p>
+      ) : (
+        <>
+          <div className="divide-y divide-warm-border">
+            {items.map((item, index) => {
+              const price = Number(item.price || 0);
+              const quantity = Number(item.quantity || 0);
+              const lineTotal = price * quantity;
 
-                        {item.size || item.color ? (
-                          <p className="mt-1 text-xs leading-5 text-soft-brown">
-                            {[item.size ? `Size: ${item.size}` : "", item.color]
-                              .filter(Boolean)
-                              .join(" · ")}
-                          </p>
-                        ) : null}
+              const variant = [item.size, item.color]
+                .filter(Boolean)
+                .join(" · ");
 
-                        <p className="mt-0.5 text-xs text-soft-brown">
-                          Qty: {quantity}
-                        </p>
-                      </div>
-
-                      <p className="shrink-0 text-sm font-semibold text-deep-brown">
-                        ৳ {(price * quantity).toLocaleString()}
-                      </p>
-                    </div>
+              return (
+                <div
+                  key={`${item.slug}-${item.size}-${index}`}
+                  className="grid grid-cols-[54px_minmax(0,1fr)_auto] gap-3 py-4"
+                >
+                  <div className="relative h-[54px] w-[54px] overflow-hidden border border-warm-border bg-white">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        sizes="54px"
+                        className="object-contain p-1"
+                      />
+                    ) : null}
                   </div>
-                );
-              })}
-            </div>
 
-            <div className="mt-4 space-y-3 border-t border-warm-border pt-4">
-              <div className="flex items-center justify-between text-sm">
+                  <div className="min-w-0">
+                    <p className="line-clamp-2 text-[12px] font-semibold leading-[1.15rem] text-deep-brown sm:text-[13px]">
+                      {item.name}
+                    </p>
+
+                    {variant ? (
+                      <p className="mt-1 text-[10px] leading-4 text-soft-brown">
+                        {variant}
+                      </p>
+                    ) : null}
+
+                    <p className="mt-1 text-[10px] text-taupe">
+                      Qty {quantity}
+                      {quantity > 1
+                        ? ` · ৳${price.toLocaleString()} each`
+                        : ""}
+                    </p>
+                  </div>
+
+                  <p className="shrink-0 pt-0.5 text-[12px] font-semibold text-deep-brown sm:text-[13px]">
+                    ৳{lineTotal.toLocaleString()}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="border-t border-warm-border pt-4">
+            <div className="space-y-2.5 text-sm">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-soft-brown">Subtotal</span>
+
                 <span className="font-medium text-deep-brown">
-                  ৳ {subtotal.toLocaleString()}
+                  ৳{subtotal.toLocaleString()}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between gap-4">
                 <span className="text-soft-brown">Delivery</span>
-                <span className="text-deep-brown">To be confirmed</span>
+
+                <span className="font-medium text-deep-brown">
+                  {hasDeliveryCharge
+                    ? `৳${deliveryCharge.toLocaleString()}`
+                    : "Select delivery area"}
+                </span>
               </div>
             </div>
 
-            <div className="mt-4 flex items-end justify-between">
-              <span className="text-xs font-semibold tracking-[0.18em] text-muted-gold uppercase">
+            <div className="mt-4 flex items-center justify-between gap-4 border-t border-warm-border pt-4">
+              <span className="text-base font-semibold text-deep-brown">
                 Total
               </span>
 
-              <span className="text-2xl font-semibold tracking-[-0.04em] text-deep-brown">
-                ৳ {subtotal.toLocaleString()}+
+              <span className="text-xl font-semibold tracking-[-0.035em] text-deep-brown">
+                {hasDeliveryCharge
+                  ? `৳${total.toLocaleString()}`
+                  : "—"}
               </span>
             </div>
-
-            <p className="mt-4 rounded-[1.15rem] border border-muted-gold/25 bg-light-sand px-4 py-3 text-xs leading-5 text-soft-brown">
-              Final delivery charge and payment details will be confirmed by our
-              team.
-            </p>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </aside>
   );
 }

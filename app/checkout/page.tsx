@@ -5,7 +5,7 @@ import { getCartItemsFromSearchParams } from "@/lib/cart-from-search-params";
 export const metadata: Metadata = {
   title: "Checkout",
   description:
-    "Submit your Handpicked order request and confirm delivery, payment, and contact details.",
+    "Complete your Handpicked checkout with delivery and contact details.",
 };
 
 type CheckoutPageProps = {

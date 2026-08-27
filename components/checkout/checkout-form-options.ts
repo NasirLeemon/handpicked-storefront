@@ -1,3 +1,36 @@
+export const checkoutDeliveryAreas = [
+  {
+    value: "inside_dhaka",
+    label: "Inside Dhaka",
+    description: "",
+    charge: 80,
+  },
+  {
+    value: "suburb_dhaka",
+    label: "Dhaka Suburb",
+    description: "Gazipur, Keraniganj, Narayanganj, Savar",
+    charge: 110,
+  },
+  {
+    value: "outside_dhaka",
+    label: "Outside Dhaka",
+    description: "",
+    charge: 150,
+  },
+] as const;
+
+export type CheckoutDeliveryArea =
+  (typeof checkoutDeliveryAreas)[number]["value"];
+
+export const checkoutDeliveryCharges: Record<
+  CheckoutDeliveryArea,
+  number
+> = {
+  inside_dhaka: 80,
+  suburb_dhaka: 110,
+  outside_dhaka: 150,
+};
+
 export const deliveryAreaOptions = [
   {
     label: "Inside Dhaka",
