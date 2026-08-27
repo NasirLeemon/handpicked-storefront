@@ -15,7 +15,7 @@ export function CartSummary({ items }: CartSummaryProps) {
   const subtotal = getCartSubtotal(items);
 
   return (
-    <aside className="rounded-sm border border-warm-border bg-[#FFFDF9] p-4 shadow-[0_12px_35px_rgba(47,33,24,0.055)] lg:sticky lg:top-28 sm:p-5">
+    <aside className="self-start rounded-sm border border-warm-border bg-[#FFFDF9] p-4 shadow-[0_12px_35px_rgba(47,33,24,0.055)] lg:sticky lg:top-28 sm:p-5">
       <h2 className="text-base font-semibold text-deep-brown">
         Order summary
       </h2>
