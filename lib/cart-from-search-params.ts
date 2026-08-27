@@ -13,10 +13,10 @@ export async function getCartItemsFromSearchParams(
   fallbackToMock = true
 ): Promise<CartItem[]> {
   const productSlug = searchParams.product;
-  const selectedSize = searchParams.size;
+  const requestedSize = searchParams.size || "";
   const quantity = Number(searchParams.qty || "1");
 
-  if (!productSlug || !selectedSize) {
+  if (!productSlug) {
     return fallbackToMock ? mockCartItems : [];
   }
 
@@ -26,9 +26,22 @@ export async function getCartItemsFromSearchParams(
     return fallbackToMock ? mockCartItems : [];
   }
 
+  const productSizes = product.sizes.filter(Boolean);
+
+  if (
+    productSizes.length > 1 &&
+    (!requestedSize || !productSizes.includes(requestedSize))
+  ) {
+    return [];
+  }
+
+  const selectedSize =
+    requestedSize ||
+    (productSizes.length === 1 ? productSizes[0] : "");
+
   return [
     {
-      id: `cart-${product.id}-${selectedSize}`,
+      id: `cart-${product.id}-${selectedSize || "default"}`,
       productId: product.id,
       slug: product.slug,
       name: product.name,

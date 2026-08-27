@@ -52,9 +52,13 @@ export function CheckoutOrderSummary({ items }: CheckoutOrderSummaryProps) {
                           {item.name}
                         </p>
 
-                        <p className="mt-1 text-xs leading-5 text-soft-brown">
-                          Size: {item.size} · Color: {item.color}
-                        </p>
+                        {item.size || item.color ? (
+                          <p className="mt-1 text-xs leading-5 text-soft-brown">
+                            {[item.size ? `Size: ${item.size}` : "", item.color]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </p>
+                        ) : null}
 
                         <p className="mt-0.5 text-xs text-soft-brown">
                           Qty: {quantity}

@@ -1,11 +1,12 @@
 import { forwardRef } from "react";
-import { AlertCircle, Check } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 type SizeSelectorProps = {
   sizes: string[];
   selectedSize: string;
   availableStock: number;
   isSoldOut: boolean;
+  requiresSelection: boolean;
   showError: boolean;
   validationAttempt: number;
   onSelectSize: (size: string) => void;
@@ -20,20 +21,19 @@ export const SizeSelector = forwardRef<
     selectedSize,
     availableStock,
     isSoldOut,
+    requiresSelection,
     showError,
     validationAttempt,
     onSelectSize,
   },
   ref
 ) {
-  const stockMessage =
-    availableStock <= 0
-      ? "Out of stock"
-      : availableStock === 1
-        ? "Only 1 left in stock"
-        : availableStock <= 3
-          ? `Only ${availableStock} left in stock`
-          : `${availableStock} available`;
+  const lowStockMessage =
+    availableStock === 1
+      ? "Only 1 left in stock"
+      : availableStock > 1 && availableStock <= 3
+        ? `Only ${availableStock} left in stock`
+        : null;
 
   return (
     <div ref={ref} className="scroll-mt-28">
@@ -53,17 +53,20 @@ export const SizeSelector = forwardRef<
       >
         <div className="mb-2 flex items-center justify-between gap-3">
           <p className="text-xs font-medium text-deep-brown">
-            Select size
+            {requiresSelection ? "Choose a size" : "Size"}
           </p>
 
-          {!selectedSize && !isSoldOut ? (
+          {requiresSelection && !selectedSize && !isSoldOut ? (
             <p className="text-[9px] font-medium tracking-[0.12em] text-muted-gold uppercase">
               Required
             </p>
           ) : null}
         </div>
 
-        {showError && !selectedSize && !isSoldOut ? (
+        {showError &&
+        requiresSelection &&
+        !selectedSize &&
+        !isSoldOut ? (
           <div
             role="alert"
             className="mb-3 flex items-center gap-2 text-xs font-semibold text-[#9A6B35]"
@@ -84,14 +87,14 @@ export const SizeSelector = forwardRef<
               <button
                 key={size}
                 type="button"
-                disabled={isSoldOut}
+                disabled={isSoldOut || !requiresSelection}
                 onClick={() => onSelectSize(size)}
                 aria-pressed={isSelected}
                 className={`flex h-9 min-w-[4.5rem] items-center justify-center rounded-lg border px-3 text-xs font-medium transition sm:h-10 sm:text-[13px] ${
                   isSelected
                     ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-sm"
                     : "border-warm-border bg-white/70 text-deep-brown hover:border-muted-gold"
-                } disabled:cursor-not-allowed disabled:opacity-50`}
+                } disabled:cursor-default disabled:opacity-100`}
               >
                 {size}
               </button>
@@ -99,25 +102,10 @@ export const SizeSelector = forwardRef<
           })}
         </div>
 
-        {selectedSize || isSoldOut ? (
-          <div className="mt-2 flex items-center gap-2 text-[11px] text-soft-brown">
-            {!isSoldOut ? (
-              <Check
-                className="h-4 w-4 shrink-0 text-muted-gold"
-                strokeWidth={1.9}
-              />
-            ) : null}
-
-            <span
-              className={
-                availableStock <= 3
-                  ? "font-medium text-[#9A6B35]"
-                  : undefined
-              }
-            >
-              {stockMessage}
-            </span>
-          </div>
+        {lowStockMessage && !isSoldOut ? (
+          <p className="mt-2 text-[11px] font-medium text-[#9A6B35]">
+            {lowStockMessage}
+          </p>
         ) : null}
       </div>
 
@@ -127,19 +115,15 @@ export const SizeSelector = forwardRef<
           100% {
             transform: translateX(0);
           }
-
           20% {
             transform: translateX(-6px);
           }
-
           40% {
             transform: translateX(6px);
           }
-
           60% {
             transform: translateX(-4px);
           }
-
           80% {
             transform: translateX(4px);
           }

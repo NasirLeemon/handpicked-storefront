@@ -19,9 +19,14 @@ export function ProductCard({ product }: ProductCardProps) {
   const [isAdded, setIsAdded] = useState(false);
 
   const imageSrc = product.images[0];
-  const isSoldOut = product.availability === "sold-out";
-  const requiresSizeSelection = product.sizes.length > 1;
-  const defaultSize = product.sizes[0] || "Default";
+  const isSoldOut =
+    product.availability === "sold-out" ||
+    Number(product.availableStock ?? 0) <= 0;
+
+  const productSizes = product.sizes.filter(Boolean);
+  const requiresSizeSelection = productSizes.length > 1;
+  const defaultSize =
+    productSizes.length === 1 ? productSizes[0] : "";
 
   function handleAddToCart() {
     if (isSoldOut) {
@@ -53,9 +58,16 @@ export function ProductCard({ product }: ProductCardProps) {
       return;
     }
 
-    router.push(
-      `/checkout?product=${product.slug}&size=${encodeURIComponent(defaultSize)}&qty=1`
-    );
+    const params = new URLSearchParams({
+      product: product.slug,
+      qty: "1",
+    });
+
+    if (defaultSize) {
+      params.set("size", defaultSize);
+    }
+
+    router.push(`/checkout?${params.toString()}`);
   }
 
   return (
@@ -70,7 +82,7 @@ export function ProductCard({ product }: ProductCardProps) {
             />
           </div>
 
-          <div className="absolute left-2 top-2 sm:left-3 sm:top-3">
+          <div className="absolute right-2 top-2 sm:right-3 sm:top-3">
             <AvailabilityBadge availability={product.availability} />
           </div>
         </div>
@@ -86,16 +98,18 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </h3>
 
-          <div className="pt-2">
-            <div className="mb-1.5 h-px w-6 bg-[#76503B]/35 transition-all duration-300 group-hover:w-10" />
+          {!isSoldOut ? (
+            <div className="pt-2">
+              <div className="mb-1.5 h-px w-6 bg-[#76503B]/35 transition-all duration-300 group-hover:w-10" />
 
-            <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
-              ৳{product.price.toLocaleString()}
-            </p>
-          </div>
+              <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
+                ৳{product.price.toLocaleString()}
+              </p>
+            </div>
+          ) : null}
         </Link>
 
-        <div className="mt-2.5 space-y-1.5">
+        <div className={isSoldOut ? "hidden" : "mt-2.5 space-y-1.5"}>
           <button
             type="button"
             disabled={isSoldOut}

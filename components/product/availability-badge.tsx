@@ -16,7 +16,7 @@ const availabilityStyles: Record<ProductAvailability, string> = {
   "low-stock":
     "border-[#EAD7A7] bg-[#FFFDF9]/94 text-[#B98218]",
   "sold-out":
-    "border-[#E8CACA] bg-[#FFFDF9]/94 text-[#C54A4A]",
+    "border-[#B93B3B] bg-[#C94747] text-white shadow-[0_3px_10px_rgba(201,71,71,0.22)]",
 };
 
 export function AvailabilityBadge({

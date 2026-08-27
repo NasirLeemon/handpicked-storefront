@@ -69,10 +69,14 @@ export function CartItemCard({ item }: CartItemCardProps) {
                 {name}
               </Link>
 
-              <p className="mt-1.5 text-sm leading-5 text-soft-brown">
-                Size{" "}
-                <span className="font-medium text-deep-brown">{item.size}</span>
-              </p>
+              {item.size ? (
+                <p className="mt-1.5 text-sm leading-5 text-soft-brown">
+                  Size{" "}
+                  <span className="font-medium text-deep-brown">
+                    {item.size}
+                  </span>
+                </p>
+              ) : null}
             </div>
 
             <button

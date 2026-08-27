@@ -29,11 +29,11 @@ const CartContext = createContext<CartContextValue | undefined>(undefined);
 const CART_STORAGE_KEY = "handpicked-cart";
 
 function createCartItemId(productSlug: string, size: string) {
-  return `${productSlug}-${size}`;
+  return `${productSlug}-${size || "default"}`;
 }
 
 function normalizeCartItem(item: CartItem): CartItem | null {
-  if (!item.slug || !item.size) {
+  if (!item.slug) {
     return null;
   }
 

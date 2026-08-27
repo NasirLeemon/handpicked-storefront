@@ -15,7 +15,12 @@ type ProductPurchasePanelProps = {
 export function ProductPurchasePanel({
   product,
 }: ProductPurchasePanelProps) {
-  const [selectedSize, setSelectedSize] = useState("");
+  const productSizes = product.sizes.filter(Boolean);
+  const requiresSizeSelection = productSizes.length > 1;
+
+  const [selectedSize, setSelectedSize] = useState(() =>
+    productSizes.length === 1 ? productSizes[0] : ""
+  );
   const [quantity, setQuantity] = useState(1);
   const [showSizeError, setShowSizeError] = useState(false);
   const [validationAttempt, setValidationAttempt] = useState(0);
@@ -80,26 +85,53 @@ export function ProductPurchasePanel({
           {product.name}
         </h1>
 
-        <div className="mt-4 flex items-center justify-between border-b border-warm-border pb-4">
-          <p className="text-[1.55rem] font-semibold tracking-[-0.035em] text-deep-brown">
-            ৳ {product.price.toLocaleString()}
-          </p>
+        {!isSoldOut ? (
+          <div className="mt-4 flex items-center justify-between border-b border-warm-border pb-4">
+            <p className="text-[1.55rem] font-semibold tracking-[-0.035em] text-deep-brown">
+              ৳ {product.price.toLocaleString()}
+            </p>
 
-          <p className="hidden text-[11px] text-soft-brown sm:block">
-            Stock confirmed before dispatch
-          </p>
-        </div>
+            <p className="hidden text-[11px] text-soft-brown sm:block">
+              Ready to order
+            </p>
+          </div>
+        ) : null}
 
         <p className="mt-4 hidden max-w-[32rem] text-[13px] leading-[1.7] text-soft-brown sm:block">
           {product.description}
         </p>
 
-        <div className="mt-4 border-t border-warm-border pt-4">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-gold uppercase">
-              Size
-            </p>
+        {productSizes.length > 0 ? (
+          <div className="mt-4 border-t border-warm-border pt-4">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-[11px] font-semibold tracking-[0.16em] text-muted-gold uppercase">
+                Size
+              </p>
 
+              {product.color ? (
+                <p className="text-[11px] text-soft-brown">
+                  Color{" "}
+                  <span className="font-semibold text-deep-brown">
+                    {product.color}
+                  </span>
+                </p>
+              ) : null}
+            </div>
+
+            <SizeSelector
+              ref={sizeSectionRef}
+              sizes={productSizes}
+              selectedSize={selectedSize}
+              availableStock={availableStock}
+              isSoldOut={isSoldOut}
+              requiresSelection={requiresSizeSelection}
+              showError={showSizeError}
+              validationAttempt={validationAttempt}
+              onSelectSize={handleSelectSize}
+            />
+          </div>
+        ) : product.color ? (
+          <div className="mt-4 border-t border-warm-border pt-4">
             <p className="text-[11px] text-soft-brown">
               Color{" "}
               <span className="font-semibold text-deep-brown">
@@ -107,37 +139,30 @@ export function ProductPurchasePanel({
               </span>
             </p>
           </div>
+        ) : null}
 
-          <SizeSelector
-            ref={sizeSectionRef}
-            sizes={product.sizes}
-            selectedSize={selectedSize}
-            availableStock={availableStock}
-            isSoldOut={isSoldOut}
-            showError={showSizeError}
-            validationAttempt={validationAttempt}
-            onSelectSize={handleSelectSize}
-          />
-        </div>
+        {!isSoldOut ? (
+          <>
+            <div className="mt-3.5">
+              <QuantitySelector
+                quantity={quantity}
+                maxQuantity={availableStock}
+                onDecrease={decreaseQuantity}
+                onIncrease={increaseQuantity}
+              />
+            </div>
 
-        <div className="mt-3.5">
-          <QuantitySelector
-            quantity={quantity}
-            maxQuantity={availableStock}
-            onDecrease={decreaseQuantity}
-            onIncrease={increaseQuantity}
-          />
-        </div>
-
-        <div className="mt-4">
-          <ProductActionButtons
-            product={product}
-            isSoldOut={isSoldOut}
-            selectedSize={selectedSize}
-            quantity={quantity}
-            onSizeRequired={handleSizeRequired}
-          />
-        </div>
+            <div className="mt-4">
+              <ProductActionButtons
+                product={product}
+                isSoldOut={isSoldOut}
+                selectedSize={selectedSize}
+                quantity={quantity}
+                onSizeRequired={handleSizeRequired}
+              />
+            </div>
+          </>
+        ) : null}
 
         <div className="mt-4 grid grid-cols-3 gap-3 border-t border-warm-border pt-4">
           <div className="flex items-center gap-1.5">

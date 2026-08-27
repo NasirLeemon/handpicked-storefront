@@ -19,7 +19,7 @@ export function createCartItemFromProduct({
   }
 
   return {
-    id: `cart-${product.id}-${size}`,
+    id: `cart-${product.id}-${size || "default"}`,
     productId: product.id,
     slug: product.slug,
     name: product.name,
