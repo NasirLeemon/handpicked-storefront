@@ -12,9 +12,13 @@ import type { Product } from "@/types/product";
 
 type ProductCardProps = {
   product: Product;
+  variant?: "catalog" | "homepage";
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({
+  product,
+  variant = "catalog",
+}: ProductCardProps) {
   const router = useRouter();
   const { addItem } = useCart();
   const [isAdded, setIsAdded] = useState(false);
@@ -72,6 +76,97 @@ export function ProductCard({ product }: ProductCardProps) {
     }
 
     router.push(`/checkout?${params.toString()}`);
+  }
+
+  if (variant === "homepage") {
+    return (
+      <>
+        <article className="group flex h-full flex-col">
+          <Link
+            href={`/product/${product.slug}`}
+            className="block"
+          >
+            <div className="relative aspect-square overflow-hidden border border-[#E5DCD2] bg-[#FFFDF9]">
+              <ProductImage
+                src={imageSrc}
+                alt={`${product.name} in ${product.color} – ${product.category} from Handpicked`}
+                objectPosition="object-[center_42%]"
+              />
+
+              {product.availability !== "available" ? (
+                <div className="absolute right-2 top-2">
+                  <AvailabilityBadge
+                    availability={product.availability}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </Link>
+
+          <div className="flex flex-1 flex-col pt-3">
+            <Link
+              href={`/product/${product.slug}`}
+              className="block"
+            >
+              <p className="text-[7px] font-semibold uppercase tracking-[0.2em] text-[#A07A5B] sm:text-[8px]">
+                {product.category}
+              </p>
+
+              <h3 className="mt-1.5 line-clamp-2 min-h-[2.15rem] text-[0.76rem] font-medium leading-[1.08rem] tracking-[-0.01em] text-[#35231A] transition group-hover:text-[#8D674D] sm:text-[0.82rem] sm:leading-[1.15rem]">
+                {product.name}
+              </h3>
+
+              {!isSoldOut ? (
+                <p className="mt-2 text-[0.82rem] font-semibold text-[#35231A] sm:text-[0.9rem]">
+                  ৳{product.price.toLocaleString()}
+                </p>
+              ) : null}
+            </Link>
+
+            {!isSoldOut ? (
+              <div className="mt-auto pt-3">
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="inline-flex h-9 w-full items-center justify-center gap-1.5 bg-[#3F2A20] px-3 text-[8px] font-semibold uppercase tracking-[0.1em] text-[#FFFDF9] transition hover:bg-[#5B4435] sm:h-10 sm:text-[9px]"
+                >
+                  {isAdded ? (
+                    <Check
+                      className="h-3 w-3"
+                      strokeWidth={2}
+                    />
+                  ) : (
+                    <ShoppingBag
+                      className="h-3 w-3"
+                      strokeWidth={1.8}
+                    />
+                  )}
+
+                  {isAdded ? "Added" : "Add to Cart"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleOrderNow}
+                  className="mt-2 inline-flex w-full items-center justify-center py-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#76503B] transition hover:text-[#3F2A20] sm:text-[9px]"
+                >
+                  Order Now
+                </button>
+              </div>
+            ) : null}
+          </div>
+        </article>
+
+        {showAddedPanel ? (
+          <AddedToCartPanel
+            productName={product.name}
+            quantity={1}
+            price={product.price}
+            onClose={() => setShowAddedPanel(false)}
+          />
+        ) : null}
+      </>
+    );
   }
 
   return (

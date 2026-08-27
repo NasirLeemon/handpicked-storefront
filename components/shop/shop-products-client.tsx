@@ -107,6 +107,84 @@ function sortRecommendedProducts(products: Product[]) {
   });
 }
 
+const departmentCategoryAliases: Record<string, string[]> = {
+  skincare: [
+    "skincare",
+    "skin care",
+  ],
+  haircare: [
+    "haircare",
+    "hair care",
+  ],
+  clothing: [
+    "clothing",
+    "ethnic",
+    "ethnic wear",
+    "co-ords",
+    "co ords",
+    "coords",
+    "tops",
+    "top",
+    "dress",
+    "dresses",
+    "kurti",
+    "kurtis",
+    "saree",
+    "sarees",
+    "fashion",
+  ],
+  makeup: [
+    "makeup",
+    "make up",
+    "eyeshadow",
+    "eye shadow",
+    "mascara",
+    "lipstick",
+    "blush",
+  ],
+  accessories: [
+    "accessories",
+    "accessory",
+  ],
+};
+
+function normalizeDepartmentCategory(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ");
+}
+
+function productMatchesDepartment(
+  productCategories: string[],
+  department: string,
+) {
+  if (!department) {
+    return true;
+  }
+
+  const aliases =
+    departmentCategoryAliases[department];
+
+  if (!aliases) {
+    return true;
+  }
+
+  const normalizedCategories =
+    productCategories.map(
+      normalizeDepartmentCategory,
+    );
+
+  return aliases.some((alias) =>
+    normalizedCategories.some(
+      (category) =>
+        category === alias ||
+        category.includes(alias),
+    ),
+  );
+}
+
 export function ShopProductsClient({
   products,
   initialCategory,
@@ -114,12 +192,20 @@ export function ShopProductsClient({
 }: ShopProductsClientProps) {
   const searchParams = useSearchParams();
 
+  const department =
+    searchParams.get("department")?.trim().toLowerCase() ?? "";
+
   const categoryOptions = useMemo(
     () => getCategoryOptions(products),
     [products]
   );
 
-  const [search, setSearch] = useState("");
+  const urlSearch =
+    searchParams.get("search") ?? "";
+
+  const [search, setSearch] =
+    useState(urlSearch);
+
   const [category, setCategory] = useState(() =>
     initialCategory ??
     getInitialCategory(searchParams.get("category"), categoryOptions)
@@ -152,10 +238,21 @@ export function ShopProductsClient({
         category === "all" ||
         productCategories.includes(category);
 
+      const matchesDepartment =
+        productMatchesDepartment(
+          productCategories,
+          department,
+        );
+
       const matchesAvailability =
         availability === "all" || product.availability === availability;
 
-      return matchesSearch && matchesCategory && matchesAvailability;
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesDepartment &&
+        matchesAvailability
+      );
     });
 
     if (sort === "price-low-high") {
@@ -183,7 +280,14 @@ export function ShopProductsClient({
     }
 
     return sortRecommendedProducts(result);
-  }, [availability, category, products, search, sort]);
+  }, [
+    availability,
+    category,
+    department,
+    products,
+    search,
+    sort,
+  ]);
 
   const visibleProducts = useMemo(
     () => filteredProducts.slice(0, visibleCount),
@@ -191,6 +295,16 @@ export function ShopProductsClient({
   );
 
   const hasMoreProducts = visibleCount < filteredProducts.length;
+
+  useEffect(() => {
+    setSearch(urlSearch);
+  }, [urlSearch]);
+
+  useEffect(() => {
+    if (department) {
+      setCategory("all");
+    }
+  }, [department]);
 
   useEffect(() => {
     setVisibleCount(PRODUCTS_PER_PAGE);
@@ -230,6 +344,7 @@ export function ShopProductsClient({
     !catalogOnly &&
     search.trim().length === 0 &&
     category === "all" &&
+    department.length === 0 &&
     availability === "all" &&
     sort === "newest";
 

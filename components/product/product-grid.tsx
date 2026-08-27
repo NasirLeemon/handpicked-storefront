@@ -32,7 +32,14 @@ export function ProductGrid({
           }
         >
           <Reveal delay={(index % 6) * 0.04}>
-            <ProductCard product={product} />
+            <ProductCard
+              product={product}
+              variant={
+                variant === "featured"
+                  ? "homepage"
+                  : "catalog"
+              }
+            />
           </Reveal>
         </div>
       ))}

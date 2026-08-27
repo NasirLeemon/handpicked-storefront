@@ -8,53 +8,56 @@ const trustItems = [
   {
     title: "Thoughtfully Selected",
     description:
-      "Clothing, beauty, and accessories chosen with care for everyday elegance.",
+      "Fashion and beauty products chosen with care instead of stocked at random.",
     icon: Sparkles,
   },
   {
     title: "Personal Support",
     description:
-      "Ask about sizing, colors, availability, delivery, or payment before ordering.",
+      "Questions about products, sizing or delivery? Talk directly with us.",
     icon: MessageCircle,
   },
   {
-    title: "Simple Ordering",
+    title: "Easy Ordering",
     description:
-      "Submit your order request and our team will confirm every detail.",
+      "Add your favourites, checkout, and we'll take care of the rest.",
     icon: PackageCheck,
   },
 ];
 
 export function TrustStrip() {
   return (
-    <section className="border-y border-warm-border bg-[#FFFDF9] px-4 py-6 sm:px-6 sm:py-7 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid divide-y divide-warm-border md:grid-cols-3 md:divide-x md:divide-y-0">
-          {trustItems.map((item) => {
-            const Icon = item.icon;
+    <section className="border-y border-warm-border bg-[#FFFDF9] px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-7xl md:grid-cols-3">
+        {trustItems.map((item, index) => {
+          const Icon = item.icon;
 
-            return (
-              <article
-                key={item.title}
-                className="group flex items-start gap-4 px-1 py-5 first:pt-0 last:pb-0 md:px-7 md:py-2 md:first:pl-0 md:last:pr-0"
-              >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-muted-gold/25 bg-light-sand text-muted-gold transition duration-300 group-hover:border-muted-gold/45 group-hover:bg-[#F2E5D2]">
-                  <Icon className="h-[18px] w-[18px]" strokeWidth={1.7} />
-                </div>
+          return (
+            <article
+              key={item.title}
+              className={`flex gap-4 py-6 md:px-7 md:py-8 ${
+                index > 0
+                  ? "border-t border-warm-border md:border-l md:border-t-0"
+                  : ""
+              }`}
+            >
+              <Icon
+                className="mt-0.5 h-5 w-5 shrink-0 text-muted-gold"
+                strokeWidth={1.6}
+              />
 
-                <div className="min-w-0">
-                  <h2 className="font-serif-brand text-[1.55rem] font-medium leading-tight tracking-[-0.03em] text-deep-brown sm:text-[1.7rem]">
-                    {item.title}
-                  </h2>
+              <div>
+                <h3 className="text-sm font-semibold text-deep-brown">
+                  {item.title}
+                </h3>
 
-                  <p className="mt-2 max-w-sm text-sm leading-6 text-soft-brown">
-                    {item.description}
-                  </p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                <p className="mt-1.5 text-xs leading-5 text-soft-brown">
+                  {item.description}
+                </p>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

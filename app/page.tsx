@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { HomePageContent } from "@/components/home/home-page-content";
 
 export const metadata: Metadata = {
-  title: "Boutique Clothing, Beauty Products & Accessories",
+  title: "Women's Clothing, Beauty, Skincare & Haircare",
   description:
-    "Discover Handpicked's curated collection of clothing, accessories, and beauty pieces selected for soft elegance and everyday style.",
+    "Shop Handpicked for women's clothing, skincare, haircare, makeup, beauty products and accessories in Bangladesh.",
 };
 
 const organizationJsonLd = {
