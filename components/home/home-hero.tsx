@@ -5,19 +5,19 @@ import { ArrowRight } from "lucide-react";
 const heroVisuals = {
   clothing: {
     label: "Clothing",
-    href: "/shop?department=clothing",
+    href: "/shop/clothing",
     image: "/homepage_clothing_v2.png",
     alt: "Handpicked women's clothing collection",
   },
   skincare: {
     label: "Skincare",
-    href: "/shop?department=skincare",
+    href: "/shop/skincare",
     image: "/homepage_skincare.jpg",
     alt: "Handpicked skincare collection",
   },
   haircare: {
     label: "Haircare",
-    href: "/shop?department=haircare",
+    href: "/shop/haircare",
     image: "/homepage_haircare.png",
     alt: "Handpicked haircare collection",
   },

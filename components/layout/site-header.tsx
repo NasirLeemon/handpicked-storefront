@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ShoppingBag } from "lucide-react";
 
 import { AccountNavLink } from "@/components/layout/account-nav-link";
@@ -10,31 +11,32 @@ import { MobileMenu } from "@/components/layout/mobile-menu";
 import { StorefrontSearch } from "@/components/layout/storefront-search";
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const { totalItems } = useCart();
   const categoryLinks = [
     {
       label: "New In",
-      href: "/shop",
+      href: "/shop/new-in",
     },
     {
       label: "Skincare",
-      href: "/shop?department=skincare",
+      href: "/shop/skincare",
     },
     {
       label: "Haircare",
-      href: "/shop?department=haircare",
+      href: "/shop/haircare",
     },
     {
       label: "Clothing",
-      href: "/shop?department=clothing",
+      href: "/shop/clothing",
     },
     {
       label: "Makeup",
-      href: "/shop?department=makeup",
+      href: "/shop/makeup",
     },
     {
       label: "Accessories",
-      href: "/shop?department=accessories",
+      href: "/shop/accessories",
     },
   ];
 
@@ -61,7 +63,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="hidden w-full md:block">
-          <StorefrontSearch />
+          <StorefrontSearch key={`desktop-${pathname}`} />
         </div>
 
         <div className="flex items-center justify-end gap-1">
@@ -91,7 +93,7 @@ export function SiteHeader() {
       </div>
 
       <div className="border-t border-warm-border/70 px-4 py-2 md:hidden">
-        <StorefrontSearch />
+        <StorefrontSearch key={`mobile-${pathname}`} />
       </div>
 
       <div className="hidden border-t border-warm-border/70 md:block">

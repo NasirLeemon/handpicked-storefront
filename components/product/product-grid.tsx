@@ -4,7 +4,7 @@ import type { Product } from "@/types/product";
 
 type ProductGridProps = {
   products: Product[];
-  variant?: "catalog" | "curated" | "featured";
+  variant?: "catalog" | "curated" | "featured" | "new-in";
 };
 
 export function ProductGrid({
@@ -12,11 +12,13 @@ export function ProductGrid({
   variant = "catalog",
 }: ProductGridProps) {
   const gridColumns =
-    variant === "featured"
-      ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-4"
-      : variant === "curated"
-        ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
-        : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
+    variant === "new-in"
+      ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6"
+      : variant === "featured"
+        ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-4"
+        : variant === "curated"
+          ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
+          : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
 
   return (
     <div
@@ -35,7 +37,7 @@ export function ProductGrid({
             <ProductCard
               product={product}
               variant={
-                variant === "featured"
+                variant === "featured" || variant === "new-in"
                   ? "homepage"
                   : "catalog"
               }

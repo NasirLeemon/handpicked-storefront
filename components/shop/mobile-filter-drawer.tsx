@@ -57,7 +57,7 @@ export function MobileFilterDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-warm-border bg-soft-white text-deep-brown"
+            className="flex h-10 w-10 items-center justify-center border border-warm-border bg-soft-white text-deep-brown"
             aria-label="Close filters"
           >
             <X className="h-5 w-5" strokeWidth={1.7} />
@@ -92,7 +92,7 @@ export function MobileFilterDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-[#4A3327] px-5 text-xs font-semibold tracking-[0.16em] !text-[#FFFDF9] uppercase"
+            className="inline-flex h-11 w-full items-center justify-center bg-[#3F2A20] px-5 text-[10px] font-semibold uppercase tracking-[0.18em] !text-[#FFFDF9]"
           >
             See Results
           </button>

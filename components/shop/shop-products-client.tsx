@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { ArrowRight, SlidersHorizontal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import {
+  usePathname,
+  useSearchParams,
+} from "next/navigation";
 import { MobileFilterDrawer } from "@/components/shop/mobile-filter-drawer";
 import { ProductGrid } from "@/components/product/product-grid";
 import { ShopFilterSelect } from "@/components/shop/shop-filter-select";
@@ -191,9 +194,42 @@ export function ShopProductsClient({
   catalogOnly = false,
 }: ShopProductsClientProps) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const cleanDepartment =
+    pathname.match(
+      /^\/shop\/(new-in|skincare|haircare|clothing|makeup|accessories)\/?$/
+    )?.[1] ?? "";
 
   const department =
-    searchParams.get("department")?.trim().toLowerCase() ?? "";
+    cleanDepartment ||
+    searchParams.get("department")?.trim().toLowerCase() ||
+    "";
+
+  const isNewInView = department === "new-in";
+
+  const isPremiumDepartmentView =
+    isNewInView ||
+    department === "skincare" ||
+    department === "haircare" ||
+    department === "clothing" ||
+    department === "makeup" ||
+    department === "accessories";
+
+  const premiumDepartmentLabel =
+    isNewInView
+      ? "New arrivals"
+      : department === "skincare"
+        ? "Skincare"
+        : department === "haircare"
+          ? "Haircare"
+          : department === "clothing"
+            ? "Clothing"
+            : department === "makeup"
+              ? "Makeup"
+              : department === "accessories"
+                ? "Accessories"
+                : "";
 
   const categoryOptions = useMemo(
     () => getCategoryOptions(products),
@@ -239,10 +275,12 @@ export function ShopProductsClient({
         productCategories.includes(category);
 
       const matchesDepartment =
-        productMatchesDepartment(
-          productCategories,
-          department,
-        );
+        department === "new-in"
+          ? product.isNewArrival
+          : productMatchesDepartment(
+              productCategories,
+              department,
+            );
 
       const matchesAvailability =
         availability === "all" || product.availability === availability;
@@ -308,7 +346,13 @@ export function ShopProductsClient({
 
   useEffect(() => {
     setVisibleCount(PRODUCTS_PER_PAGE);
-  }, [availability, category, search, sort]);
+  }, [
+    availability,
+    category,
+    department,
+    search,
+    sort,
+  ]);
 
   function clearFilters() {
     setSearch("");
@@ -418,11 +462,21 @@ export function ShopProductsClient({
   }, [categoryOptions, curatedProducts]);
 
   return (
-    <div>
+    <div
+      className={
+        isPremiumDepartmentView
+          ? "relative left-1/2 w-screen -translate-x-1/2 px-4 pb-16 pt-5 sm:px-6 sm:pb-20 sm:pt-7 lg:px-8"
+          : ""
+      }
+    >
       <div className="mb-4 md:hidden">
-        <ShopSearchInput value={search} onChange={setSearch} />
-
-        {catalogOnly ? (
+        {!isPremiumDepartmentView ? (
+          <ShopSearchInput
+            value={search}
+            onChange={setSearch}
+          />
+        ) : null}
+        {catalogOnly || isPremiumDepartmentView ? (
           <>
             <div className="mt-2 grid grid-cols-2 gap-2">
               <button
@@ -500,10 +554,58 @@ export function ShopProductsClient({
         ) : null}
       </div>
 
-      {!catalogOnly ? (
+      {!catalogOnly && !isPremiumDepartmentView ? (
         <div className="mb-6 hidden md:block">
           <div className="max-w-md">
             <ShopSearchInput value={search} onChange={setSearch} />
+          </div>
+        </div>
+      ) : null}
+
+      {isPremiumDepartmentView ? (
+        <div className="mb-5 hidden md:flex md:items-end md:justify-between md:gap-8 md:py-3.5">
+          <div>
+            <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-gold">
+              {premiumDepartmentLabel}
+            </p>
+
+            <p className="mt-1 text-sm text-soft-brown">
+              <span className="font-semibold text-deep-brown">
+                {filteredProducts.length}
+              </span>{" "}
+              products
+            </p>
+          </div>
+
+          <div className="flex items-end gap-8">
+            <div className="w-[180px]">
+              <ShopFilterSelect
+                label="Availability"
+                value={availability}
+                options={availabilityOptions}
+                onChange={setAvailability}
+              />
+            </div>
+
+            <div className="w-[200px]">
+              <ShopFilterSelect
+                label="Sort"
+                value={sort}
+                options={sortOptions}
+                onChange={setSort}
+              />
+            </div>
+
+            {(availability !== "all" ||
+              sort !== "newest") ? (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mb-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-muted-gold transition hover:text-deep-brown"
+              >
+                Clear
+              </button>
+            ) : null}
           </div>
         </div>
       ) : null}
@@ -671,7 +773,14 @@ export function ShopProductsClient({
         </div>
       ) : filteredProducts.length > 0 ? (
         <div className={catalogOnly ? "mt-1" : ""}>
-          <ProductGrid products={visibleProducts} />
+          <ProductGrid
+            products={visibleProducts}
+            variant={
+              isPremiumDepartmentView
+                ? "new-in"
+                : "catalog"
+            }
+          />
 
           {hasMoreProducts ? (
             <div className="mt-10 flex flex-col items-center sm:mt-12">
@@ -682,7 +791,7 @@ export function ShopProductsClient({
               <button
                 type="button"
                 onClick={loadMoreProducts}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-warm-border bg-soft-white px-9 text-xs font-semibold tracking-[0.18em] text-deep-brown uppercase transition hover:border-muted-gold hover:text-muted-gold"
+                className="inline-flex h-12 items-center justify-center border border-deep-brown bg-transparent px-9 text-[10px] font-semibold uppercase tracking-[0.18em] text-deep-brown transition hover:bg-deep-brown hover:text-[#FFFDF9]"
               >
                 Load More
               </button>

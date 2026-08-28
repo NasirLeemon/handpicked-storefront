@@ -3,9 +3,19 @@ export const revalidate = 0;
 
 import { notFound } from "next/navigation";
 import { CategoryScrollToTop } from "@/components/shop/category-scroll-to-top";
+import { ShopPageContent } from "@/components/shop/shop-page-content";
 import { ShopProductsClient } from "@/components/shop/shop-products-client";
 import { getInventoryProductsForStorefront } from "@/lib/supabase/inventory-products";
 import { toCategorySlug } from "@/lib/shop/category-slug";
+
+const departmentSlugs = new Set([
+  "new-in",
+  "skincare",
+  "haircare",
+  "clothing",
+  "makeup",
+  "accessories",
+]);
 
 type ShopCategoryPageProps = {
   params: Promise<{
@@ -17,6 +27,10 @@ export default async function ShopCategoryPage({
   params,
 }: ShopCategoryPageProps) {
   const { category: categorySlug } = await params;
+
+  if (departmentSlugs.has(categorySlug)) {
+    return <ShopPageContent />;
+  }
 
   const products = await getInventoryProductsForStorefront();
 

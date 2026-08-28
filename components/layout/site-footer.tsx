@@ -15,23 +15,23 @@ const shopLinks = [
   },
   {
     label: "Skincare",
-    href: "/shop?department=skincare",
+    href: "/shop/skincare",
   },
   {
     label: "Haircare",
-    href: "/shop?department=haircare",
+    href: "/shop/haircare",
   },
   {
     label: "Clothing",
-    href: "/shop?department=clothing",
+    href: "/shop/clothing",
   },
   {
     label: "Beauty",
-    href: "/shop?department=makeup",
+    href: "/shop/makeup",
   },
   {
     label: "Accessories",
-    href: "/shop?department=accessories",
+    href: "/shop/accessories",
   },
 ];
 

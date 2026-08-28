@@ -112,12 +112,12 @@ export function ProductCard({
                 {product.category}
               </p>
 
-              <h3 className="mt-1.5 line-clamp-2 min-h-[2.15rem] text-[0.76rem] font-medium leading-[1.08rem] tracking-[-0.01em] text-[#35231A] transition group-hover:text-[#8D674D] sm:text-[0.82rem] sm:leading-[1.15rem]">
+              <h3 className="mt-1.5 line-clamp-2 min-h-[2.35rem] text-[0.8rem] font-medium leading-[1.15rem] tracking-[-0.01em] text-[#35231A] transition group-hover:text-[#8D674D] sm:text-[0.84rem] sm:leading-[1.18rem]">
                 {product.name}
               </h3>
 
               {!isSoldOut ? (
-                <p className="mt-2 text-[0.82rem] font-semibold text-[#35231A] sm:text-[0.9rem]">
+                <p className="mt-2 text-[0.88rem] font-semibold text-[#35231A] sm:text-[0.92rem]">
                   ৳{product.price.toLocaleString()}
                 </p>
               ) : null}
