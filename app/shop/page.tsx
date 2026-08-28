@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import { ShopPageContent } from "@/components/shop/shop-page-content";
 
 export const metadata: Metadata = {
-  title: "Shop Collection",
+  title: "Shop All",
   description:
-    "Browse Handpicked's premium boutique collection of co-ords, ethnic wear, tops, accessories, and beauty products.",
+    "Shop the complete Handpicked collection of women's clothing, skincare, haircare, beauty, and accessories.",
 };
 
 export default function ShopPage() {

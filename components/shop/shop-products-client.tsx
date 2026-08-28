@@ -207,8 +207,10 @@ export function ShopProductsClient({
     "";
 
   const isNewInView = department === "new-in";
+  const isShopAllView = !catalogOnly && !department;
 
   const isPremiumDepartmentView =
+    isShopAllView ||
     isNewInView ||
     department === "skincare" ||
     department === "haircare" ||
@@ -217,19 +219,21 @@ export function ShopProductsClient({
     department === "accessories";
 
   const premiumDepartmentLabel =
-    isNewInView
-      ? "New arrivals"
-      : department === "skincare"
-        ? "Skincare"
-        : department === "haircare"
-          ? "Haircare"
-          : department === "clothing"
-            ? "Clothing"
-            : department === "makeup"
-              ? "Makeup"
-              : department === "accessories"
-                ? "Accessories"
-                : "";
+    isShopAllView
+      ? "All products"
+      : isNewInView
+        ? "New arrivals"
+        : department === "skincare"
+          ? "Skincare"
+          : department === "haircare"
+            ? "Haircare"
+            : department === "clothing"
+              ? "Clothing"
+              : department === "makeup"
+                ? "Makeup"
+                : department === "accessories"
+                  ? "Accessories"
+                  : "";
 
   const categoryOptions = useMemo(
     () => getCategoryOptions(products),

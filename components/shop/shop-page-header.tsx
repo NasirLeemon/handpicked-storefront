@@ -62,8 +62,8 @@ export function ShopPageHeader() {
   const content =
     departmentHeadings[department] ?? {
       eyebrow: "The collection",
-      title: "Shop",
-      description: "Explore the Handpicked collection.",
+      title: "Shop All",
+      description: "Explore the complete Handpicked collection.",
     };
 
   return (
