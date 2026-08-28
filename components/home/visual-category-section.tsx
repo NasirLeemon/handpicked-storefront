@@ -19,7 +19,7 @@ export async function VisualCategorySection() {
       id="shop-by-category"
       className="bg-[#FFFDF9] px-4 py-10 sm:px-6 sm:py-14 lg:px-8"
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="w-full">
         <div className="mb-5 flex items-end justify-between">
           <h2 className="font-serif-brand text-3xl font-medium tracking-[-0.045em] text-deep-brown sm:text-4xl">
             Shop by category
@@ -53,12 +53,12 @@ export async function VisualCategorySection() {
                     alt={product.name}
                     fill
                     sizes="(max-width: 639px) 44vw, (max-width: 1023px) 30vw, 20vw"
-                    className="object-contain p-4 transition duration-700 group-hover:scale-[1.035] sm:p-5"
+                    className="object-cover transition duration-700 group-hover:scale-[1.035]"
                   />
 
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#2F2118]/90 via-[#2F2118]/45 to-transparent px-3 pb-3 pt-12 sm:px-4 sm:pb-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold text-white sm:text-base">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#2F2118]/92 via-[#2F2118]/55 to-transparent px-4 pb-5 pt-20 sm:px-5 sm:pb-6 sm:pt-24">
+                    <div className="flex items-end justify-between gap-3">
+                      <p className="font-serif-brand text-[1.8rem] font-bold leading-[1.05] tracking-[-0.04em] text-white sm:text-[2.2rem] lg:text-[2.65rem]">
                         {department.label}
                       </p>
 

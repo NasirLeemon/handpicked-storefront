@@ -29,7 +29,7 @@ export const homeDepartments: {
   },
   {
     id: "makeup",
-    label: "Makeup",
+    label: "Beauty",
     href: "/shop?department=makeup",
   },
   {

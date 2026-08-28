@@ -9,7 +9,7 @@ export async function NewArrivalsSection() {
 
   return (
     <section className="bg-ivory px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
-      <div className="mx-auto max-w-7xl">
+      <div className="w-full">
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-gold">

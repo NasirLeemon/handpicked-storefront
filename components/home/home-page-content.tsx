@@ -1,4 +1,3 @@
-import { BrandStorySection } from "@/components/home/brand-story-section";
 import { DeliveryNoteSection } from "@/components/home/delivery-note-section";
 import { HomeHero } from "@/components/home/home-hero";
 import { MessengerCtaSection } from "@/components/home/messenger-cta-section";
@@ -13,7 +12,6 @@ export function HomePageContent() {
       <NewArrivalsSection />
       <VisualCategorySection />
       <TrustStrip />
-      <BrandStorySection />
       <DeliveryNoteSection />
       <MessengerCtaSection />
     </div>
