@@ -117,9 +117,18 @@ export function ProductCard({
               </h3>
 
               {!isSoldOut ? (
-                <p className="mt-2 text-[0.88rem] font-semibold text-[#35231A] sm:text-[0.92rem]">
-                  ৳{product.price.toLocaleString()}
-                </p>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <p className="text-[0.88rem] font-semibold text-[#35231A] sm:text-[0.92rem]">
+                    ৳{product.price.toLocaleString()}
+                  </p>
+
+                  {product.compareAtPrice != null &&
+                  product.compareAtPrice > product.price ? (
+                    <p className="text-[0.9rem] font-normal text-[#D05C5C] line-through sm:text-[0.94rem]">
+                      ৳{product.compareAtPrice.toLocaleString()}
+                    </p>
+                  ) : null}
+                </div>
               ) : null}
             </Link>
 
@@ -202,9 +211,18 @@ export function ProductCard({
             <div className="pt-2">
               <div className="mb-1.5 h-px w-6 bg-[#76503B]/35 transition-all duration-300 group-hover:w-10" />
 
-              <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
-                ৳{product.price.toLocaleString()}
-              </p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
+                  ৳{product.price.toLocaleString()}
+                </p>
+
+                {product.compareAtPrice != null &&
+                product.compareAtPrice > product.price ? (
+                  <p className="text-[0.88rem] font-normal text-[#D05C5C] line-through sm:text-[0.92rem]">
+                    ৳{product.compareAtPrice.toLocaleString()}
+                  </p>
+                ) : null}
+              </div>
             </div>
           ) : null}
         </Link>

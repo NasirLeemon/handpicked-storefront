@@ -87,9 +87,18 @@ export function ProductPurchasePanel({
 
         {!isSoldOut ? (
           <div className="mt-4 flex items-center justify-between border-b border-warm-border pb-4">
-            <p className="text-[1.55rem] font-semibold tracking-[-0.035em] text-deep-brown">
-              ৳ {product.price.toLocaleString()}
-            </p>
+            <div className="flex items-baseline gap-3">
+              <p className="text-[1.55rem] font-semibold tracking-[-0.035em] text-deep-brown">
+                ৳ {product.price.toLocaleString()}
+              </p>
+
+              {product.compareAtPrice != null &&
+              product.compareAtPrice > product.price ? (
+                <p className="text-[1.22rem] font-normal text-[#D05C5C] line-through sm:text-[1.28rem]">
+                  ৳ {product.compareAtPrice.toLocaleString()}
+                </p>
+              ) : null}
+            </div>
 
             <p className="hidden text-[11px] text-soft-brown sm:block">
               Ready to order

@@ -15,6 +15,7 @@ type VariantRow = {
   color: string | null;
   size: string | null;
   selling_price: number | string;
+  compare_at_price: number | string | null;
   available_stock: number;
   low_stock_threshold: number;
   is_default: boolean;
@@ -166,6 +167,10 @@ function mapProduct(row: ProductRow): Product | null {
     slug: row.slug,
     name: row.name,
     price: Number(defaultVariant.selling_price || 0),
+    compareAtPrice:
+      defaultVariant.compare_at_price == null
+        ? null
+        : Number(defaultVariant.compare_at_price),
     category: primaryCategory,
     categories,
     description,
@@ -219,6 +224,7 @@ export async function getInventoryProductsForStorefront(): Promise<Product[]> {
         color,
         size,
         selling_price,
+        compare_at_price,
         available_stock,
         low_stock_threshold,
         is_default,
