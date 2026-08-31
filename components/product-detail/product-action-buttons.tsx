@@ -49,6 +49,31 @@ export function ProductActionButtons({
       quantity,
     });
 
+    try {
+      const fbq = (
+        window as typeof window & {
+          fbq?: (...args: unknown[]) => void;
+        }
+      ).fbq;
+
+      fbq?.("track", "AddToCart", {
+        content_ids: [product.id],
+        content_name: product.name,
+        content_type: "product",
+        contents: [
+          {
+            id: product.id,
+            quantity,
+            item_price: Number(product.price),
+          },
+        ],
+        value: Number(product.price) * quantity,
+        currency: "BDT",
+      });
+    } catch {
+      // Analytics must never interrupt cart actions.
+    }
+
     setShowAddedPanel(true);
   }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
@@ -26,6 +26,40 @@ export function ProductPurchasePanel({
   const [validationAttempt, setValidationAttempt] = useState(0);
 
   const sizeSectionRef = useRef<HTMLDivElement>(null);
+  const viewContentTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (viewContentTrackedRef.current) {
+      return;
+    }
+
+    const fbq = (
+      window as typeof window & {
+        fbq?: (...args: unknown[]) => void;
+      }
+    ).fbq;
+
+    if (!fbq) {
+      return;
+    }
+
+    fbq("track", "ViewContent", {
+      content_ids: [product.id],
+      content_name: product.name,
+      content_type: "product",
+      contents: [
+        {
+          id: product.id,
+          quantity: 1,
+          item_price: Number(product.price),
+        },
+      ],
+      value: Number(product.price),
+      currency: "BDT",
+    });
+
+    viewContentTrackedRef.current = true;
+  }, [product.id, product.name, product.price]);
 
   const availableStock = Number(product.availableStock ?? 0);
 

@@ -2,7 +2,7 @@
 
 import { CheckCircle2, MapPin, Sparkles } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import {
   checkoutDeliveryAreas,
@@ -45,6 +45,7 @@ export function CheckoutForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [orderReference, setOrderReference] = useState("");
+  const initiateCheckoutTrackedRef = useRef(false);
 
   const subtotal = items.reduce(
     (total, item) =>
@@ -56,6 +57,41 @@ export function CheckoutForm({
   const total = subtotal + (deliveryCharge ?? 0);
   const hasDeliveryArea =
     Boolean(deliveryArea) && typeof deliveryCharge === "number";
+
+  useEffect(() => {
+    if (initiateCheckoutTrackedRef.current || items.length === 0) {
+      return;
+    }
+
+    const fbq = (
+      window as typeof window & {
+        fbq?: (...args: unknown[]) => void;
+      }
+    ).fbq;
+
+    if (!fbq) {
+      return;
+    }
+
+    fbq("track", "InitiateCheckout", {
+      content_ids: items.map((item) => item.productId),
+      content_type: "product",
+      contents: items.map((item) => ({
+        id: item.productId,
+        quantity: Number(item.quantity),
+        item_price: Number(item.price),
+      })),
+      num_items: items.reduce(
+        (itemTotal, item) =>
+          itemTotal + Number(item.quantity),
+        0
+      ),
+      value: subtotal,
+      currency: "BDT",
+    });
+
+    initiateCheckoutTrackedRef.current = true;
+  }, [items, subtotal]);
 
   useEffect(() => {
     async function loadProfile() {
@@ -232,6 +268,11 @@ export function CheckoutForm({
             content_ids: items.map(
               (item) => item.productId
             ),
+            contents: items.map((item) => ({
+              id: item.productId,
+              quantity: Number(item.quantity),
+              item_price: Number(item.price),
+            })),
             num_items: items.reduce(
               (itemTotal, item) =>
                 itemTotal + Number(item.quantity),
