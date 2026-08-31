@@ -8,6 +8,7 @@ import {
   checkoutDeliveryAreas,
   type CheckoutDeliveryArea,
 } from "@/components/checkout/checkout-form-options";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 import { getInventoryAuthClient } from "@/lib/supabase/inventory-auth";
 import type { CartItem } from "@/types/cart";
 
@@ -63,17 +64,9 @@ export function CheckoutForm({
       return;
     }
 
-    const fbq = (
-      window as typeof window & {
-        fbq?: (...args: unknown[]) => void;
-      }
-    ).fbq;
+    initiateCheckoutTrackedRef.current = true;
 
-    if (!fbq) {
-      return;
-    }
-
-    fbq("track", "InitiateCheckout", {
+    trackMetaEvent("InitiateCheckout", {
       content_ids: items.map((item) => item.productId),
       content_type: "product",
       contents: items.map((item) => ({
@@ -89,8 +82,6 @@ export function CheckoutForm({
       value: subtotal,
       currency: "BDT",
     });
-
-    initiateCheckoutTrackedRef.current = true;
   }, [items, subtotal]);
 
   useEffect(() => {
@@ -255,13 +246,7 @@ export function CheckoutForm({
             })),
           });
 
-          const fbq = (
-            window as typeof window & {
-              fbq?: (...args: unknown[]) => void;
-            }
-          ).fbq;
-
-          fbq?.("track", "Purchase", {
+          trackMetaEvent("Purchase", {
             value: total,
             currency: "BDT",
             content_type: "product",

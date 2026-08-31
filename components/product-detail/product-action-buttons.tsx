@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/cart/cart-provider";
 import { AddedToCartPanel } from "@/components/cart/added-to-cart-panel";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 import type { Product } from "@/types/product";
 
 type ProductActionButtonsProps = {
@@ -50,13 +51,7 @@ export function ProductActionButtons({
     });
 
     try {
-      const fbq = (
-        window as typeof window & {
-          fbq?: (...args: unknown[]) => void;
-        }
-      ).fbq;
-
-      fbq?.("track", "AddToCart", {
+      trackMetaEvent("AddToCart", {
         content_ids: [product.id],
         content_name: product.name,
         content_type: "product",

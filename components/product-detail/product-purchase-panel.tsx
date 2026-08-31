@@ -6,6 +6,7 @@ import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
 import { QuantitySelector } from "@/components/product-detail/quantity-selector";
 import { SizeSelector } from "@/components/product-detail/size-selector";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 import type { Product } from "@/types/product";
 
 type ProductPurchasePanelProps = {
@@ -33,17 +34,9 @@ export function ProductPurchasePanel({
       return;
     }
 
-    const fbq = (
-      window as typeof window & {
-        fbq?: (...args: unknown[]) => void;
-      }
-    ).fbq;
+    viewContentTrackedRef.current = true;
 
-    if (!fbq) {
-      return;
-    }
-
-    fbq("track", "ViewContent", {
+    trackMetaEvent("ViewContent", {
       content_ids: [product.id],
       content_name: product.name,
       content_type: "product",
@@ -57,8 +50,6 @@ export function ProductPurchasePanel({
       value: Number(product.price),
       currency: "BDT",
     });
-
-    viewContentTrackedRef.current = true;
   }, [product.id, product.name, product.price]);
 
   const availableStock = Number(product.availableStock ?? 0);
