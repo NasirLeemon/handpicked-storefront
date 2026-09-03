@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Check, ShoppingBag } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { ProductImage } from "@/components/product/product-image";
+import { OfferBadge } from "@/components/product/offer-badge";
 import { useCart } from "@/components/cart/cart-provider";
 import { AddedToCartPanel } from "@/components/cart/added-to-cart-panel";
 import type { Product } from "@/types/product";
@@ -93,8 +94,20 @@ export function ProductCard({
                 objectPosition="object-[center_42%]"
               />
 
+              {product.offers?.length ? (
+                <div className="absolute right-2 top-2 z-10 flex flex-col items-end gap-1">
+                  {product.offers.map((offer) => (
+                    <OfferBadge
+                      key={offer.id}
+                      offer={offer}
+                      compact
+                    />
+                  ))}
+                </div>
+              ) : null}
+
               {product.availability !== "available" ? (
-                <div className="absolute right-2 top-2">
+                <div className="absolute left-2 top-2">
                   <AvailabilityBadge
                     availability={product.availability}
                   />
@@ -191,7 +204,19 @@ export function ProductCard({
             />
           </div>
 
-          <div className="absolute right-2 top-2 sm:right-3 sm:top-3">
+          {product.offers?.length ? (
+            <div className="absolute right-2 top-2 z-10 flex flex-col items-end gap-1 sm:right-3 sm:top-3">
+              {product.offers.map((offer) => (
+                <OfferBadge
+                  key={offer.id}
+                  offer={offer}
+                  compact
+                />
+              ))}
+            </div>
+          ) : null}
+
+          <div className="absolute left-2 top-2 sm:left-3 sm:top-3">
             <AvailabilityBadge availability={product.availability} />
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
+import { OfferBadge } from "@/components/product/offer-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
 import { QuantitySelector } from "@/components/product-detail/quantity-selector";
 import { SizeSelector } from "@/components/product-detail/size-selector";
@@ -105,6 +106,17 @@ export function ProductPurchasePanel({
 
           <AvailabilityBadge availability={product.availability} />
         </div>
+
+        {product.offers?.length ? (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {product.offers.map((offer) => (
+              <OfferBadge
+                key={offer.id}
+                offer={offer}
+              />
+            ))}
+          </div>
+        ) : null}
 
         <h1 className="mt-3 max-w-[34rem] text-[1.35rem] font-semibold leading-[1.16] tracking-[-0.035em] text-deep-brown sm:text-[1.9rem] lg:text-[2rem]">
           {product.name}

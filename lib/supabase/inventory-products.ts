@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Product, ProductAvailability } from "@/types/product";
 
 type CategoryRelation = {
+  id: string;
   name: string;
 } | null;
 
@@ -26,6 +27,21 @@ type ImageRow = {
   url: string;
   display_order: number;
   is_primary: boolean;
+};
+
+type OfferRow = {
+  id: string;
+  name: string;
+  discount_percent: number | string;
+  starts_at: string | null;
+  ends_at: string | null;
+  applies_to_all_products: boolean;
+  offer_products:
+    | { product_id: string }[]
+    | null;
+  offer_categories:
+    | { category_id: string }[]
+    | null;
 };
 
 type ProductRow = {
@@ -79,7 +95,28 @@ function getAvailability(
   return "available";
 }
 
-function mapProduct(row: ProductRow): Product | null {
+function isOfferLive(offer: OfferRow, now: number) {
+  if (
+    offer.starts_at &&
+    new Date(offer.starts_at).getTime() > now
+  ) {
+    return false;
+  }
+
+  if (
+    offer.ends_at &&
+    new Date(offer.ends_at).getTime() < now
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function mapProduct(
+  row: ProductRow,
+  offers: OfferRow[],
+): Product | null {
   const activeVariants = row.product_variants.filter(
     (variant) => variant.is_active,
   );
@@ -124,6 +161,91 @@ function mapProduct(row: ProductRow): Product | null {
     categories[0] ||
     "Uncategorized";
 
+  const categoryIds = new Set(
+    [
+      legacyCategoryRelation?.id,
+      ...(row.product_categories ?? []).flatMap(
+        (relation) =>
+          (Array.isArray(relation.categories)
+            ? relation.categories
+            : [relation.categories]
+          )
+            .map((category) => category?.id)
+            .filter(
+              (id): id is string => Boolean(id),
+            ),
+      ),
+    ].filter(
+      (id): id is string => Boolean(id),
+    ),
+  );
+
+  const now = Date.now();
+
+  const applicableOffers = offers
+    .filter((offer) => isOfferLive(offer, now))
+    .filter((offer) => {
+      if (offer.applies_to_all_products) {
+        return true;
+      }
+
+      const productMatch =
+        offer.offer_products?.some(
+          (target) =>
+            target.product_id === row.id,
+        ) ?? false;
+
+      if (productMatch) {
+        return true;
+      }
+
+      return (
+        offer.offer_categories?.some(
+          (target) =>
+            categoryIds.has(
+              target.category_id,
+            ),
+        ) ?? false
+      );
+    })
+    .map((offer) => ({
+      id: offer.id,
+      name: offer.name,
+      discountPercent: Number(
+        offer.discount_percent || 0,
+      ),
+    }))
+    .filter(
+      (offer) =>
+        Number.isFinite(
+          offer.discountPercent,
+        ) &&
+        offer.discountPercent > 0,
+    )
+    .sort(
+      (first, second) =>
+        second.discountPercent -
+        first.discountPercent,
+    )
+    .slice(0, 1);
+
+  const regularPrice = Number(
+    defaultVariant.selling_price || 0,
+  );
+
+  const highestOfferDiscount =
+    applicableOffers[0]?.discountPercent ?? 0;
+
+  const offerPrice =
+    highestOfferDiscount > 0
+      ? Math.round(
+          regularPrice *
+            (1 -
+              highestOfferDiscount /
+                100),
+        )
+      : regularPrice;
+
   if (
     primaryCategory !== "Uncategorized" &&
     !categories.includes(primaryCategory)
@@ -166,11 +288,14 @@ function mapProduct(row: ProductRow): Product | null {
     id: row.id,
     slug: row.slug,
     name: row.name,
-    price: Number(defaultVariant.selling_price || 0),
+    price: offerPrice,
     compareAtPrice:
-      defaultVariant.compare_at_price == null
-        ? null
-        : Number(defaultVariant.compare_at_price),
+      applicableOffers.length > 0
+        ? regularPrice
+        : defaultVariant.compare_at_price == null
+          ? null
+          : Number(defaultVariant.compare_at_price),
+    offers: applicableOffers,
     category: primaryCategory,
     categories,
     description,
@@ -196,60 +321,107 @@ export async function getInventoryProductsForStorefront(): Promise<Product[]> {
     return [];
   }
 
-  const { data, error } = await supabase
-    .from("products")
-    .select(`
-      id,
-      name,
-      slug,
-      short_description,
-      description,
-      details,
-      is_featured,
-      is_new_arrival,
-      show_on_storefront,
-      status,
-      created_at,
-      categories!products_category_id_fkey (
-        name
-      ),
-      product_categories (
-        categories (
-          name
-        )
-      ),
-      product_variants (
-        id,
-        sku,
-        color,
-        size,
-        selling_price,
-        compare_at_price,
-        available_stock,
-        low_stock_threshold,
-        is_default,
-        is_active
-      ),
-      product_images (
-        url,
-        display_order,
-        is_primary
-      )
-    `)
-    .eq("status", "active")
-    .eq("show_on_storefront", true)
-    .order("created_at", {
-      ascending: false,
-    });
+  const [productsResult, offersResult] =
+    await Promise.all([
+      supabase
+        .from("products")
+        .select(`
+          id,
+          name,
+          slug,
+          short_description,
+          description,
+          details,
+          is_featured,
+          is_new_arrival,
+          show_on_storefront,
+          status,
+          created_at,
+          categories!products_category_id_fkey (
+            id,
+            name
+          ),
+          product_categories (
+            categories (
+              id,
+              name
+            )
+          ),
+          product_variants (
+            id,
+            sku,
+            color,
+            size,
+            selling_price,
+            compare_at_price,
+            available_stock,
+            low_stock_threshold,
+            is_default,
+            is_active
+          ),
+          product_images (
+            url,
+            display_order,
+            is_primary
+          )
+        `)
+        .eq("status", "active")
+        .eq("show_on_storefront", true)
+        .order("created_at", {
+          ascending: false,
+        }),
 
-  if (error) {
-    console.error("Failed to load V2 storefront products:", error);
+      supabase
+        .from("offers")
+        .select(`
+          id,
+          name,
+          discount_percent,
+          starts_at,
+          ends_at,
+          applies_to_all_products,
+          offer_products (
+            product_id
+          ),
+          offer_categories (
+            category_id
+          )
+        `)
+        .eq("is_active", true),
+    ]);
+
+  if (productsResult.error) {
+    console.error(
+      "Failed to load V2 storefront products:",
+      productsResult.error,
+    );
     return [];
   }
 
-  return ((data ?? []) as unknown as ProductRow[])
-    .map(mapProduct)
-    .filter((product): product is Product => product !== null);
+  if (offersResult.error) {
+    console.error(
+      "Failed to load storefront offers:",
+      offersResult.error,
+    );
+  }
+
+  const offers =
+    offersResult.error
+      ? []
+      : ((offersResult.data ??
+          []) as unknown as OfferRow[]);
+
+  return (
+    (productsResult.data ??
+      []) as unknown as ProductRow[]
+  )
+    .map((row) =>
+      mapProduct(row, offers),
+    )
+    .filter(
+      (product): product is Product =>
+        product !== null,
+    );
 }
 
 export async function getInventoryProductBySlug(slug: string) {
