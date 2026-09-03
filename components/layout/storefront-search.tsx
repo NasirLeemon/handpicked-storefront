@@ -163,16 +163,16 @@ export function StorefrontSearch() {
       <form
         onSubmit={handleSubmit}
         role="search"
-        className={`flex h-10 w-full items-center border bg-[#FAF6F0] transition ${
+        className={`flex h-11 w-full items-center rounded-[14px] border bg-[#FFFDF9] transition-all duration-200 md:h-[46px] ${
           focused
-            ? "border-[#A9835E] bg-[#FFFDF9] shadow-[0_4px_18px_rgba(47,33,24,0.06)]"
-            : "border-transparent"
+            ? "border-[#B49372] shadow-[0_8px_28px_rgba(66,43,29,0.10),0_0_0_3px_rgba(180,147,114,0.10)]"
+            : "border-[#E7DDD2] shadow-[0_5px_18px_rgba(66,43,29,0.05)] hover:border-[#D8C7B7]"
         }`}
       >
-        <span className="flex h-full items-center pl-3.5 text-soft-brown">
+        <span className="ml-3 flex shrink-0 items-center justify-center text-[#765A46]">
           <Search
-            className="h-[17px] w-[17px]"
-            strokeWidth={1.7}
+            className="h-[16px] w-[16px]"
+            strokeWidth={1.8}
           />
         </span>
 
@@ -186,7 +186,7 @@ export function StorefrontSearch() {
           }}
           placeholder="Search products..."
           autoComplete="off"
-          className="min-w-0 flex-1 bg-transparent px-3 text-[13px] text-deep-brown outline-none placeholder:text-taupe"
+          className="min-w-0 flex-1 bg-transparent px-3.5 text-[13px] font-medium text-deep-brown outline-none focus-visible:!outline-none focus-visible:ring-0 placeholder:font-normal placeholder:text-[#A99686] md:text-[14px]"
           aria-label="Search products"
         />
 
@@ -194,7 +194,7 @@ export function StorefrontSearch() {
           <button
             type="button"
             onClick={clearSearch}
-            className="flex h-10 w-10 items-center justify-center text-taupe transition hover:text-deep-brown"
+            className="mr-1.5 flex h-8 w-8 items-center justify-center rounded-full text-[#A08B7B] transition hover:bg-[#F4ECE3] hover:text-deep-brown"
             aria-label="Clear search"
           >
             <X
@@ -206,7 +206,7 @@ export function StorefrontSearch() {
       </form>
 
       {showDropdown ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-[10020] overflow-hidden border border-warm-border bg-[#FFFDF9] shadow-[0_20px_50px_rgba(47,33,24,0.14)]">
+        <div className="absolute left-0 right-0 top-[calc(100%+10px)] z-[10020] overflow-hidden rounded-[14px] border border-[#E4D7CA] bg-[#FFFDF9] shadow-[0_22px_55px_rgba(47,33,24,0.15)]">
           {loading ? (
             <div className="px-4 py-5 text-center">
               <p className="text-xs text-soft-brown">

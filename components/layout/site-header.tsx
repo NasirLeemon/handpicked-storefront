@@ -96,21 +96,51 @@ export function SiteHeader() {
         <StorefrontSearch key={`mobile-${pathname}`} />
       </div>
 
-      <div className="hidden border-t border-warm-border/70 md:block">
-        <nav className="mx-auto flex h-10 max-w-7xl items-center justify-center gap-9 px-8">
-          {categoryLinks.map((item, index) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`text-[9px] font-semibold uppercase tracking-[0.18em] transition ${
-                index === 0
-                  ? "text-muted-gold hover:text-deep-brown"
-                  : "text-deep-brown hover:text-muted-gold"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+      <div className="hidden border-y border-warm-border/70 bg-[#FFFCF8] md:block">
+        <nav className="mx-auto flex h-[54px] max-w-7xl items-stretch justify-center px-8">
+          {categoryLinks.map((item, index) => {
+            const isActive =
+              pathname === item.href ||
+              pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group relative flex min-w-[116px] items-center justify-center px-5 text-[11px] font-semibold uppercase tracking-[0.15em] transition-all duration-200 focus-visible:!outline-none focus-visible:!outline-offset-0 lg:min-w-[132px] lg:text-[12px] lg:tracking-[0.16em] ${
+                  isActive
+                    ? "bg-[linear-gradient(180deg,rgba(180,138,90,0.09),rgba(180,138,90,0.02))] text-deep-brown"
+                    : "text-[#563E31] hover:bg-[#FAF5EE] hover:text-deep-brown"
+                }`}
+              >
+                <span className="relative z-10 flex items-center gap-2.5">
+                  <span
+                    className={`h-[5px] w-[5px] rotate-45 bg-[#B48A5A] transition-all duration-200 ${
+                      isActive
+                        ? "scale-100 opacity-100"
+                        : "scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-70"
+                    }`}
+                  />
+
+                  <span className="transition-transform duration-200 group-hover:scale-[1.10]">
+                    {item.label}
+                  </span>
+                </span>
+
+                <span
+                  className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 bg-[#B48A5A] transition-all duration-300 ${
+                    isActive
+                      ? "w-[54%]"
+                      : "w-0 group-hover:w-[38%]"
+                  }`}
+                />
+
+                {index < categoryLinks.length - 1 ? (
+                  <span className="absolute right-0 top-1/2 h-4 w-px -translate-y-1/2 bg-[#E8DDD1]" />
+                ) : null}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>

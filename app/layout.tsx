@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
+import { OfferTicker } from "@/components/layout/offer-ticker";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import "./globals.css";
@@ -114,6 +115,7 @@ export default function RootLayout({
         <CartProvider>
           <AnnouncementBar />
           <SiteHeader />
+          <OfferTicker />
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </CartProvider>
