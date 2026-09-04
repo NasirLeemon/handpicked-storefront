@@ -82,13 +82,6 @@ function getSortLabel(value: string) {
 
 function sortRecommendedProducts(products: Product[]) {
   return [...products].sort((a, b) => {
-    const aSoldOut = a.availability === "sold-out" ? 1 : 0;
-    const bSoldOut = b.availability === "sold-out" ? 1 : 0;
-
-    if (aSoldOut !== bSoldOut) {
-      return aSoldOut - bSoldOut;
-    }
-
     const featuredDifference =
       Number(b.featured) - Number(a.featured);
 
@@ -307,13 +300,6 @@ export function ShopProductsClient({
 
     if (sort === "newest") {
       return [...result].sort((a, b) => {
-        const aSoldOut = a.availability === "sold-out" ? 1 : 0;
-        const bSoldOut = b.availability === "sold-out" ? 1 : 0;
-
-        if (aSoldOut !== bSoldOut) {
-          return aSoldOut - bSoldOut;
-        }
-
         return (
           new Date(b.createdAt ?? 0).getTime() -
           new Date(a.createdAt ?? 0).getTime()
@@ -398,13 +384,6 @@ export function ShopProductsClient({
 
   const curatedProducts = useMemo(() => {
     return [...products].sort((a, b) => {
-      const aSoldOut = a.availability === "sold-out" ? 1 : 0;
-      const bSoldOut = b.availability === "sold-out" ? 1 : 0;
-
-      if (aSoldOut !== bSoldOut) {
-        return aSoldOut - bSoldOut;
-      }
-
       return (
         new Date(b.createdAt ?? 0).getTime() -
         new Date(a.createdAt ?? 0).getTime()

@@ -94,7 +94,7 @@ export function ProductCard({
                 objectPosition="object-[center_42%]"
               />
 
-              {product.offers?.length ? (
+              {!isSoldOut && product.offers?.length ? (
                 <div className="absolute right-2 top-2 z-10 flex flex-col items-end gap-1">
                   {product.offers.map((offer) => (
                     <OfferBadge
@@ -129,28 +129,34 @@ export function ProductCard({
                 {product.name}
               </h3>
 
-              {!isSoldOut ? (
-                <div className="mt-2 flex items-baseline gap-2">
-                  <p className="text-[0.88rem] font-semibold text-[#35231A] sm:text-[0.92rem]">
-                    ৳{product.price.toLocaleString()}
+              <div className="mt-2 flex min-h-[1.35rem] items-baseline gap-2">
+                {isSoldOut ? (
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[#9B8A7C] sm:text-[0.76rem]">
+                    Out of Stock
                   </p>
-
-                  {product.compareAtPrice != null &&
-                  product.compareAtPrice > product.price ? (
-                    <p className="text-[0.9rem] font-normal text-[#D05C5C] line-through sm:text-[0.94rem]">
-                      ৳{product.compareAtPrice.toLocaleString()}
+                ) : (
+                  <>
+                    <p className="text-[0.88rem] font-semibold text-[#35231A] sm:text-[0.92rem]">
+                      ৳{product.price.toLocaleString()}
                     </p>
-                  ) : null}
-                </div>
-              ) : null}
+
+                    {product.compareAtPrice != null &&
+                    product.compareAtPrice > product.price ? (
+                      <p className="text-[0.9rem] font-normal text-[#D05C5C] line-through sm:text-[0.94rem]">
+                        ৳{product.compareAtPrice.toLocaleString()}
+                      </p>
+                    ) : null}
+                  </>
+                )}
+              </div>
             </Link>
 
-            {!isSoldOut ? (
-              <div className="mt-auto pt-3">
+            <div className="mt-auto pt-3">
                 <button
                   type="button"
+                  disabled={isSoldOut}
                   onClick={handleAddToCart}
-                  className="inline-flex h-9 w-full items-center justify-center gap-1.5 bg-[#3F2A20] px-3 text-[8px] font-semibold uppercase tracking-[0.1em] text-[#FFFDF9] transition hover:bg-[#5B4435] sm:h-10 sm:text-[9px]"
+                  className="inline-flex h-9 w-full items-center justify-center gap-1.5 bg-[#3F2A20] px-3 text-[8px] font-semibold uppercase tracking-[0.1em] text-[#FFFDF9] transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-[#3F2A20] sm:h-10 sm:text-[9px]"
                 >
                   {isAdded ? (
                     <Check
@@ -169,13 +175,13 @@ export function ProductCard({
 
                 <button
                   type="button"
+                  disabled={isSoldOut}
                   onClick={handleOrderNow}
-                  className="mt-2 inline-flex w-full items-center justify-center py-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#76503B] transition hover:text-[#3F2A20] sm:text-[9px]"
+                  className="mt-2 inline-flex w-full items-center justify-center py-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[#76503B] transition hover:text-[#3F2A20] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-[#76503B] sm:text-[9px]"
                 >
                   Order Now
                 </button>
               </div>
-            ) : null}
           </div>
         </article>
 
@@ -204,7 +210,7 @@ export function ProductCard({
             />
           </div>
 
-          {product.offers?.length ? (
+          {!isSoldOut && product.offers?.length ? (
             <div className="absolute right-2 top-2 z-10 flex flex-col items-end gap-1 sm:right-3 sm:top-3">
               {product.offers.map((offer) => (
                 <OfferBadge
@@ -232,32 +238,38 @@ export function ProductCard({
             {product.name}
           </h3>
 
-          {!isSoldOut ? (
-            <div className="pt-2">
-              <div className="mb-1.5 h-px w-6 bg-[#76503B]/35 transition-all duration-300 group-hover:w-10" />
+          <div className="pt-2">
+            <div className="mb-1.5 h-px w-6 bg-[#76503B]/35 transition-all duration-300 group-hover:w-10" />
 
-              <div className="flex items-baseline gap-2">
-                <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
-                  ৳{product.price.toLocaleString()}
+            <div className="flex min-h-[1.25rem] items-baseline gap-2">
+              {isSoldOut ? (
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#9B8A7C] sm:text-[0.74rem]">
+                  Out of Stock
                 </p>
-
-                {product.compareAtPrice != null &&
-                product.compareAtPrice > product.price ? (
-                  <p className="text-[0.88rem] font-normal text-[#D05C5C] line-through sm:text-[0.92rem]">
-                    ৳{product.compareAtPrice.toLocaleString()}
+              ) : (
+                <>
+                  <p className="text-[0.78rem] font-semibold tracking-[-0.01em] text-[#3E291E] sm:text-[0.84rem]">
+                    ৳{product.price.toLocaleString()}
                   </p>
-                ) : null}
-              </div>
+
+                  {product.compareAtPrice != null &&
+                  product.compareAtPrice > product.price ? (
+                    <p className="text-[0.88rem] font-normal text-[#D05C5C] line-through sm:text-[0.92rem]">
+                      ৳{product.compareAtPrice.toLocaleString()}
+                    </p>
+                  ) : null}
+                </>
+              )}
             </div>
-          ) : null}
+          </div>
         </Link>
 
-        <div className={isSoldOut ? "hidden" : "mt-2.5 space-y-1.5"}>
+        <div className="mt-2.5 space-y-1.5">
           <button
             type="button"
             disabled={isSoldOut}
             onClick={handleAddToCart}
-            className="inline-flex h-8 w-full items-center justify-center gap-1.5 whitespace-nowrap bg-[#3F2A20] px-3 text-[8px] font-semibold tracking-[0.08em] text-[#FFFDF9] uppercase transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#CFC2B5] sm:h-9 sm:text-[9px]"
+            className="inline-flex h-8 w-full items-center justify-center gap-1.5 whitespace-nowrap bg-[#3F2A20] px-3 text-[8px] font-semibold tracking-[0.08em] text-[#FFFDF9] uppercase transition hover:bg-[#5B4435] disabled:cursor-not-allowed disabled:bg-[#3F2A20] disabled:opacity-35 sm:h-9 sm:text-[9px]"
           >
             {isAdded ? (
               <Check className="h-3 w-3 shrink-0" strokeWidth={2} />
@@ -265,16 +277,16 @@ export function ProductCard({
               <ShoppingBag className="h-3 w-3 shrink-0" strokeWidth={1.8} />
             )}
 
-            {isSoldOut ? "Sold Out" : isAdded ? "Added" : "Add to Cart"}
+            {isAdded ? "Added" : "Add to Cart"}
           </button>
 
           <button
             type="button"
             disabled={isSoldOut}
             onClick={handleOrderNow}
-            className="inline-flex h-7 w-full items-center justify-center whitespace-nowrap border border-[#3F2A20]/60 text-[8px] font-semibold tracking-[0.1em] text-[#3F2A20] uppercase transition hover:text-[#8D674D] disabled:cursor-not-allowed disabled:text-[#A99788] sm:h-8 sm:text-[9px]"
+            className="inline-flex h-7 w-full items-center justify-center whitespace-nowrap border border-[#3F2A20]/60 text-[8px] font-semibold tracking-[0.1em] text-[#3F2A20] uppercase transition hover:text-[#8D674D] disabled:cursor-not-allowed disabled:opacity-35 sm:h-8 sm:text-[9px]"
           >
-            {isSoldOut ? "Unavailable" : "Order Now"}
+            Order Now
           </button>
         </div>
       </div>

@@ -107,7 +107,7 @@ export function ProductPurchasePanel({
           <AvailabilityBadge availability={product.availability} />
         </div>
 
-        {product.offers?.length ? (
+        {!isSoldOut && product.offers?.length ? (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {product.offers.map((offer) => (
               <OfferBadge
