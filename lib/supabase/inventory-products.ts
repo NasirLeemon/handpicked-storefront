@@ -25,6 +25,7 @@ type VariantRow = {
 
 type ImageRow = {
   url: string;
+  variant_id: string | null;
   display_order: number;
   is_primary: boolean;
 };
@@ -386,6 +387,36 @@ function mapProduct(
     0,
   );
 
+  const sharedImages = [...row.product_images]
+    .filter((image) => !image.variant_id)
+    .sort(
+      (a, b) =>
+        a.display_order - b.display_order,
+    )
+    .map((image) => image.url);
+
+  const variantImages = [...row.product_images]
+    .sort(
+      (a, b) =>
+        a.display_order - b.display_order,
+    )
+    .reduce<Record<string, string[]>>(
+      (result, image) => {
+        if (!image.variant_id) {
+          return result;
+        }
+
+        if (!result[image.variant_id]) {
+          result[image.variant_id] = [];
+        }
+
+        result[image.variant_id].push(image.url);
+
+        return result;
+      },
+      {},
+    );
+
   const description =
     row.description ||
     row.short_description ||
@@ -417,6 +448,8 @@ function mapProduct(
       row.storefront_content,
     ),
     images,
+    sharedImages,
+    variantImages,
     color: colors.join(", "),
     sizes,
     variants: storefrontVariants,
@@ -483,6 +516,7 @@ export async function getInventoryProductsForStorefront(): Promise<Product[]> {
           ),
           product_images (
             url,
+            variant_id,
             display_order,
             is_primary
           )

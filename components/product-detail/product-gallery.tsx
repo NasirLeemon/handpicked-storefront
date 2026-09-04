@@ -1,39 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductImage } from "@/components/product/product-image";
 import { ProductImagePlaceholder } from "@/components/product/product-image-placeholder";
 import type { Product } from "@/types/product";
 
 type ProductGalleryProps = {
   product: Product;
+  selectedVariantId?: string | null;
 };
 
 export function ProductGallery({
   product,
+  selectedVariantId,
 }: ProductGalleryProps) {
   const [selectedImage, setSelectedImage] = useState({
     productId: product.id,
     index: 0,
   });
 
+  const selectedVariantImages =
+    selectedVariantId
+      ? product.variantImages?.[selectedVariantId] ?? []
+      : [];
+
+  const galleryImages =
+    selectedVariantId
+      ? selectedVariantImages.length > 0
+        ? selectedVariantImages
+        : product.sharedImages ?? []
+      : product.images;
+
+  useEffect(() => {
+    setSelectedImage({
+      productId: product.id,
+      index: 0,
+    });
+  }, [product.id, selectedVariantId]);
+
   const activeIndex =
     selectedImage.productId === product.id
       ? Math.min(
           selectedImage.index,
-          Math.max(0, product.images.length - 1),
+          Math.max(0, galleryImages.length - 1),
         )
       : 0;
 
-  const mainImage = product.images[activeIndex];
+  const mainImage = galleryImages[activeIndex];
 
   return (
     <div className="min-w-0">
       {/* Desktop gallery */}
       <div className="hidden gap-4 sm:grid sm:grid-cols-[84px_minmax(0,1fr)] lg:gap-5 xl:grid-cols-[96px_minmax(0,1fr)]">
         <div className="max-h-[640px] space-y-3 overflow-y-auto pr-1">
-          {product.images.length > 0 ? (
-            product.images.map((image, index) => {
+          {galleryImages.length > 0 ? (
+            galleryImages.map((image, index) => {
               const isActive = index === activeIndex;
 
               return (
@@ -134,9 +155,9 @@ export function ProductGallery({
           </div>
         </div>
 
-        {product.images.length > 0 ? (
+        {galleryImages.length > 0 ? (
           <div className="mt-3 flex gap-2.5 overflow-x-auto pb-1">
-            {product.images.map((image, index) => {
+            {galleryImages.map((image, index) => {
               const isActive = index === activeIndex;
 
               return (

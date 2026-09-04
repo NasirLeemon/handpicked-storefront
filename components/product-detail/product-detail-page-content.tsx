@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ProductDetailsAccordion } from "@/components/product-detail/product-details-accordion";
-import { ProductGallery } from "@/components/product-detail/product-gallery";
-import { ProductPurchasePanel } from "@/components/product-detail/product-purchase-panel";
+import { ProductDetailPurchaseSection } from "@/components/product-detail/product-detail-purchase-section";
 import { RelatedProductsSection } from "@/components/product-detail/related-products-section";
 import type { Product } from "@/types/product";
 
@@ -27,10 +26,9 @@ export function ProductDetailPageContent({
           <span className="text-deep-brown">{product.name}</span>
         </nav>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-12 xl:gap-16">
-          <ProductGallery product={product} />
-          <ProductPurchasePanel product={product} />
-        </div>
+        <ProductDetailPurchaseSection
+          product={product}
+        />
 
         <ProductDetailsAccordion product={product} />
 

@@ -12,10 +12,14 @@ import type { Product } from "@/types/product";
 
 type ProductPurchasePanelProps = {
   product: Product;
+  onSelectedVariantChange?: (
+    variantId: string | null,
+  ) => void;
 };
 
 export function ProductPurchasePanel({
   product,
+  onSelectedVariantChange,
 }: ProductPurchasePanelProps) {
   const productSizes = product.sizes.filter(Boolean);
   const productVariants = product.variants ?? [];
@@ -111,6 +115,15 @@ export function ProductPurchasePanel({
               (variant) => variant.isDefault
             ) ?? productVariants[0]
       : undefined;
+
+  useEffect(() => {
+    onSelectedVariantChange?.(
+      selectedVariant?.id ?? null,
+    );
+  }, [
+    onSelectedVariantChange,
+    selectedVariant?.id,
+  ]);
 
   const availableStock = Number(
     selectedVariant?.availableStock ??

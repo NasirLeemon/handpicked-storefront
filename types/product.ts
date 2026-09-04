@@ -51,6 +51,8 @@ export type Product = {
   deliveryPaymentInfo?: string;
   storefrontContent?: ProductStorefrontContent;
   images: string[];
+  sharedImages?: string[];
+  variantImages?: Record<string, string[]>;
   color: string;
   sizes: string[];
   variants?: ProductVariant[];
