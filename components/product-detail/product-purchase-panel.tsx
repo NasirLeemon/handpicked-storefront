@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ShieldCheck, Sparkles, Truck } from "lucide-react";
+import {
+  Check,
+  ShieldCheck,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import { AvailabilityBadge } from "@/components/product/availability-badge";
 import { OfferBadge } from "@/components/product/offer-badge";
 import { ProductActionButtons } from "@/components/product-detail/product-action-buttons";
@@ -94,17 +99,16 @@ export function ProductPurchasePanel({
     productVariants.length > 0
       ? requiresShadeSelection
         ? selectedShade
-          ? productVariants.find(
-              (variant) =>
-                variant.color === selectedShade &&
-                (!selectedSize ||
-                  !variant.size ||
-                  variant.size === selectedSize)
-            ) ??
-            productVariants.find(
-              (variant) =>
-                variant.color === selectedShade
-            )
+          ? selectedSize
+            ? productVariants.find(
+                (variant) =>
+                  variant.color === selectedShade &&
+                  variant.size === selectedSize
+              )
+            : productVariants.find(
+                (variant) =>
+                  variant.color === selectedShade
+              )
           : undefined
         : selectedSize
           ? productVariants.find(
@@ -115,6 +119,34 @@ export function ProductPurchasePanel({
               (variant) => variant.isDefault
             ) ?? productVariants[0]
       : undefined;
+
+  const unavailableSizes = selectedShade
+    ? productSizes.filter(
+        (size) =>
+          !productVariants.some(
+            (variant) =>
+              variant.color === selectedShade &&
+              variant.size === size
+          )
+      )
+    : [];
+
+  const soldOutSizes = productSizes.filter((size) => {
+    const matchingVariants = productVariants.filter(
+      (variant) =>
+        variant.size === size &&
+        (!selectedShade ||
+          variant.color === selectedShade)
+    );
+
+    return (
+      matchingVariants.length > 0 &&
+      matchingVariants.every(
+        (variant) =>
+          variant.availableStock <= 0
+      )
+    );
+  });
 
   useEffect(() => {
     onSelectedVariantChange?.(
@@ -168,20 +200,48 @@ export function ProductPurchasePanel({
   }
 
   function handleSelectShade(shade: string) {
-    const variant = productVariants.find(
+    const matchingVariants = productVariants.filter(
       (item) => item.color === shade
     );
 
+    const currentSizeVariant = selectedSize
+      ? matchingVariants.find(
+          (item) => item.size === selectedSize
+        )
+      : undefined;
+
+    const nextVariant =
+      currentSizeVariant ??
+      matchingVariants.find(
+        (item) => item.availableStock > 0
+      ) ??
+      matchingVariants[0];
+
     setSelectedShade(shade);
     setShowShadeError(false);
+    setShowSizeError(false);
     setQuantity(1);
 
-    if (variant?.size) {
-      setSelectedSize(variant.size);
+    if (nextVariant?.size) {
+      setSelectedSize(nextVariant.size);
     }
   }
 
   function handleSelectSize(size: string) {
+    const validVariant = productVariants.find(
+      (item) =>
+        item.size === size &&
+        (!selectedShade ||
+          item.color === selectedShade)
+    );
+
+    if (
+      !validVariant ||
+      validVariant.availableStock <= 0
+    ) {
+      return;
+    }
+
     setSelectedSize(size);
     setShowSizeError(false);
     setQuantity(1);
@@ -304,13 +364,17 @@ export function ProductPurchasePanel({
 
             <div className="mt-2.5 grid gap-1.5 sm:grid-cols-3">
               {shadeOptions.map((shade) => {
-                const variant = productVariants.find(
-                  (item) => item.color === shade
-                );
+                const shadeVariants =
+                  productVariants.filter(
+                    (item) => item.color === shade
+                  );
 
                 const soldOut =
-                  !variant ||
-                  variant.availableStock <= 0;
+                  shadeVariants.length === 0 ||
+                  shadeVariants.every(
+                    (variant) =>
+                      variant.availableStock <= 0
+                  );
 
                 const selected =
                   selectedShade === shade;
@@ -332,7 +396,7 @@ export function ProductPurchasePanel({
                       soldOut
                         ? "group relative min-h-[58px] cursor-not-allowed rounded-xl border border-red-300 bg-red-50 px-3 py-2.5 text-left"
                         : selected
-                          ? "group relative min-h-[58px] rounded-xl border border-[#3F2A20] bg-[#F7F1EA] px-3 py-2.5 text-left shadow-[0_5px_14px_rgba(63,42,32,0.07)] transition"
+                          ? "group relative min-h-[58px] rounded-xl border-2 border-[#3F2A20] bg-[#F3E8DE] px-3 py-2.5 text-left shadow-[0_6px_18px_rgba(63,42,32,0.10)] ring-2 ring-[#3F2A20]/10 transition"
                           : "group relative min-h-[58px] rounded-xl border border-[#E4D8CC] bg-white px-3 py-2.5 text-left transition hover:border-[#A8876E] hover:bg-[#FCF9F6]"
                     }
                   >
@@ -352,8 +416,11 @@ export function ProductPurchasePanel({
                           Sold out
                         </span>
                       ) : selected ? (
-                        <span className="flex items-center gap-1 text-[8px] font-semibold uppercase tracking-[0.08em] text-[#6D4E3B]">
-                          <span className="size-1.5 rounded-full bg-[#3F2A20]" />
+                        <span className="flex items-center gap-1 rounded-full bg-[#3F2A20] px-2 py-1 text-[8px] font-semibold uppercase tracking-[0.08em] text-white shadow-sm">
+                          <Check
+                            className="size-2.5"
+                            strokeWidth={2.5}
+                          />
                           Selected
                         </span>
                       ) : (
@@ -424,6 +491,8 @@ export function ProductPurchasePanel({
               ref={sizeSectionRef}
               sizes={productSizes}
               selectedSize={selectedSize}
+              unavailableSizes={unavailableSizes}
+              soldOutSizes={soldOutSizes}
               availableStock={availableStock}
               isSoldOut={isSoldOut}
               requiresSelection={requiresSizeSelection}

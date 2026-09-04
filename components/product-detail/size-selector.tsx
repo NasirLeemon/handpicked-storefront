@@ -1,9 +1,14 @@
 import { forwardRef } from "react";
-import { AlertCircle } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+} from "lucide-react";
 
 type SizeSelectorProps = {
   sizes: string[];
   selectedSize: string;
+  unavailableSizes: string[];
+  soldOutSizes: string[];
   availableStock: number;
   isSoldOut: boolean;
   requiresSelection: boolean;
@@ -19,6 +24,8 @@ export const SizeSelector = forwardRef<
   {
     sizes,
     selectedSize,
+    unavailableSizes,
+    soldOutSizes,
     availableStock,
     isSoldOut,
     requiresSelection,
@@ -81,22 +88,61 @@ export const SizeSelector = forwardRef<
 
         <div className="flex flex-wrap gap-2">
           {sizes.map((size) => {
-            const isSelected = selectedSize === size;
+            const isSelected =
+              selectedSize === size;
+            const unavailable =
+              unavailableSizes.includes(size);
+            const soldOut =
+              soldOutSizes.includes(size);
 
             return (
               <button
                 key={size}
                 type="button"
-                disabled={isSoldOut || !requiresSelection}
+                disabled={
+                  unavailable ||
+                  soldOut ||
+                  !requiresSelection
+                }
                 onClick={() => onSelectSize(size)}
                 aria-pressed={isSelected}
+                aria-label={
+                  unavailable
+                    ? `${size} is not available for this shade`
+                    : soldOut
+                      ? `${size} is sold out`
+                      : size
+                }
                 className={`flex h-9 min-w-[4.5rem] items-center justify-center rounded-lg border px-3 text-xs font-medium transition sm:h-10 sm:text-[13px] ${
-                  isSelected
-                    ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-sm"
-                    : "border-warm-border bg-white/70 text-deep-brown hover:border-muted-gold"
-                } disabled:cursor-default disabled:opacity-100`}
+                  unavailable
+                    ? "cursor-not-allowed border-warm-border bg-[#F7F4F1] text-soft-brown/45 line-through"
+                    : soldOut
+                      ? "cursor-not-allowed border-red-200 bg-red-50 text-red-500"
+                      : isSelected
+                        ? "border-[#3F2A20] bg-[#3F2A20] !text-[#FFFDF9] shadow-md ring-2 ring-[#B08A55]/35 ring-offset-2"
+                        : "border-warm-border bg-white/70 text-deep-brown hover:border-muted-gold"
+                } disabled:opacity-100`}
               >
-                {size}
+                <span>{size}</span>
+
+                {isSelected &&
+                !unavailable &&
+                !soldOut ? (
+                  <Check
+                    className="ml-1.5 size-3"
+                    strokeWidth={2.5}
+                  />
+                ) : null}
+
+                {unavailable ? (
+                  <span className="ml-1.5 text-[8px] font-semibold uppercase tracking-[0.06em] no-underline">
+                    N/A
+                  </span>
+                ) : soldOut ? (
+                  <span className="ml-1.5 text-[8px] font-semibold uppercase tracking-[0.04em]">
+                    Sold out
+                  </span>
+                ) : null}
               </button>
             );
           })}

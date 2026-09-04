@@ -24,19 +24,48 @@ export function ProductGallery({
       ? product.variantImages?.[selectedVariantId] ?? []
       : [];
 
-  const galleryImages =
-    selectedVariantId
-      ? selectedVariantImages.length > 0
-        ? selectedVariantImages
-        : product.sharedImages ?? []
-      : product.images;
+  const galleryImages = product.images;
 
   useEffect(() => {
-    setSelectedImage({
-      productId: product.id,
-      index: 0,
+    const variantImages =
+      selectedVariantId
+        ? product.variantImages?.[selectedVariantId] ?? []
+        : [];
+
+    const preferredImage =
+      variantImages[0] ??
+      product.sharedImages?.[0] ??
+      product.images[0];
+
+    const preferredIndex = preferredImage
+      ? product.images.indexOf(preferredImage)
+      : 0;
+
+    const nextIndex =
+      preferredIndex >= 0
+        ? preferredIndex
+        : 0;
+
+    setSelectedImage((current) => {
+      if (
+        current.productId === product.id &&
+        current.index === nextIndex
+      ) {
+        return current;
+      }
+
+      return {
+        productId: product.id,
+        index: nextIndex,
+      };
     });
-  }, [product.id, selectedVariantId]);
+  }, [
+    product.id,
+    product.images,
+    product.sharedImages,
+    product.variantImages,
+    selectedVariantId,
+  ]);
 
   const activeIndex =
     selectedImage.productId === product.id
