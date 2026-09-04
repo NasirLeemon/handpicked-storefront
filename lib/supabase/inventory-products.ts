@@ -51,6 +51,11 @@ type ProductRow = {
   short_description: string | null;
   description: string | null;
   details: string | null;
+  size_guidance: string | null;
+  delivery_payment_info: string | null;
+  brand: string | null;
+  country_of_origin: string | null;
+  storefront_content: unknown;
   is_featured: boolean;
   is_new_arrival: boolean;
   show_on_storefront: boolean;
@@ -78,6 +83,67 @@ function getInventorySupabaseClient() {
       persistSession: false,
     },
   });
+}
+
+function normalizeStorefrontContent(value: unknown) {
+  const content =
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : {};
+
+  const stringList = (item: unknown): string[] =>
+    Array.isArray(item)
+      ? item.filter(
+          (entry): entry is string =>
+            typeof entry === "string" &&
+            entry.trim().length > 0,
+        )
+      : [];
+
+  const productInfo = Array.isArray(content.productInfo)
+    ? content.productInfo
+        .filter(
+          (item): item is Record<string, unknown> =>
+            Boolean(
+              item &&
+              typeof item === "object" &&
+              !Array.isArray(item),
+            ),
+        )
+        .map((item) => ({
+          label:
+            typeof item.label === "string"
+              ? item.label.trim()
+              : "",
+          value:
+            typeof item.value === "string"
+              ? item.value.trim()
+              : "",
+        }))
+        .filter(
+          (item) =>
+            item.label.length > 0 &&
+            item.value.length > 0,
+        )
+    : [];
+
+  return {
+    benefits: stringList(content.benefits),
+    howToUse:
+      typeof content.howToUse === "string"
+        ? content.howToUse.trim()
+        : "",
+    keyIngredients: stringList(content.keyIngredients),
+    suitableFor: stringList(content.suitableFor),
+    typeTags: stringList(content.typeTags),
+    warnings:
+      typeof content.warnings === "string"
+        ? content.warnings.trim()
+        : "",
+    productInfo,
+  };
 }
 
 function getAvailability(
@@ -246,6 +312,47 @@ function mapProduct(
         )
       : regularPrice;
 
+  const storefrontVariants = activeVariants.map(
+    (variant) => {
+      const variantRegularPrice = Number(
+        variant.selling_price || 0,
+      );
+
+      const variantPrice =
+        highestOfferDiscount > 0
+          ? Math.round(
+              variantRegularPrice *
+                (1 -
+                  highestOfferDiscount /
+                    100),
+            )
+          : variantRegularPrice;
+
+      return {
+        id: variant.id,
+        sku: variant.sku,
+        color: variant.color?.trim() || "",
+        size: variant.size?.trim() || "",
+        price: variantPrice,
+        compareAtPrice:
+          applicableOffers.length > 0
+            ? variantRegularPrice
+            : variant.compare_at_price == null
+              ? null
+              : Number(
+                  variant.compare_at_price,
+                ),
+        availableStock: Number(
+          variant.available_stock || 0,
+        ),
+        lowStockThreshold: Number(
+          variant.low_stock_threshold || 0,
+        ),
+        isDefault: variant.is_default,
+      };
+    },
+  );
+
   if (
     primaryCategory !== "Uncategorized" &&
     !categories.includes(primaryCategory)
@@ -300,9 +407,19 @@ function mapProduct(
     categories,
     description,
     details: row.details || description,
+    shortDescription: row.short_description || undefined,
+    brand: row.brand || undefined,
+    countryOfOrigin: row.country_of_origin || undefined,
+    sizeGuidance: row.size_guidance || undefined,
+    deliveryPaymentInfo:
+      row.delivery_payment_info || undefined,
+    storefrontContent: normalizeStorefrontContent(
+      row.storefront_content,
+    ),
     images,
     color: colors.join(", "),
     sizes,
+    variants: storefrontVariants,
     availability: getAvailability(
       availableStock,
       lowStockThreshold,
@@ -332,6 +449,11 @@ export async function getInventoryProductsForStorefront(): Promise<Product[]> {
           short_description,
           description,
           details,
+          size_guidance,
+          delivery_payment_info,
+          brand,
+          country_of_origin,
+          storefront_content,
           is_featured,
           is_new_arrival,
           show_on_storefront,

@@ -12,7 +12,10 @@ type ProductActionButtonsProps = {
   product: Product;
   isSoldOut: boolean;
   selectedSize: string;
+  selectedVariantId: string;
+  requiresVariantSelection: boolean;
   quantity: number;
+  onVariantRequired: () => void;
   onSizeRequired: () => void;
 };
 
@@ -20,7 +23,10 @@ export function ProductActionButtons({
   product,
   isSoldOut,
   selectedSize,
+  selectedVariantId,
+  requiresVariantSelection,
   quantity,
+  onVariantRequired,
   onSizeRequired,
 }: ProductActionButtonsProps) {
   const router = useRouter();
@@ -30,8 +36,19 @@ export function ProductActionButtons({
   const requiresSizeSelection =
     product.sizes.filter(Boolean).length > 1;
 
-  function validateSize() {
-    if (requiresSizeSelection && !selectedSize) {
+  function validateSelection() {
+    if (
+      requiresVariantSelection &&
+      !selectedVariantId
+    ) {
+      onVariantRequired();
+      return false;
+    }
+
+    if (
+      requiresSizeSelection &&
+      !selectedSize
+    ) {
       onSizeRequired();
       return false;
     }
@@ -40,7 +57,7 @@ export function ProductActionButtons({
   }
 
   function handleAddToCart() {
-    if (isSoldOut || !validateSize()) {
+    if (isSoldOut || !validateSelection()) {
       return;
     }
 
@@ -48,6 +65,8 @@ export function ProductActionButtons({
       product,
       size: selectedSize,
       quantity,
+      variantId:
+        selectedVariantId || undefined,
     });
 
     try {
@@ -73,7 +92,7 @@ export function ProductActionButtons({
   }
 
   function handleOrderNow() {
-    if (isSoldOut || !validateSize()) {
+    if (isSoldOut || !validateSelection()) {
       return;
     }
 
@@ -81,6 +100,17 @@ export function ProductActionButtons({
       product: product.slug,
       qty: String(quantity),
     });
+
+    if (selectedVariantId) {
+      params.set(
+        "variant",
+        selectedVariantId,
+      );
+    }
+
+    if (product.color) {
+      params.set("color", product.color);
+    }
 
     if (selectedSize) {
       params.set("size", selectedSize);

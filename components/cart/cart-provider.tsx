@@ -14,6 +14,7 @@ type AddItemInput = {
   product: Product;
   size: string;
   quantity: number;
+  variantId?: string;
 };
 
 type CartContextValue = {
@@ -28,8 +29,12 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 const CART_STORAGE_KEY = "handpicked-cart";
 
-function createCartItemId(productSlug: string, size: string) {
-  return `${productSlug}-${size || "default"}`;
+function createCartItemId(
+  productSlug: string,
+  size: string,
+  variantId?: string,
+) {
+  return `${productSlug}-${variantId || size || "default"}`;
 }
 
 function normalizeCartItem(item: CartItem): CartItem | null {
@@ -39,7 +44,13 @@ function normalizeCartItem(item: CartItem): CartItem | null {
 
   return {
     ...item,
-    id: item.id || createCartItemId(item.slug, item.size),
+    id:
+      item.id ||
+      createCartItemId(
+        item.slug,
+        item.size,
+        item.variantId,
+      ),
     name: item.name || "Product",
     image: item.image || "",
     color: item.color || "",
@@ -91,8 +102,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [hasMounted, items]);
 
-  function addItem({ product, size, quantity }: AddItemInput) {
-    const id = createCartItemId(product.slug, size);
+  function addItem({
+    product,
+    size,
+    quantity,
+    variantId,
+  }: AddItemInput) {
+    const id = createCartItemId(
+      product.slug,
+      size,
+      variantId,
+    );
 
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === id);
@@ -116,6 +136,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         {
           id,
           productId: product.id,
+          variantId,
           slug: product.slug,
           name: product.name,
           image: product.images[0] || "",

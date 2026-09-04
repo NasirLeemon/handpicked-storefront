@@ -6,6 +6,33 @@ export type ProductOffer = {
   discountPercent: number;
 };
 
+export type ProductVariant = {
+  id: string;
+  sku: string;
+  color: string;
+  size: string;
+  price: number;
+  compareAtPrice: number | null;
+  availableStock: number;
+  lowStockThreshold: number;
+  isDefault: boolean;
+};
+
+export type ProductInfoItem = {
+  label: string;
+  value: string;
+};
+
+export type ProductStorefrontContent = {
+  benefits: string[];
+  howToUse: string;
+  keyIngredients: string[];
+  suitableFor: string[];
+  typeTags: string[];
+  warnings: string;
+  productInfo: ProductInfoItem[];
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -17,9 +44,16 @@ export type Product = {
   categories?: string[];
   description: string;
   details?: string;
+  shortDescription?: string;
+  brand?: string;
+  countryOfOrigin?: string;
+  sizeGuidance?: string;
+  deliveryPaymentInfo?: string;
+  storefrontContent?: ProductStorefrontContent;
   images: string[];
   color: string;
   sizes: string[];
+  variants?: ProductVariant[];
   availability: ProductAvailability;
   featured: boolean;
   isNewArrival: boolean;
