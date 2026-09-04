@@ -2,7 +2,10 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import {
+  notFound,
+  permanentRedirect,
+} from "next/navigation";
 import { ProductDetailPageContent } from "@/components/product-detail/product-detail-page-content";
 import {
   getInventoryProductBySlug,
@@ -10,6 +13,15 @@ import {
 } from "@/lib/supabase/inventory-products";
 
 const BASE_URL = "https://handpickedbd.com";
+
+const PRODUCT_SLUG_REDIRECTS: Record<string, string> = {
+  "garnier-micellar-cleansing-water-all-in-1-400ml":
+    "garnier-micellar-cleansing-water",
+};
+
+function resolveProductSlug(slug: string) {
+  return PRODUCT_SLUG_REDIRECTS[slug] ?? slug;
+}
 
 type ProductPageProps = {
   params: Promise<{
@@ -51,7 +63,9 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getInventoryProductBySlug(slug);
+  const product = await getInventoryProductBySlug(
+    resolveProductSlug(slug)
+  );
 
   if (!product) {
     return {
@@ -99,6 +113,13 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
+
+  const redirectSlug = PRODUCT_SLUG_REDIRECTS[slug];
+
+  if (redirectSlug) {
+    permanentRedirect(`/product/${redirectSlug}`);
+  }
+
   const product = await getInventoryProductBySlug(slug);
 
   if (!product) {
